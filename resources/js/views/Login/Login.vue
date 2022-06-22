@@ -7,7 +7,7 @@
                     dark
                     flat
                 >
-                    <v-toolbar-title>IronAddicts | Вход</v-toolbar-title>
+                    <v-toolbar-title>Tooman | Вход</v-toolbar-title>
                 </v-toolbar>
                 <v-card-text>
                     <v-form>
@@ -29,8 +29,8 @@
                     </v-form>
                 </v-card-text>
                 <v-card-actions class="d-flex justify-center">
-                    <v-btn v-if="!loading" color="red" block @click="doLogin">Войти</v-btn>
-                    <v-progress-circular indeterminate size="40" color="red" v-else></v-progress-circular>
+                    <v-btn v-if="!loading" color="primary" block @click="doLogin">Войти</v-btn>
+                    <v-progress-circular indeterminate size="40" color="primary" v-else></v-progress-circular>
                 </v-card-actions>
             </v-card>
         </div>
