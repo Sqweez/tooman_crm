@@ -150,16 +150,6 @@
                                 <v-list-item>
                                     <v-list-item-content>
                                         <v-list-item-title>
-                                            {{ item.margin_type.title }}
-                                        </v-list-item-title>
-                                        <v-list-item-subtitle>
-                                            Тип маржинальности
-                                        </v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </v-list-item>
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        <v-list-item-title>
                                             <v-icon color="success" v-if="item.is_kaspi_visible">mdi-check</v-icon>
                                             <v-icon color="error" v-else>mdi-close</v-icon>
                                         </v-list-item-title>
