@@ -18,8 +18,6 @@
                     <v-icon>mdi-plus</v-icon>
                 </v-btn>
             </div>
-            <v-btn color="success" v-if="is_admin || IS_BOSS" @click="exportProductBatches">Выгрузить себестоимости
-            </v-btn>
             <v-row>
                 <v-col>
                     <v-row>
@@ -81,24 +79,6 @@
                             />
                         </v-col>
                         <v-col cols="12" xl="4">
-                            <v-autocomplete
-                                :items="marginTypes"
-                                label="Тип маржинальности"
-                                item-value="id"
-                                item-text="title"
-                                v-model="currentMarginType"
-                            />
-                        </v-col>
-                        <v-col cols="12" xl="4">
-                            <v-autocomplete
-                                :items="kaspiVisibleFilters"
-                                label="Виден на каспи"
-                                item-value="id"
-                                item-text="text"
-                                v-model="isKaspiVisibleFilter"
-                            />
-                        </v-col>
-                        <v-col cols="12" xl="4">
                             <v-checkbox
                                 label="Показать только главные товары"
                                 v-model="showMainProducts"
@@ -137,7 +117,7 @@
                         </template>
                         <template v-slot:item.additional_data="{ item }">
                             <v-list>
-                                <v-list-item v-if="item.product_name_web">
+                                <v-list-item v-if="item.product_name_web" v-show="false">
                                     <v-list-item-content>
                                         <v-list-item-title>
                                             {{ item.product_name_web }}
@@ -529,10 +509,10 @@
                         value: 'category',
                         text: 'Категория'
                     },
-                    {
+                   /* {
                         value: 'additional_data',
                         text: 'Доп данные'
-                    }
+                    }*/
                 ];
 
                 if (this.is_admin || this.IS_BOSS || this.IS_SENIOR_SELLER || this.IS_MODERATOR || this.IS_FRANCHISE) {

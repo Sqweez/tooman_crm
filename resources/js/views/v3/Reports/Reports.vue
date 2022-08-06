@@ -414,17 +414,17 @@
                                 Чек <v-icon class="ml-2">mdi-printer</v-icon>
                             </v-btn>
                         </v-list-item>
-                        <v-list-item>
+                        <v-list-item v-if="false">
                             <v-btn small depressed color="success" text @click="createWaybill(item)">
                                 Накладная <v-icon class="ml-2">mdi-printer</v-icon>
                             </v-btn>
                         </v-list-item>
-                        <v-list-item>
+                        <v-list-item v-if="false">
                             <v-btn small depressed color="success" text @click="createInvoice(item)">
                                 Счет-фактура <v-icon class="ml-2">mdi-printer</v-icon>
                             </v-btn>
                         </v-list-item>
-                        <v-list-item v-if="IS_SUPERUSER">
+                        <v-list-item v-if="false">
                             <v-btn small depressed color="success" text @click="sendTelegram(item.id)">
                                 Отправить в телегу <v-icon class="ml-2">mdi-email</v-icon>
                             </v-btn>

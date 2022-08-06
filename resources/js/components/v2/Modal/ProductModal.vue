@@ -2,7 +2,7 @@
     <v-dialog v-model="SHOW_MODAL" max-width="1200" persistent>
         <v-card>
             <v-card-title class="headline justify-space-between">
-                <span class="white--text">{{ getModalTitle }} товара v2</span>
+                <span class="white--text">{{ getModalTitle }} товара</span>
                 <v-btn icon text class="float-right" @click="$emit('cancel')">
                     <v-icon color="white">
                         mdi-close
@@ -18,6 +18,7 @@
                     />
 
                     <v-text-field
+                        v-show="false"
                         v-if="IS_SUPERUSER"
                         label="Наименование интернет-магазина"
                         v-model="product_name_web"
@@ -154,6 +155,7 @@
                         v-model.number="product_price"
                         type="number"/>
                     <v-text-field
+                        v-show="false"
                         label="Стоимость в Kaspi Магазине"
                         :disabled="!IS_SUPERUSER"
                         v-model.number="kaspi_product_price"
@@ -174,7 +176,7 @@
                         :append-outer-icon="'mdi-plus'"
                         @click:append-outer="manufacturerModal = true"
                     />
-                    <div v-if="IS_SUPERUSER || IS_MODERATOR">
+                    <div v-if="IS_SUPERUSER || IS_MODERATOR" v-show="false">
                         <h5>Теги:</h5>
                         <div class="d-flex">
                             <div>
@@ -197,7 +199,7 @@
                             </div>
                         </div>
                     </div>
-                    <div v-if="IS_SUPERUSER">
+                    <div v-show="false" v-if="IS_SUPERUSER">
                         <v-checkbox
                             label="Хит продаж"
                             v-model="is_hit"
@@ -228,7 +230,6 @@
                             item-value="id"
                             v-model="supplier_id"
                         />
-                        <v-divider></v-divider>
                         <v-divider></v-divider>
                         <h5>Мета-теги</h5>
                         <v-text-field
@@ -346,50 +347,51 @@
                             <p>Выберите один из параметров по которому будет группироваться товар<br>
                                 Например, вкус для протеина, размер для одежды, цвет для шейкера</p>
                         </div>
-
-                        <v-divider></v-divider>
-                        <h5>Комментарии</h5>
-                        <v-list>
-                            <v-list-item v-for="item of comments">
-                                <v-list-item-content>
-                                    <v-list-item-title class="font-weight-black">Автор: {{ item.name }}
-                                        ({{ item.is_employee ? 'Сотрудник' : 'Клиент' }}) | {{ item.date }}
-                                        <v-btn icon color="error" @click="deleteComment(item.id)">
-                                            <v-icon>mdi-close</v-icon>
-                                        </v-btn>
-                                        <v-btn icon color="primary" @click="commentId = commentId == item.id ? null : item.id">
-                                            <v-icon>mdi-reply</v-icon>
-                                        </v-btn>
-                                    </v-list-item-title>
-                                    <v-list-item-title>{{ item.comment }}</v-list-item-title>
-                                    <v-list>
-                                        <v-list-item v-for="_item of item.children">
-                                            <v-list-item-content>
-                                                <v-list-item-title class="font-weight-black">Автор: {{ _item.name }}
-                                                    ({{ _item.is_employee ? 'Сотрудник' : 'Клиент' }}) | {{
-                                                        _item.date
-                                                    }}
-                                                    <v-btn icon color="error" @click="deleteComment(_item.id)">
-                                                        <v-icon>mdi-close</v-icon>
-                                                    </v-btn>
-                                                    <v-btn icon color="primary" @click="commentId = commentId == _item.id ? null : _item.id">
-                                                        <v-icon>mdi-reply</v-icon>
-                                                    </v-btn>
-                                                </v-list-item-title>
-                                                <v-list-item-title>{{ _item.comment }}</v-list-item-title>
-                                            </v-list-item-content>
-                                        </v-list-item>
-                                    </v-list>
-                                </v-list-item-content>
-                            </v-list-item>
-                        </v-list>
-                        <v-textarea
-                            :placeholder="currentComment ? `В ответ: ${currentComment.name}` : 'Комментарий'"
-                            label="Комментарий"
-                            v-model="commentText" />
-                        <v-btn color="primary" @click="createComment">
-                            Отправить комментарий <v-icon>mdi-send</v-icon>
-                        </v-btn>
+                        <div v-show="false">
+                            <v-divider></v-divider>
+                            <h5>Комментарии</h5>
+                            <v-list>
+                                <v-list-item v-for="item of comments">
+                                    <v-list-item-content>
+                                        <v-list-item-title class="font-weight-black">Автор: {{ item.name }}
+                                            ({{ item.is_employee ? 'Сотрудник' : 'Клиент' }}) | {{ item.date }}
+                                            <v-btn icon color="error" @click="deleteComment(item.id)">
+                                                <v-icon>mdi-close</v-icon>
+                                            </v-btn>
+                                            <v-btn icon color="primary" @click="commentId = commentId == item.id ? null : item.id">
+                                                <v-icon>mdi-reply</v-icon>
+                                            </v-btn>
+                                        </v-list-item-title>
+                                        <v-list-item-title>{{ item.comment }}</v-list-item-title>
+                                        <v-list>
+                                            <v-list-item v-for="_item of item.children">
+                                                <v-list-item-content>
+                                                    <v-list-item-title class="font-weight-black">Автор: {{ _item.name }}
+                                                        ({{ _item.is_employee ? 'Сотрудник' : 'Клиент' }}) | {{
+                                                            _item.date
+                                                        }}
+                                                        <v-btn icon color="error" @click="deleteComment(_item.id)">
+                                                            <v-icon>mdi-close</v-icon>
+                                                        </v-btn>
+                                                        <v-btn icon color="primary" @click="commentId = commentId == _item.id ? null : _item.id">
+                                                            <v-icon>mdi-reply</v-icon>
+                                                        </v-btn>
+                                                    </v-list-item-title>
+                                                    <v-list-item-title>{{ _item.comment }}</v-list-item-title>
+                                                </v-list-item-content>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-list>
+                            <v-textarea
+                                :placeholder="currentComment ? `В ответ: ${currentComment.name}` : 'Комментарий'"
+                                label="Комментарий"
+                                v-model="commentText" />
+                            <v-btn color="primary" @click="createComment">
+                                Отправить комментарий <v-icon>mdi-send</v-icon>
+                            </v-btn>
+                        </div>
                     </div>
                 </v-form>
             </v-card-text>
