@@ -199,89 +199,91 @@
                             </div>
                         </div>
                     </div>
-                    <div v-show="false" v-if="IS_SUPERUSER">
-                        <v-checkbox
-                            label="Хит продаж"
-                            v-model="is_hit"
-                        />
-                        <v-checkbox
-                            label="IHerb"
-                            v-model="is_iherb"
-                        />
-                        <v-checkbox
-                            label="Виден на сайте"
-                            v-model="is_site_visible"
-                        />
-                        <v-checkbox
-                            label="Виден в Kaspi магазине"
-                            v-model="is_kaspi_visible"
-                        />
-                        <p>
-                            Отвечает за видимость на сайте iron-addicts.kz
-                            <br>
-                            Выбирайте если это товар для внутреннего закупа или которым торгуем только оффлайн
-                        </p>
-                        <v-divider></v-divider>
-                        <h5>Поставщик:</h5>
-                        <v-select
-                            label="Поставщик"
-                            :items="suppliers"
-                            item-text="supplier_name"
-                            item-value="id"
-                            v-model="supplier_id"
-                        />
-                        <v-divider></v-divider>
-                        <h5>Мета-теги</h5>
-                        <v-text-field
-                            label="Title"
-                            v-model="meta_title"
-                        />
-                        <v-text-field
-                            label="Description"
-                            v-model="meta_description"
-                        />
-                        <v-divider></v-divider>
-                        <h5>Цены по городам:</h5>
-                        <div class="d-flex">
-                            <v-select
-                                style="max-width: 300px;"
-                                :items="getPriceStores(0)"
-                                item-text="name"
-                                item-value="id"
-                                label="Магазин"
-                                v-model="prices[0].store_id"
-                            ></v-select>
-                            <v-spacer/>
-                            <v-text-field
-                                label="Стоимость"
-                                v-model.number="prices[0].price"
-                            ></v-text-field>
-                            <v-btn icon @click="addPricesSelect">
-                                <v-icon>mdi-plus</v-icon>
-                            </v-btn>
-                        </div>
-                        <div class="d-flex" v-for="(attrs, idx) of pricesSelect" :key="idx * 1500"
-                             v-if="pricesSelect.length !== 0">
-                            <component
-                                v-if="pricesSelect.length !== 0"
-                                style="max-width: 300px;"
-                                :is="attrs"
-                                :items="getPriceStores(idx + 1)"
-                                item-text="name"
-                                item-value="id"
-                                label="Магазин"
-                                v-model="prices[idx + 1].store_id"
+                    <div v-if="IS_SUPERUSER">
+                        <div v-show="false">
+                            <v-checkbox
+                                label="Хит продаж"
+                                v-model="is_hit"
                             />
-                            <v-spacer/>
+                            <v-checkbox
+                                label="IHerb"
+                                v-model="is_iherb"
+                            />
+                            <v-checkbox
+                                label="Виден на сайте"
+                                v-model="is_site_visible"
+                            />
+                            <v-checkbox
+                                label="Виден в Kaspi магазине"
+                                v-model="is_kaspi_visible"
+                            />
+                            <p>
+                                Отвечает за видимость на сайте iron-addicts.kz
+                                <br>
+                                Выбирайте если это товар для внутреннего закупа или которым торгуем только оффлайн
+                            </p>
+                            <v-divider></v-divider>
+                            <h5>Поставщик:</h5>
+                            <v-select
+                                label="Поставщик"
+                                :items="suppliers"
+                                item-text="supplier_name"
+                                item-value="id"
+                                v-model="supplier_id"
+                            />
+                            <v-divider></v-divider>
+                            <h5>Мета-теги</h5>
                             <v-text-field
-                                label="Стоимость"
-                                v-model.number="prices[idx + 1].price"
-                            ></v-text-field>
-                            <v-btn icon @click="removePriceSelect(idx)">
-                                <v-icon>mdi-minus</v-icon>
-                            </v-btn>
+                                label="Title"
+                                v-model="meta_title"
+                            />
+                            <v-text-field
+                                label="Description"
+                                v-model="meta_description"
+                            />
+                            <v-divider></v-divider>
+                            <h5>Цены по городам:</h5>
+                            <div class="d-flex">
+                                <v-select
+                                    style="max-width: 300px;"
+                                    :items="getPriceStores(0)"
+                                    item-text="name"
+                                    item-value="id"
+                                    label="Магазин"
+                                    v-model="prices[0].store_id"
+                                ></v-select>
+                                <v-spacer/>
+                                <v-text-field
+                                    label="Стоимость"
+                                    v-model.number="prices[0].price"
+                                ></v-text-field>
+                                <v-btn icon @click="addPricesSelect">
+                                    <v-icon>mdi-plus</v-icon>
+                                </v-btn>
+                            </div>
+                            <div class="d-flex" v-for="(attrs, idx) of pricesSelect" :key="idx * 1500"
+                                 v-if="pricesSelect.length !== 0">
+                                <component
+                                    v-if="pricesSelect.length !== 0"
+                                    style="max-width: 300px;"
+                                    :is="attrs"
+                                    :items="getPriceStores(idx + 1)"
+                                    item-text="name"
+                                    item-value="id"
+                                    label="Магазин"
+                                    v-model="prices[idx + 1].store_id"
+                                />
+                                <v-spacer/>
+                                <v-text-field
+                                    label="Стоимость"
+                                    v-model.number="prices[idx + 1].price"
+                                ></v-text-field>
+                                <v-btn icon @click="removePriceSelect(idx)">
+                                    <v-icon>mdi-minus</v-icon>
+                                </v-btn>
+                            </div>
+                            <v-divider></v-divider>
                         </div>
-                        <v-divider></v-divider>
                         <h5>Атрибуты:</h5>
                         <div v-if="!isEditing">
                             <v-checkbox
