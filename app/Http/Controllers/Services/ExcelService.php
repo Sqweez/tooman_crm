@@ -8,6 +8,7 @@ use App\Client;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Reader;
@@ -76,18 +77,10 @@ class ExcelService {
             $sheet->setCellValue('A' . ($key + 2), $datum['id']);
             $sheet->setCellValue('B' . ($key + 2), $datum['product_name']);
             $sheet->setCellValue('C' . ($key + 2), $datum['categories']);
-            $sheet->setCellValue('D' . ($key + 2), 'Атрибуты');
+            $sheet->setCellValue('D' . ($key + 2), $datum['attributes']);
             $sheet->setCellValue('E' . ($key + 2), $datum['manufacturer']);
             $sheet->setCellValue('F' . ($key + 2), $datum['product_price']);
             $sheet->setCellValue('G' . ($key + 2), $datum['quantity']);
-
-            $attributes = '';
-            foreach ($datum['attributes'] as $attribute) {
-                $attributes .= $attribute['attribute_value'] . ' ';
-            }
-
-
-            $sheet->setCellValue('D' . ($key + 2), $attributes);
         }
 
         foreach (range("B", "H") as $coordinate) {
@@ -99,16 +92,12 @@ class ExcelService {
         }
 
         $writer = new Xlsx($spreadSheet);
-
-        ob_start();
-        $writer->save('php://output');
-        $content = ob_get_contents();
-        ob_end_clean();
-
-        $fileName = Carbon::now()->toDateString() . '_' . Str::random(10) . '_products.xlsx';
-        $file = 'public/excel/revision/templates/' . $fileName;
-        Storage::put($file, $content);
-        return url('/') . Storage::url($file);
+        $fileName =  Carbon::today()->toDateString() . "_ревизия_" .Str::random(10) . '.xlsx';
+        $path = 'storage/excel/revisions/';
+        \File::ensureDirectoryExists($path);
+        $fullPath = $path . $fileName;
+        $writer->save($fullPath);
+        return url('/') . Storage::url($fullPath);
     }
 
     public function parseRevisionExcel($filename) {
@@ -155,5 +144,46 @@ class ExcelService {
         $path = 'app/public/excel/' . $filename . '.' . $ext;
         $file = storage_path($path);
         return IOFactory::load($file);
+    }
+
+    /**
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public function createRevisionFile(array $_products): string {
+        $excelTemplate = $this->loadFile('revision_template');
+        $excelSheet = $excelTemplate->getActiveSheet();
+        $INITIAL_ROW = 3;
+        $products = array_map(function ($product) {
+            return [
+                'id' => $product['product_id'],
+                'name' => sprintf("%s %s", $product['product_name'], $product['attributes']),
+                'category' => $product['category'],
+                'product_price' => $product['product_price'],
+                'fact_quantity' => 0
+            ];
+        }, $_products);
+
+        $excelSheet->fromArray($products, null, 'A3');
+
+        /*foreach ($revision['products'] as $key => $product) {
+            $currentIndex = $key + $INITIAL_ROW;
+            try {
+                $excelSheet->insertNewRowBefore($currentIndex, 1);
+            } catch (Exception $e) {
+            }
+            $excelSheet->setCellValue('A' . $currentIndex, $product['product_id']);
+            $excelSheet->setCellValue('B' . $currentIndex, sprintf("%s %s", $product['product_name'], $product['attributes']));
+            $excelSheet->setCellValue('C' . $currentIndex, $product['category']);
+            $excelSheet->setCellValue('D' . $currentIndex, $product['product_price']);
+            $excelSheet->setCellValue('E' . $currentIndex, 0);
+        }*/
+
+        $excelWriter = new Xlsx($excelTemplate);
+        $fileName =  'РЕВИЗИЯ' . "_" . Carbon::today()->toDateString() . "_" . Str::random(10) . '.xlsx';
+        $path = 'storage/excel/revisions/';
+        \File::ensureDirectoryExists($path);
+        $fullPath =  $path . $fileName;
+        $excelWriter->save($fullPath);
+        return $fullPath;
     }
 }

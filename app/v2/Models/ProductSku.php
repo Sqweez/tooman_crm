@@ -65,6 +65,8 @@ use Illuminate\Support\Collection;
  * @property-read mixed $additional_subcategories
  * @property-read \App\MarginType $margin_type
  * @method static \Illuminate\Database\Eloquent\Builder|ProductSku whereMarginTypeId($value)
+ * @property-read mixed $excel_name
+ * @property-read mixed $is_iherb
  */
 class ProductSku extends Model
 {
@@ -87,8 +89,8 @@ class ProductSku extends Model
     ];
 
     const PRODUCT_SKU_WITH_CART_LIST = [
-        'product:id,product_name,product_price,manufacturer_id,grouping_attribute_id',
-        'product.manufacturer', 'product.attributes',
+        'product:id,product_name,product_price,manufacturer_id,grouping_attribute_id,category_id',
+        'product.manufacturer', 'product.attributes', 'product.category',
         'product.attributes.attribute_name', 'attributes', 'attributes.attribute_name', 'margin_type'
     ];
 
@@ -209,7 +211,7 @@ class ProductSku extends Model
     }
 
     public function getQuantity($store_id) {
-        return $this->batches()->whereStoreId($store_id)->sum('quantity');
+        return $this->batches->where('store_id', $store_id)->sum('quantity');
     }
 
     public function getAllAttributesAttribute() {

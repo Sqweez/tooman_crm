@@ -4,6 +4,7 @@ use App\Http\Controllers\api\TransferController;
 use App\Http\Controllers\api\v2\ProductController;
 use App\Http\Controllers\api\v2\CertificateController;
 use App\Http\Controllers\api\v2\CompanionController;
+use App\Http\Controllers\api\v2\RevisionController;
 use App\Http\Controllers\api\v2\SeoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthorizationMiddleware;
@@ -387,6 +388,10 @@ Route::middleware(AuthorizationMiddleware::class)->group(function () {
 
         Route::prefix('seo')->group(function () {
             Route::post('text/{type}/{id}', [SeoController::class, 'storeText']);
+        });
+
+        Route::prefix('revision')->group(function () {
+            Route::post('/', [RevisionController::class, 'createRevision']);
         });
     });
 });

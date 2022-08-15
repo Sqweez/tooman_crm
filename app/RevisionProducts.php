@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\v2\Models\ProductSku;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\RevisionProducts
@@ -22,13 +24,15 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|RevisionProducts whereRevisionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RevisionProducts whereStockQuantity($value)
  * @mixin \Eloquent
+ * @property-read ProductSku $sku
  */
 class RevisionProducts extends Model
 {
+    protected $table = 'revision_products';
     protected $guarded = [];
     public $timestamps = false;
 
-    public function product() {
-        return $this->belongsTo('App\Product', 'product_id');
+    public function sku(): BelongsTo {
+        return $this->belongsTo(ProductSku::class, 'product_id');
     }
 }

@@ -2,7 +2,10 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Revision
@@ -26,20 +29,37 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Revision whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Revision whereUserId($value)
  * @mixin \Eloquent
+ * @property string|null $finished_at
+ * @property-read string|null $finish_date
+ * @property-read string $start_date
+ * @property-read int|null $revision_products_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Revision whereFinishedAt($value)
  */
 class Revision extends Model
 {
     protected $guarded = [];
 
-    public function user() {
-        return $this->belongsTo('App\User');
+    protected $casts = [
+        'is_finished' => 'boolean',
+    ];
+
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class);
     }
 
-    public function store() {
-        return $this->belongsTo('App\Store');
+    public function store(): BelongsTo {
+        return $this->belongsTo(Store::class);
     }
 
-    public function revision_products() {
-        return $this->hasOne('App\RevisionProducts');
+    public function revision_products(): HasMany {
+        return $this->hasMany(RevisionProducts::class, 'revision_id');
+    }
+
+    public function getStartDateAttribute(): string {
+        return Carbon::parse($this->created_at)->format('d.m.Y H:i:s');
+    }
+
+    public function getFinishDateAttribute(): ?string {
+        return $this->finished_at ? Carbon::parse($this->finished_at)->format('d.m.Y H:i:s') : null;
     }
 }

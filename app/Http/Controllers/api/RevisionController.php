@@ -10,6 +10,7 @@ use App\Http\Resources\RevisionResource;
 use App\Product;
 use App\Revision;
 use App\RevisionProducts;
+use App\v2\Models\ProductSku;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -18,8 +19,12 @@ use Illuminate\Support\Str;
 class RevisionController extends Controller
 {
     public function getRevisionProducts(Request $request) {
-        $products = collect(ProductRevisionResource::collection(Product::all()))
-            ->groupBy(['category', 'product_name'])->collapse()->collapse();
+        $products = collect(ProductRevisionResource::collection(
+            ProductSku::query()
+                ->with(ProductSku::PRODUCT_SKU_WITH_CART_LIST)
+                ->with('batches')
+                ->get()
+        ));
         $excelService = new ExcelService();
         return $excelService->createRevisionExcel($products);
     }

@@ -12,6 +12,12 @@ export default {
                 $evaluate: param => eval('this.'+param)
             },
             computed: {
+                $users () {
+                    return this.$store.getters.users;
+                },
+                $stores () {
+                    return this.$store.getters.stores;
+                },
                 $toast() {
                     return new ToastService();
                 },

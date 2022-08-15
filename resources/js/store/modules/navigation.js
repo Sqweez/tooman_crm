@@ -79,9 +79,9 @@ const navigationModule = {
                         url: '/preorders/index'
                     },
                     {
-                        title: 'Товары IHerb',
-                        url: '/products/iherb'
-                    },
+                        title: 'Ревизия',
+                        url: '/revision'
+                    }
                 ],
             },
             {
@@ -198,26 +198,6 @@ const navigationModule = {
                 icon: 'report',
             },
             {
-                title: 'Kaspi',
-                url: '#',
-                icon: 'home',
-                hasDropdown: true,
-                children: [
-                    {
-                        title: 'Товары',
-                        url: '/kaspi/products'
-                    },
-                    {
-                        title: 'Заказы',
-                        url: '/kaspi/orders'
-                    },
-                    {
-                        title: 'Аналитика',
-                        url: '/kaspi/analytics'
-                    }
-                ]
-            },
-            {
                 title: 'Партнеры',
                 url: '#',
                 hasDropdown: true,
@@ -229,7 +209,7 @@ const navigationModule = {
                     }
                 ],
             },
-            {
+            /*{
                 title: 'Модератор',
                 url: '#',
                 icon: 'dashboard',
@@ -256,8 +236,8 @@ const navigationModule = {
                         url: '/products/subcategories'
                     }
                 ]
-            },
-            {
+            },*/
+          /*  {
                 title: 'Интернет-магазин',
                 url: '#',
                 icon: 'home',
@@ -300,7 +280,7 @@ const navigationModule = {
                         url: '/site/footer'
                     }
                 ]
-            }
+            }*/
         ],
         partner_sellersMenu: [
             {
@@ -439,10 +419,6 @@ const navigationModule = {
                         url: '/cart'
                     },
                     {
-                        title: 'Бронирование товара',
-                        url: '/booking'
-                    },
-                    {
                         title: 'Перемещения',
                         url: '/transfer',
                     },
@@ -457,13 +433,9 @@ const navigationModule = {
                         isAdmin: true
                     },
                     {
-                        title: 'Предзаказы',
-                        url: '/preorders/index'
-                    },
-                    {
-                        title: 'Товары IHerb',
-                        url: '/products/iherb'
-                    },
+                        title: 'Ревизия',
+                        url: '/revision'
+                    }
                 ],
             },
             {
@@ -520,27 +492,6 @@ const navigationModule = {
                 title: 'График продаж'
             },
             {
-                title: 'Kaspi',
-                url: '#',
-                icon: 'home',
-                hasDropdown: true,
-                isAdmin: true,
-                children: [
-                    {
-                        title: 'Товары',
-                        url: '/kaspi/products'
-                    },
-                    {
-                        title: 'Заказы',
-                        url: '/kaspi/orders'
-                    },
-                    {
-                        title: 'Аналитика',
-                        url: '/kaspi/analytics'
-                    }
-                ]
-            },
-            {
                 title: 'Партнеры',
                 url: '#',
                 isAdmin: true,
@@ -583,7 +534,7 @@ const navigationModule = {
                     }
                 ]
             },
-            {
+           /* {
                 title: 'Интернет-магазин',
                 url: '#',
                 icon: 'home',
@@ -627,67 +578,7 @@ const navigationModule = {
                         url: '/site/footer'
                     }
                 ]
-            },
-            /*         {
-                         title: 'Статистика',
-                         url: '#',
-                         icon: 'dashboard',
-                         hasDropdown: true,
-                         isAdmin: true,
-                         children: [
-                             {
-                                 title: 'Товары',
-                                 url: '/stats/mvp_products',
-                             },
-                             {
-                                 title: 'Партнеры',
-                                 url: '/stats/partners'
-                             }
-                         ]
-                     },
-                     {
-                         title: 'v2/Склад',
-                         url: '#',
-                         icon: 'dashboard',
-                         hasDropdown: true,
-                         isAdmin: true,
-                         children: [
-                             {
-                                 title: 'Товары',
-                                 url: '/v2/products'
-                             },
-                         ]
-                     },*/
-            /* {
-                 title: 'v3/Склад',
-                 url: '#',
-                 icon: 'dashboard',
-                 hasDropdown: true,
-                 isAdmin: true,
-                 children: [
-                     {
-                         title: 'Товары',
-                         url: '/v3/products'
-                     },
-                     {
-                         title: 'Корзина',
-                         url: '/v3/cart'
-                     },
-                     {
-                         title: 'Отчеты',
-                         url: '/v3/reports'
-                     },
-                     {
-                         title: 'Перемещения',
-                         url: '/transfer',
-                     },
-                     {
-                         title: 'Поступления',
-                         url: '/arrivals',
-                         isAdmin: true,
-                     },
-                 ]
-             },*/
+            },*/
         ],
         seniorSellerMenu: [
             {
@@ -730,6 +621,10 @@ const navigationModule = {
                         title: 'Поступления',
                         url: '/arrivals',
                     },
+                    {
+                        title: 'Ревизия',
+                        url: '/revision'
+                    }
                 ],
             },
             {
@@ -794,6 +689,10 @@ const navigationModule = {
                         title: 'Поступления',
                         url: '/arrivals',
                     },
+                    {
+                        title: 'Ревизия',
+                        url: '/revision'
+                    }
                 ],
             },
             {

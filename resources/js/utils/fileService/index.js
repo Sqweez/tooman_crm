@@ -11,4 +11,10 @@ export default class FileService {
     async remove(fileName) {
         await deleteFile(fileName);
     }
+
+    download (path) {
+        const link = document.createElement('a');
+        link.href = path;
+        link.click();
+    }
 }
