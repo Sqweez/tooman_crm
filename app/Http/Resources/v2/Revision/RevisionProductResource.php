@@ -25,6 +25,7 @@ class RevisionProductResource extends JsonResource
             'product_id' => $this->sku->id,
             'product_name' => $this->sku->product_name,
             'manufacturer' => $this->sku->product->manufacturer->manufacturer_name,
+            'manufacturer_id' => $this->sku->product->manufacturer->id,
             'category' => $this->sku->category->category_name,
             'category_id' => $this->sku->category->id,
             'stock_quantity' => $this->stock_quantity,

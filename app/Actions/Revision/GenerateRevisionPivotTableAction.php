@@ -65,16 +65,6 @@ class GenerateRevisionPivotTableAction {
         })->toArray();
 
         $sheet->fromArray($products, null, 'A3', true);
-        foreach ($products as $key => $product) {
-            if ($product['delta'] < 0) {
-                $cellIndex = $key + 3;
-                $sheet
-                    ->getStyle("G$cellIndex")
-                    ->getFont()
-                    ->getColor()
-                    ->setRGB('FF0000');
-            }
-        }
 
         $styleArray = [
             'borders' => [
@@ -93,6 +83,19 @@ class GenerateRevisionPivotTableAction {
 
         foreach (range('A', 'H') as $letter) {
             $sheet->getColumnDimension($letter)->setAutoSize(true);
+        }
+
+
+        foreach ($sheet->getRowIterator() as $key => $row) {
+            if ($key > 2) {
+                $value = intval($sheet->getCell('G' . $key)->getValue());
+                if ($value < 0) {
+                    $sheet->getStyle('G' . $key)
+                        ->getFont()
+                        ->getColor()
+                        ->setRGB('FF0000');
+                }
+            }
         }
 
         return ExcelService::saveExcelFile($excelTemplate, Revision::PIVOT_FILE_NAME, 'revisions');

@@ -132,6 +132,15 @@
                         </v-list>
                     </v-col>
                 </v-row>
+                <v-text-field
+                    class="mt-2"
+                    v-model="search"
+                    solo
+                    clearable
+                    label="Поиск"
+                    single-line
+                    hide-details
+                ></v-text-field>
                 <v-data-table
                     :items="products"
                     :search="search"
@@ -181,7 +190,7 @@ export default {
         search: '',
         headers: [
             {
-                value: 'id',
+                value: 'product_id',
                 text: 'Артикул'
             },
             {
