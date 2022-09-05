@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -24,6 +26,7 @@ use Illuminate\Support\Facades\Hash;
  * @property-read int|null $notifications_count
  * @property-read \App\UserRole $role
  * @property-read \App\Store $store
+ * @property-read boolean $is_super_user
  * @method static \Illuminate\Database\Eloquent\Builder|User login($login)
  * @method static \Illuminate\Database\Eloquent\Builder|User sellers()
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
@@ -62,12 +65,22 @@ class User extends Authenticatable
         $this->attributes['password'] = Hash::make($password);
     }
 
-    public function store() {
+    public function store(): BelongsTo {
         return $this->belongsTo('App\Store', 'store_id');
     }
 
-    public function role() {
+    public function role(): BelongsTo {
         return $this->belongsTo('App\UserRole', 'role_id');
+    }
+
+    public function revisions(): HasMany {
+        return $this->hasMany(Revision::class, 'user_id');
+    }
+
+    public function activeRevision() {
+        return $this->hasOne(Revision::class)
+            ->where('status', Revision::STATUS_STARTED)
+            ->first();
     }
 
     public function scopeLogin($q, $login) {
@@ -82,4 +95,11 @@ class User extends Authenticatable
         return $q->whereIn('role_id', [2, 9]);
     }
 
+    public function getIsSuperUserAttribute(): bool {
+        return in_array($this->role_id, [UserRole::ADMIN_ROLE_ID, UserRole::BOSS_ROLE_ID]);
+    }
+
+    public function getIsNonRevisionPagesBlockedAttribute(): bool {
+        return !$this->getIsSuperUserAttribute() && !!$this->activeRevision();
+    }
 }

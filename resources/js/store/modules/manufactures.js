@@ -1,6 +1,6 @@
 import ACTIONS from '../actions'
 import MUTATIONS from '../mutations';
-import {createManufacturer, deleteManufacturers, editManufacturer, getManufacturers} from "../../api/manufacturer";
+import {createManufacturer, deleteManufacturers, editManufacturer, getManufacturers} from "@/api/manufacturer";
 
 const manufacturerModule = {
     state: {
@@ -8,6 +8,15 @@ const manufacturerModule = {
     },
     getters: {
         manufacturers: state => state.manufacturers,
+        MANUFACTURER_FILTERS: s => {
+            return [
+                {
+                    id: -1,
+                    name: 'Все'
+                },
+                ...s.manufacturers.map(m => ({ id: m.id, name: m.manufacturer_name }))
+            ];
+        },
         manufacturer: state => id => state.manufacturers.find(m => m.id === id),
     },
     mutations: {

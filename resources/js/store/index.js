@@ -35,6 +35,7 @@ import motivationModule from "@/store/modules/motivation";
 import vuexPlugins from "@/store/plugins/vuexPlugins";
 import analyticsModule from "@/store/modules/v2/analytics";
 import bookingModule from "@/store/modules/booking";
+import revisionModule from "@/store/modules/revisions";
 
 Vue.use(Vuex);
 
@@ -52,7 +53,6 @@ const store = new Store({
             await dispatch(ACTIONS.GET_CITIES);
             await dispatch(ACTIONS.GET_LOYALTY);
             await dispatch(ACTIONS.GET_SALE_TYPES);
-            await dispatch(ACTIONS.OPEN_SHIFT);
             await dispatch(ACTIONS.GET_MARGIN_TYPES);
             this.$loading.disable();
         }
@@ -89,7 +89,8 @@ const store = new Store({
         shiftModule,
         motivationModule,
         analyticsModule,
-        bookingModule
+        bookingModule,
+        revisionModule,
     },
     plugins: [
         createPersistedState({

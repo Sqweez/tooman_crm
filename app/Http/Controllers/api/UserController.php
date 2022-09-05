@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AuthUserResource;
 use App\Http\Resources\UserResource;
 use App\User;
 use App\UserRole;
@@ -21,7 +22,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return UserResource::collection(User::with(['store', 'role'])->get());
+        return UserResource::collection(User::with(['store.city_name', 'role'])->get());
     }
 
     public function indexRoles() {
@@ -77,7 +78,7 @@ class UserController extends Controller
         }
         return response()->json([
             'status' => 'success',
-            'user' => new UserResource($user),
+            'user' => AuthUserResource::make($user),
             'token' => $user->token,
         ], 200);
     }

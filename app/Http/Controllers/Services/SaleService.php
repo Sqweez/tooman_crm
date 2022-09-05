@@ -53,7 +53,8 @@ class SaleService {
         }
 
         if ($newDiscount > $client->client_discount) {
-            $client->update(['client_discount' => $newDiscount]);
+            // @TODO сделать в зависимости от системы дисконтов Тумана
+            //$client->update(['client_discount' => $newDiscount]);
         }
 
         $amount = $this->getTotalCost($cart, $discount);
@@ -63,13 +64,15 @@ class SaleService {
             'amount' => $amount
         ]);
 
-        $cashbackPercent = $payment_type === 3 ? 5 : $client->loyalty->cashback;
+        // @TODO не начисляем кэшбек пока
+
+        /*$cashbackPercent = $payment_type === 3 ? 5 : $client->loyalty->cashback;
 
         $client->transactions()->create([
             'sale_id' => $sale_id,
             'user_id' => $user_id,
             'amount' => $amount * ($cashbackPercent / 100)
-        ]);
+        ]); */
 
         if ($balance > 0) {
             $client->transactions()->create([
@@ -87,9 +90,7 @@ class SaleService {
             ]);
 
             $partnerSalesAmount = $this->getPartnerSalesAmount($partner, $sale_id);
-            \Log::info('PARTNER SALES AMOUNT: ' . $partnerSalesAmount);
             $partnerCashback = $this->calculatePartnerCashback($cart, $partnerSalesAmount, $discount);
-            \Log::info('PARTNER CASHBACK: ' . $partnerCashback);
 
             $partner->transactions()->create([
                 'amount' => $partnerCashback,

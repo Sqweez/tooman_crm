@@ -146,44 +146,25 @@ class ExcelService {
         return IOFactory::load($file);
     }
 
+    public static function loadExcelTemplate($filename, $defaultPath = 'app/public/excel/'): Spreadsheet {
+        $path = $defaultPath . $filename;
+        return IOFactory::load(storage_path($path));
+    }
+
     /**
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    public function createRevisionFile(array $_products): string {
-        $excelTemplate = $this->loadFile('revision_template');
-        $excelSheet = $excelTemplate->getActiveSheet();
-        $INITIAL_ROW = 3;
-        $products = array_map(function ($product) {
-            return [
-                'id' => $product['product_id'],
-                'name' => sprintf("%s %s", $product['product_name'], $product['attributes']),
-                'category' => $product['category'],
-                'product_price' => $product['product_price'],
-                'fact_quantity' => 0
-            ];
-        }, $_products);
-
-        $excelSheet->fromArray($products, null, 'A3');
-
-        /*foreach ($revision['products'] as $key => $product) {
-            $currentIndex = $key + $INITIAL_ROW;
-            try {
-                $excelSheet->insertNewRowBefore($currentIndex, 1);
-            } catch (Exception $e) {
-            }
-            $excelSheet->setCellValue('A' . $currentIndex, $product['product_id']);
-            $excelSheet->setCellValue('B' . $currentIndex, sprintf("%s %s", $product['product_name'], $product['attributes']));
-            $excelSheet->setCellValue('C' . $currentIndex, $product['category']);
-            $excelSheet->setCellValue('D' . $currentIndex, $product['product_price']);
-            $excelSheet->setCellValue('E' . $currentIndex, 0);
-        }*/
-
+    public static function saveExcelFile ($excelTemplate, $name, $folder): string {
         $excelWriter = new Xlsx($excelTemplate);
-        $fileName =  'РЕВИЗИЯ' . "_" . Carbon::today()->toDateString() . "_" . Str::random(10) . '.xlsx';
-        $path = 'storage/excel/revisions/';
+        $fileName = self::generateExcelName($name);
+        $path = "storage/excel/$folder/";
         \File::ensureDirectoryExists($path);
         $fullPath =  $path . $fileName;
         $excelWriter->save($fullPath);
         return $fullPath;
+    }
+
+    public static function generateExcelName($name): string {
+        return $name . "_" . Carbon::today()->toDateString() . "_" . Str::random(10) . '.xlsx';
     }
 }

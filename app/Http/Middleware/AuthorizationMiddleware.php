@@ -19,7 +19,7 @@ class AuthorizationMiddleware
     {
         $header = $request->header('Authorization', null);
         if ($header && auth()->guest()) {
-            $user = User::whereToken($header)->first();
+            $user = User::whereToken($header)->with('role')->first();
             if ($user) {
                 \Auth::login($user);
             }

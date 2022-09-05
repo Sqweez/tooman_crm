@@ -4,6 +4,8 @@ namespace App\v2\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
@@ -105,15 +107,15 @@ class ProductSku extends Model
 
     const WITH_PRODUCT = 'product:id,product_name,product_price,category_id,manufacturer_id';
 
-    public function attributes() {
+    public function attributes(): MorphToMany {
         return $this->morphToMany(AttributeValue::class, 'attributable', 'attributable');
     }
 
-    public function product_images() {
+    public function product_images(): MorphToMany {
         return $this->morphToMany('App\v2\Models\Image', 'imagable', 'imagable');
     }
 
-    public function product_thumbs() {
+    public function product_thumbs(): MorphToMany {
         return $this->morphToMany('App\v2\Models\Thumb', 'thumbable', 'thumbable');
     }
 
@@ -129,7 +131,7 @@ class ProductSku extends Model
         return $batches;
     }
 
-    public function relativeSku() {
+    public function relativeSku(): HasMany {
         return $this->hasMany('App\v2\Models\ProductSku', 'product_id', 'product_id');
     }
 
@@ -225,6 +227,14 @@ class ProductSku extends Model
     public function getIsKaspiVisibleAttribute() {
         return $this->product->is_kaspi_visible;
     }
+
+    public function getFullProductNameAttribute(): string {
+        $attrs = $this->mergeAttributes($this['attributes'], $this['product']['attributes'])
+            ->pluck('attribute_value')
+            ->join('|');
+        return sprintf("%s | %s %s", $this->manufacturer->manufacturer_name, $this->product->product_name, $attrs);
+    }
+
 
     public function mergeAttributes($attributes, $productAttributes): Collection {
         return collect($attributes)->map(function ($attribute) {

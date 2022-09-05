@@ -22,7 +22,6 @@
     import Drawer from "../components/Navigation/Drawer";
     import Header from "../components/Header/Header";
     import LoadingSpinner from "../components/Loaders/LoadingSpinner";
-    import {mapGetters} from "vuex";
     export default {
         components: {
             LoadingSpinner,

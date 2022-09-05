@@ -18,7 +18,7 @@ const Router = new VueRouter({
 });
 
 Router.beforeEach(async (to, from, next) => {
-    if (!store.getters.LOGIN_CHECKED) {
+    if (!store.getters.LOGIN_CHECKED || store.getters.USER && ['seller', 'seniorSeller'].includes(store.getters.CURRENT_ROLE)) {
         await store.dispatch('AUTH');
     }
 
@@ -26,6 +26,7 @@ Router.beforeEach(async (to, from, next) => {
     const IS_GUEST = store.getters.IS_GUEST;
     const BASE_ROUTE = IS_GUEST ? '/login' : '/';
     const GUEST_PAGES = !!(to.meta?.CAN_ENTER?.IS_GUEST);
+    const IS_NON_REVISION_PAGES_BLOCKED = store.getters.USER && store.getters.USER.is_non_revision_pages_blocked;
 
     const HAS_CAN_ENTER = (() => {
         return !!(
@@ -50,7 +51,9 @@ Router.beforeEach(async (to, from, next) => {
         }
     }
 
-
+    if (IS_NON_REVISION_PAGES_BLOCKED && to.path !== '/revision') {
+        return next('/revision');
+    }
     next();
 });
 

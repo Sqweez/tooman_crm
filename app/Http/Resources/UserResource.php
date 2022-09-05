@@ -2,9 +2,13 @@
 
 namespace App\Http\Resources;
 
+use App\User;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+
+/**
+ * @mixin User
+ * */
 
 class UserResource extends JsonResource
 {
@@ -20,12 +24,12 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'store_id' => $this->store_id,
-            'city' => $this->role_id == 1 ? 'Все города' : $this->store->city,
+            'city' => $this->is_super_user ? 'Все города' : $this->store->city,
             'login' => $this->login,
             'role_id' => $this->role_id,
             'role' => $this->role->role_name,
             'store_slug' => Str::slug($this->store->city_name->name),
-            // 'token' => $this->token,
+            'is_super_user' => $this->is_super_user,
             'store' => $this->store,
         ];
     }

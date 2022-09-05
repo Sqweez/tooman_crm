@@ -46,6 +46,7 @@ const shiftModule = {
             if (!getters.IS_SELLER && !getters.IS_SENIOR_SELLER) {
                 return;
             }
+
             await openShift({
                 store_id: user.store_id,
                 user_id: user.id

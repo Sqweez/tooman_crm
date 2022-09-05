@@ -391,7 +391,15 @@ Route::middleware(AuthorizationMiddleware::class)->group(function () {
         });
 
         Route::prefix('revision')->group(function () {
+            Route::get('/', [RevisionController::class, 'index']);
+            Route::delete('/{id}', [RevisionController::class, 'destroy']);
+            Route::get('/{revision}', [RevisionController::class, 'show']);
             Route::post('/', [RevisionController::class, 'createRevision']);
+            Route::post('/to-approve/{revision}', [RevisionController::class, 'sendToApprove']);
+            Route::get('/finish/{revision}', [RevisionController::class, 'finishRevision']);
+            Route::get('/generate-pivot/{revision}', [RevisionController::class, 'generatePivotTable']);
+            Route::post('/edit/{revision}', [RevisionController::class, 'editRevision']);
+            Route::post('/rollback/{revision}', [RevisionController::class, 'rollbackRevision']);
         });
     });
 });

@@ -25,6 +25,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|RevisionProducts whereStockQuantity($value)
  * @mixin \Eloquent
  * @property-read ProductSku $sku
+ * @property int|null $price
+ * @property int|null $purchase_price
+ * @method static \Illuminate\Database\Eloquent\Builder|RevisionProducts wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RevisionProducts wherePurchasePrice($value)
+ * @property-read int $delta
+ * @property-read string $delta_style
+ * @property-read mixed $fact_price_sum
+ * @property-read mixed $price_sum_delta
+ * @property-read mixed $stock_price_sum
  */
 class RevisionProducts extends Model
 {
@@ -32,7 +41,24 @@ class RevisionProducts extends Model
     protected $guarded = [];
     public $timestamps = false;
 
+
     public function sku(): BelongsTo {
         return $this->belongsTo(ProductSku::class, 'product_id');
+    }
+
+    public function getDeltaAttribute(): int {
+        return $this->fact_quantity - $this->stock_quantity;
+    }
+
+    public function getStockPriceSumAttribute() {
+        return $this->stock_quantity * $this->price;
+    }
+
+    public function getFactPriceSumAttribute() {
+        return $this->fact_quantity * $this->price;
+    }
+
+    public function getPriceSumDeltaAttribute() {
+        return $this->getFactPriceSumAttribute() - $this->getStockPriceSumAttribute();
     }
 }

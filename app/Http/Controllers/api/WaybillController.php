@@ -131,7 +131,10 @@ class WaybillController extends Controller
         $excelWriter = new Xlsx($excelTemplate);
 
         $fileName =  $fileType . "_" . Carbon::today()->toDateString() . "_" . $parent_city . '-' . $child_city . "_" . Str::random(10) . '.xlsx';
-        $fullPath = 'storage/excel/waybills/' . $fileName;
+        $path = 'storage/excel/waybills/';
+        $fullPath = $path . $fileName;
+
+        \File::ensureDirectoryExists($path);
 
         $excelWriter->save($fullPath);
 
@@ -162,7 +165,9 @@ class WaybillController extends Controller
 
         $excelWriter = new Xlsx($excelTemplate);
         $fileName =  'ВЫГРУЗКА_ТОВАРНЫХ_ОТЧЕТОВ' . "_" . Carbon::today()->toDateString() . "_" . Str::random(10) . '.xlsx';
-        $fullPath = 'storage/excel/batches/' . $fileName;
+        $path = 'storage/excel/batches/';
+        $fullPath = $path . $fileName;
+        \File::ensureDirectoryExists($path);
         $excelWriter->save($fullPath);
 
         return response()->json([
@@ -204,7 +209,9 @@ class WaybillController extends Controller
 
         $excelWriter = new Xlsx($excelTemplate);
         $fileName =  'ПРАЙС_ЛИСТ' . "_" . Carbon::today()->toDateString() . "_" . Str::random(10) . '.xlsx';
-        $fullPath = 'storage/excel/waybills/' . $fileName;
+        $path = 'storage/excel/waybills/';
+        $fullPath = $path . $fileName;
+        \File::ensureDirectoryExists($path);
         $excelWriter->save($fullPath);
 
         return response()->json([
@@ -274,7 +281,9 @@ class WaybillController extends Controller
 
         $excelWriter = new Xlsx($excelTemplate);
         $fileName =  Document::DOCUMENT_TYPES[$documentType] . "_" . Carbon::today()->toDateString() . "_" . Str::random(10) . '.xlsx';
-        $fullPath = 'storage/excel/waybills/' . $fileName;
+        $path = 'storage/excel/waybills/';
+        $fullPath = $path . $fileName;
+        \File::ensureDirectoryExists($path);
         $excelWriter->save($fullPath);
 
         Document::create([
@@ -328,7 +337,9 @@ class WaybillController extends Controller
 
         $excelWriter = new Xlsx($excelTemplate);
         $fileName =  Document::DOCUMENT_TYPES[$documentType] . "_" . Carbon::today()->toDateString() . "_" . Str::random(10) . '.xlsx';
-        $fullPath = 'storage/excel/invoices/' . $fileName;
+        $path = 'storage/excel/invoices/';
+        $fullPath = $path . $fileName;
+        \File::ensureDirectoryExists($path);
         $excelWriter->save($fullPath);
 
         Document::create([
@@ -396,7 +407,9 @@ class WaybillController extends Controller
 
         $excelWriter = new Xlsx($excelTemplate);
         $fileName =  Document::DOCUMENT_TYPES[$documentType] . "_" . Carbon::today()->toDateString() . "_" . Str::random(10) . '.xlsx';
-        $fullPath = 'storage/excel/invoices/' . $fileName;
+        $path = 'storage/excel/invoices/';
+        $fullPath = $path . $fileName;
+        \File::ensureDirectoryExists($path);
         $excelWriter->save($fullPath);
 
         Document::create([
@@ -444,7 +457,9 @@ class WaybillController extends Controller
 
         $excelWriter = new Xlsx($excelTemplate);
         $fileName =  Document::DOCUMENT_TYPES[$documentType] . "_" . Carbon::today()->toDateString() . "_" . Str::random(10) . '.xlsx';
-        $fullPath = 'storage/excel/invoices/' . $fileName;
+        $path = 'storage/excel/invoices/';
+        $fullPath = $path . $fileName;
+        \File::ensureDirectoryExists($path);
         $excelWriter->save($fullPath);
 
         Document::create([
@@ -494,7 +509,9 @@ class WaybillController extends Controller
 
         $excelWriter = new Xlsx($excelTemplate);
         $fileName =  'ВЫГРУЗКА_ЗАКУПОВ' . "_" . Carbon::today()->toDateString() . "_" . Str::random(10) . '.xlsx';
-        $fullPath = 'storage/excel/batches/' . $fileName;
+        $path = 'storage/excel/batches/';
+        $fullPath = $path . $fileName;
+        \File::ensureDirectoryExists($path);
         $excelWriter->save($fullPath);
 
         return response()->json([
@@ -503,7 +520,7 @@ class WaybillController extends Controller
     }
 
     /**
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception|Exception
      */
     public function createIherbPriceList(Request $request, ExcelService $excelService): JsonResponse {
         $cart = $request->get('cart');

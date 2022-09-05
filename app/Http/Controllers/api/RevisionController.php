@@ -18,7 +18,7 @@ use Illuminate\Support\Str;
 
 class RevisionController extends Controller
 {
-    public function getRevisionProducts(Request $request) {
+    public function getRevisionProducts(Request $request): string {
         $products = collect(ProductRevisionResource::collection(
             ProductSku::query()
                 ->with(ProductSku::PRODUCT_SKU_WITH_CART_LIST)

@@ -414,12 +414,12 @@
                                 Чек <v-icon class="ml-2">mdi-printer</v-icon>
                             </v-btn>
                         </v-list-item>
-                        <v-list-item v-if="false">
+                        <v-list-item>
                             <v-btn small depressed color="success" text @click="createWaybill(item)">
                                 Накладная <v-icon class="ml-2">mdi-printer</v-icon>
                             </v-btn>
                         </v-list-item>
-                        <v-list-item v-if="false">
+                        <v-list-item>
                             <v-btn small depressed color="success" text @click="createInvoice(item)">
                                 Счет-фактура <v-icon class="ml-2">mdi-printer</v-icon>
                             </v-btn>

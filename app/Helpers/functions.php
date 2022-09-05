@@ -1,5 +1,8 @@
 <?php
 
+use App\v2\Models\ProductSku;
+use Carbon\Carbon;
+
 if (!function_exists('ucfirstRu')) {
     function ucfirstRu(string $value): string {
         return mb_convert_case($value, MB_CASE_TITLE, 'UTF-8');
@@ -9,6 +12,34 @@ if (!function_exists('ucfirstRu')) {
 if (!function_exists('now_format')) {
     function now_format (): string {
         return now()->format('d.m.Y');
+    }
+}
+
+if (!function_exists('format_date')) {
+    function format_date($date, $withTime = true): string {
+        if (is_null($date)) {
+            return '-';
+        }
+        $DATE_FORMAT = 'd.m.Y';
+        if ($withTime) {
+            $DATE_FORMAT .= ' H:i:s';
+        }
+        return Carbon::parse($date)->format($DATE_FORMAT);
+    }
+}
+
+if (!function_exists('get_external_file_url')) {
+    function get_external_file_url ($filePath, $storageWrap = true): ?string {
+        if (is_null($filePath)) {
+            return null;
+        }
+        return url('/') . ($storageWrap ? Storage::url($filePath) : "/" . $filePath);
+    }
+}
+
+if (!function_exists('get_product_full_name')) {
+    function get_product_full_name ($productSku) {
+        return json_encode($productSku['all_attributes']);
     }
 }
 

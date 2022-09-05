@@ -68,6 +68,7 @@ import ProductTags from "@/views/Moderator/ProductTags";
 import SeoCategory from "@/views/SEO/SeoCategory";
 import ProductSubcategories from "@/views/Moderator/ProductSubcategories";
 import IherbIndexPage from "@/views/IHerb/IherbIndexPage";
+import RevisionShow from '@/views/Revision/RevisionShow';
 
 const routes = [
     {
@@ -235,6 +236,18 @@ const routes = [
     {
         path: '/revision',
         component: Revision,
+        meta: {
+            CAN_ENTER: {
+                IS_SELLER: true,
+                IS_ADMIN: true,
+                IS_BOSS: true,
+                IS_SENIORSELLER: true,
+            }
+        }
+    },
+    {
+        path: '/revision/:id',
+        component: RevisionShow,
         meta: {
             CAN_ENTER: {
                 IS_SELLER: true,

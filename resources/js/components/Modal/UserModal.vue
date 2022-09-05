@@ -47,7 +47,7 @@
                     color="success"
                     @click="submit"
                 >
-                    <b>Создать</b>
+                    Сохранить
                     <v-icon>mdi-check</v-icon>
                 </v-btn>
             </v-card-actions>
@@ -110,9 +110,13 @@
                     store_id: this.user.store_id
                 };
 
-                await this.$store.dispatch(ACTIONS.CREATE_USER, user);
+                if (!Object.keys(user).every(key => !!user[key])) {
+                    return this.$toast.error('Заполните все поля!');
+                }
 
-                this.$toast.success('пользователь создан')
+                await this.$store.dispatch(ACTIONS.CREATE_USER, user);
+                this.$toast.success('пользователь создан');
+                this.$emit('onSubmit');
             },
             async editUser() {
                 const user = {
@@ -127,9 +131,15 @@
                     user.password = this.user.password;
                 }
 
+
+                if (!Object.keys(user).every(key => !!user[key])) {
+                    return this.$toast.error('Заполните все поля!');
+                }
+
                 await this.$store.dispatch(ACTIONS.EDIT_USER, user);
 
-                this.$toast.success('пользователь отредактирован')
+                this.$toast.success('пользователь отредактирован');
+                this.$emit('onSubmit')
 
             },
             async submit() {
@@ -138,7 +148,6 @@
                 } else {
                     await this.createUser();
                 }
-                this.$emit('onSubmit')
             }
         }
     }

@@ -47,6 +47,7 @@ export default {
                 };
                 const { data } = await axios.post('/api/v2/revision', payload);
                 this.$file.download(data.path);
+                this.$store.commit('addRevision', data.revision);
                 this.$toast.success('Ревизия успешно создана!');
             } catch (e) {
                 this.$toast.error('Произошла ошибка, обратитесь в службу поддержки!')

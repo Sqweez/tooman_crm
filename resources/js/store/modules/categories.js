@@ -1,6 +1,6 @@
 import ACTIONS from '../actions'
 import MUTATIONS from '../mutations';
-import {createCategory, deleteCategory, editCategory, getCategories} from "../../api/category";
+import {createCategory, deleteCategory, editCategory, getCategories} from "@/api/category";
 
 const categoryModule = {
     state: {
@@ -8,6 +8,7 @@ const categoryModule = {
     },
     getters: {
         categories: state => state.categories,
+        CATEGORY_FILTERS: s => [{id: -1, name: 'Все'}, ...s.categories],
     },
     mutations: {
         async [MUTATIONS.CREATE_CATEGORY] (state, payload) {
