@@ -62,12 +62,36 @@ class ProductController extends Controller
         return ProductService::updateSku($sku, $product_sku_attributes);
     }
 
-    public function getProductsQuantity($store) {
-        if (intval($store) > 0) {
+    public function getProductsQuantity($store, Request $request) {
+        if (intval($store) > 0 && !$request->has('with-purchase')) {
             return ProductBatch::query()
                 ->quantitiesOfStore($store)
                 ->get();
         }
+
+        if (intval($store) > 0 && $request->has('with-purchase')) {
+            return ProductBatch::query()
+                ->where('quantity', '>', 0)
+                ->where('store_id', $store)
+                ->get()
+                ->groupBy('product_id')
+                ->map(function ($quantities, $productId) {
+                    $quantity = collect($quantities)->reduce(function ($a, $c) {
+                        return $a + $c['quantity'];
+                    }, 0);
+                    $purchase = collect($quantities)->reduce(function ($a, $c) {
+                        return $a + $c['quantity'] * $c['purchase_price'];
+                    }, 0);
+
+                    return [
+                        'purchase_price' => $purchase,
+                        'quantity' => $quantity,
+                        'product_id' => $productId,
+                    ];
+                })
+                ->values();
+        }
+
         return ProductBatch::query()
             ->quantities()
             ->get()

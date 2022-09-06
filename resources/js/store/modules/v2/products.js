@@ -95,14 +95,17 @@ const mutations = {
                 const quantity = quantities.find(q => product.id == q.product_id);
                 if (quantity) {
                     product.quantity = quantity.quantity;
+                    product.purchase_price = quantity?.purchase_price;
                 } else {
                     product.quantity = 0;
+                    product.purchase_price = 0;
                 }
                 return product;
             });
             const _quantities = products.map(product => ({
                 product_id: product.id,
-                quantity: product.quantity
+                quantity: product.quantity,
+                purchase_price: product?.purchase_price
             }))
             state.quantities = {...state.quantities, [store_id]: _quantities};
             state.products_v2 = products;
@@ -234,6 +237,20 @@ const actions = {
         try {
             this.$loading.enable();
             const { data } = await getProductsQuantity(store_id);
+            commit('SET_PRODUCT_QUANTITIES_v2', {
+                quantities: data,
+                store_id
+            })
+        } catch (e) {
+            console.log(e);
+        } finally {
+            this.$loading.disable();
+        }
+    },
+    async GET_PRODUCT_QUANTITIES_WITH_PURCHASE ({commit, dispatch, getters}, store_id) {
+        try {
+            this.$loading.enable();
+            const { data } = await axios.get(`/api/v2/products/quantity/${store_id}?with-purchase=1`);
             commit('SET_PRODUCT_QUANTITIES_v2', {
                 quantities: data,
                 store_id

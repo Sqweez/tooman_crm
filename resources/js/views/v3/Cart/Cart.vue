@@ -384,7 +384,7 @@
                             hide-details
                         ></v-text-field>
                     </v-col>
-                    <v-col cols="12" xl="2">
+                    <v-col cols="12" xl="2" v-if="IS_SUPERUSER">
                         <v-checkbox
                             v-model="hideNotInStock"
                             label="Скрывать отсутствующие"
@@ -408,7 +408,7 @@
                             label="Бренд"
                         />
                     </v-col>
-                    <v-col cols="12" xl="4">
+                    <v-col cols="12" xl="4" v-show="IS_SUPERUSER">
                         <v-select
                             :items="stores"
                             item-text="name"
@@ -636,41 +636,6 @@
             showCheckModal: false,
             currentItems: [],
             is_paid: false,
-            headers: [
-                {
-                    text: 'Наименование',
-                    value: 'product_name',
-                    sortable: false,
-                    align: ' fz-18'
-                },
-                {
-                    text: 'Атрибуты',
-                    value: 'attributes',
-                    align: ' d-none'
-                },
-                {
-                    value: 'manufacturer.manufacturer_name',
-                    text: 'Производитель',
-                    align: ' d-none'
-                },
-                {
-                    text: 'Остаток',
-                    value: 'quantity'
-                },
-                {
-                    text: 'Стоимость',
-                    value: 'product_price'
-                },
-                {
-                    text: 'Добавить',
-                    value: 'actions'
-                },
-                {
-                    text: 'Штрих-код',
-                    value: 'product_barcode',
-                    align: ' d-none'
-                }
-            ],
             kaspiProcessId: null,
             kaspiTransactionId: null,
         }),
@@ -909,6 +874,48 @@
             },
         },
         computed: {
+            headers () {
+                const headers = [
+                    {
+                        text: 'Наименование',
+                        value: 'product_name',
+                        sortable: false,
+                        align: ' fz-18'
+                    },
+                    {
+                        text: 'Атрибуты',
+                        value: 'attributes',
+                        align: ' d-none'
+                    },
+                    {
+                        value: 'manufacturer.manufacturer_name',
+                        text: 'Производитель',
+                        align: ' d-none'
+                    },
+                    {
+                        text: 'Остаток',
+                        value: 'quantity'
+                    },
+                    {
+                        text: 'Стоимость',
+                        value: 'product_price'
+                    },
+                    {
+                        text: 'Добавить',
+                        value: 'actions'
+                    },
+                    {
+                        text: 'Штрих-код',
+                        value: 'product_barcode',
+                        align: ' d-none'
+                    }
+                ];
+
+                if (!this.IS_SUPERUSER) {
+                    headers.splice(3, 1);
+                }
+                return headers;
+            },
             partners() {
                 return this.$store.getters.PARTNERS;
             },

@@ -69,6 +69,7 @@ import SeoCategory from "@/views/SEO/SeoCategory";
 import ProductSubcategories from "@/views/Moderator/ProductSubcategories";
 import IherbIndexPage from "@/views/IHerb/IherbIndexPage";
 import RevisionShow from '@/views/Revision/RevisionShow';
+import ProductRemainsIndex from '@/views/ProductRemains/ProductRemainsIndex';
 
 const routes = [
     {
@@ -254,6 +255,16 @@ const routes = [
                 IS_ADMIN: true,
                 IS_BOSS: true,
                 IS_SENIORSELLER: true,
+            }
+        }
+    },
+    {
+        path: '/product/remains',
+        component: ProductRemainsIndex,
+        meta: {
+            CAN_ENTER: {
+                IS_ADMIN: true,
+                IS_BOSS: true
             }
         }
     },

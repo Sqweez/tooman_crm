@@ -33,7 +33,7 @@
                                 hide-details
                             ></v-text-field>
                         </v-col>
-                        <v-col cols="12" xl="4">
+                        <v-col cols="12" xl="4" v-show="IS_SUPERUSER">
                             <v-select
                                 :items="stores"
                                 item-text="name"
@@ -43,7 +43,7 @@
                                 :disabled="!(is_admin || IS_BOSS)"
                             />
                         </v-col>
-                        <v-col cols="12" xl="2">
+                        <v-col cols="12" xl="2" v-if="IS_SUPERUSER">
                             <v-checkbox
                                 label="Скрывать отсутствующие"
                                 v-model="hideNotInStock"
@@ -480,10 +480,6 @@
                         sortable: true,
                     },
                     {
-                        value: 'quantity',
-                        text: 'Остаток'
-                    },
-                    {
                         value: 'product_price',
                         text: 'Стоимость'
                     },
@@ -509,10 +505,6 @@
                         value: 'category',
                         text: 'Категория'
                     },
-                   /* {
-                        value: 'additional_data',
-                        text: 'Доп данные'
-                    }*/
                 ];
 
                 if (this.is_admin || this.IS_BOSS || this.IS_SENIOR_SELLER || this.IS_MODERATOR || this.IS_FRANCHISE) {
@@ -527,6 +519,13 @@
                         text: 'ID',
                         sortable: true
                     })
+                }
+
+                if (this.IS_SUPERUSER || this.IS_FRANCHISE) {
+                    headers.splice(3, 0,  {
+                        value: 'quantity',
+                        text: 'Остаток'
+                    });
                 }
 
                 if (this.IS_MODERATOR) {

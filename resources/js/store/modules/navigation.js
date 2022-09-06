@@ -81,6 +81,10 @@ const navigationModule = {
                     {
                         title: 'Ревизия',
                         url: '/revision'
+                    },
+                    {
+                        title: 'Остатки',
+                        url: '/product/remains'
                     }
                 ],
             },
@@ -435,6 +439,10 @@ const navigationModule = {
                     {
                         title: 'Ревизия',
                         url: '/revision'
+                    },
+                    {
+                        title: 'Остатки',
+                        url: '/product/remains'
                     }
                 ],
             },
