@@ -16,7 +16,7 @@ const navigationModule = {
                 url: '/clients',
                 icon: 'person'
             },
-            {
+           /* {
                 title: 'Документооборот',
                 url: '#',
                 icon: 'article',
@@ -35,7 +35,7 @@ const navigationModule = {
                         url: '/documents/price/list'
                     }
                 ]
-            },
+            },*/
             {
                 title: 'Склад',
                 url: '#',
@@ -67,17 +67,17 @@ const navigationModule = {
                         url: '/transfer',
                     },
                     {
-                        title: 'Поступления',
+                        title: 'Приемка',
                         url: '/arrivals',
                     },
                     {
                         title: 'Заканчивающиеся товары',
                         url: '/products/stock/out',
                     },
-                    {
+                  /*  {
                         title: 'Предзаказы',
                         url: '/preorders/index'
-                    },
+                    },*/
                     {
                         title: 'Ревизия',
                         url: '/revision'
@@ -186,11 +186,11 @@ const navigationModule = {
                 url: '/reports/products',
                 icon: 'report',
             },
-            {
+          /*  {
                 title: 'Отчеты по тренерам',
                 url: '/analytics/trainer/rating',
                 icon: 'report',
-            },
+            },*/
             {
                 title: 'Отчеты по партнерам',
                 url: '/analytics/partners/rating',
@@ -201,7 +201,7 @@ const navigationModule = {
                 url: '/analytics/clients/sales',
                 icon: 'report',
             },
-            {
+           /* {
                 title: 'Партнеры',
                 url: '#',
                 hasDropdown: true,
@@ -212,7 +212,7 @@ const navigationModule = {
                         url: '/companions/transfer'
                     }
                 ],
-            },
+            },*/
             /*{
                 title: 'Модератор',
                 url: '#',
@@ -349,7 +349,7 @@ const navigationModule = {
                 icon: 'work',
             },
             {
-                title: 'Поступления',
+                title: 'Приемка',
                 url: '/arrivals',
                 icon: 'work',
             },
@@ -376,7 +376,7 @@ const navigationModule = {
                 url: '/clients',
                 icon: 'person'
             },
-            {
+           /* {
                 title: 'Документооборот',
                 url: '#',
                 icon: 'article',
@@ -397,7 +397,7 @@ const navigationModule = {
                         url: '/documents/price/list'
                     }
                 ]
-            },
+            },*/
             {
                 title: 'Склад',
                 url: '#',
@@ -427,7 +427,7 @@ const navigationModule = {
                         url: '/transfer',
                     },
                     {
-                        title: 'Поступления',
+                        title: 'Приемка',
                         url: '/arrivals',
                         isAdmin: true,
                     },
@@ -472,11 +472,11 @@ const navigationModule = {
                 url: '/reports/products',
                 icon: 'report',
             },
-            {
+           /* {
                 title: 'Отчеты по тренерам',
                 url: '/analytics/trainer/rating',
                 icon: 'report',
-            },
+            },*/
             {
                 title: 'Отчеты по партнерам',
                 url: '/analytics/partners/rating',
@@ -499,7 +499,7 @@ const navigationModule = {
                 url: '/analytics/sales/schedule',
                 title: 'График продаж'
             },
-            {
+           /* {
                 title: 'Партнеры',
                 url: '#',
                 isAdmin: true,
@@ -511,7 +511,7 @@ const navigationModule = {
                         url: '/companions/transfer'
                     }
                 ],
-            },
+            },*/
             {
                 title: 'Модератор',
                 url: '#',
@@ -613,20 +613,20 @@ const navigationModule = {
                         title: 'Корзина',
                         url: '/cart'
                     },
-                    {
+                   /* {
                         title: 'Бронирование товара',
                         url: '/booking'
-                    },
+                    },*/
                     {
                         title: 'Перемещения',
                         url: '/transfer',
                     },
-                    {
+                    /*{
                         title: 'Предзаказы',
                         url: '/preorders/index'
-                    },
+                    },*/
                     {
-                        title: 'Поступления',
+                        title: 'Приемка',
                         url: '/arrivals',
                     },
                     {
@@ -681,20 +681,20 @@ const navigationModule = {
                         title: 'Корзина',
                         url: '/cart'
                     },
-                    {
+                    /*{
                         title: 'Бронирование товара',
                         url: '/booking'
-                    },
+                    },*/
                     {
                         title: 'Перемещения',
                         url: '/transfer',
                     },
-                    {
+                   /* {
                         title: 'Предзаказы',
                         url: '/preorders/index'
-                    },
+                    },*/
                     {
-                        title: 'Поступления',
+                        title: 'Приемка',
                         url: '/arrivals',
                     },
                     {
@@ -796,11 +796,11 @@ const navigationModule = {
                 url: '/reports',
                 icon: 'report',
             },
-            {
+           /* {
                 title: 'Отчеты по тренерам',
                 url: '/analytics/trainer/rating',
                 icon: 'report',
-            },
+            },*/
             {
                 title: 'Отчеты по партнерам',
                 url: '/analytics/partners/rating',
@@ -817,7 +817,7 @@ const navigationModule = {
                 icon: 'article'
             },
             {
-                title: 'Поступления',
+                title: 'Приемка',
                 url: '/arrivals',
                 icon: 'moped'
             },
@@ -914,16 +914,16 @@ const navigationModule = {
                         title: 'Корзина',
                         url: '/cart'
                     },
-                    {
+                   /* {
                         title: 'Бронирование товара',
                         url: '/booking'
-                    },
+                    },*/
                     {
                         title: 'Перемещения',
                         url: '/transfer',
                     },
                     {
-                        title: 'Поступления',
+                        title: 'Приемка',
                         url: '/arrivals',
                         isAdmin: true,
                     },
@@ -932,10 +932,10 @@ const navigationModule = {
                         url: '/products/stock/out',
                         isAdmin: true
                     },
-                    {
+                   /* {
                         title: 'Предзаказы',
                         url: '/preorders/index'
-                    }
+                    }*/
                 ],
             },
             {

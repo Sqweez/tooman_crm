@@ -77,7 +77,11 @@
                 },
                 {
                     value: 'city',
-                    name: 'Город'
+                    text: 'Город'
+                },
+                {
+                    value: 'store.name',
+                    text: 'Склад'
                 },
                 {
                     value: 'actions',

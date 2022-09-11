@@ -3,6 +3,7 @@ import LoadingService from "@/utils/loadingService";
 import ColorService from "@/utils/colorService";
 import store from "@/store";
 import FileService from "@/utils/fileService";
+import EconomyService from "@/utils/economyService";
 import DatePlugin from "@/utils/datePlugin";
 
 export default {
@@ -32,6 +33,9 @@ export default {
                 },
                 $file() {
                     return new FileService();
+                },
+                $economy () {
+                    return new EconomyService();
                 },
                 $user () {
                     return this.$store.getters.USER;

@@ -211,7 +211,7 @@
                         </v-list>
                     </template>
                     <template v-slot:item.product_price="{ item }">
-                        {{ item.product_price | priceFilters}}
+                        {{ getPrice(item) | priceFilters}}
                     </template>
                     <template v-slot:item.actions="{item}">
                         <v-btn icon @click="addToCart(item)" color="success">
@@ -274,51 +274,14 @@
             overlay: false,
             loading: false,
             photos: [],
-            headers: [
-                {
-                    text: 'Наименование',
-                    value: 'product_name',
-                    sortable: false,
-                    align: ' fz-18'
-                },
-                {
-                    text: 'Атрибуты',
-                    value: 'attributes',
-                    align: ' d-none'
-                },
-                {
-                    value: 'manufacturer.manufacturer_name',
-                    text: 'Производитель',
-                    align: ' d-none'
-                },
-                {
-                    text: 'Остаток',
-                    value: 'quantity'
-                },
-                {
-                    text: 'Стоимость',
-                    value: 'product_price'
-                },
-                {
-                    text: 'Добавить',
-                    value: 'actions'
-                },
-                {
-                    text: 'Штрих-код',
-                    value: 'product_barcode',
-                    align: ' d-none'
-                }
-            ],
         }),
         async mounted() {
             this.loading = true;
             await this.$store.dispatch('GET_ARRIVALS', true);
             await this.$store.dispatch('GET_PRODUCTS_v2');
+            this.storeFilter = this.$user.store_id;
             await this.$store.dispatch(ACTIONS.GET_MANUFACTURERS);
             await this.$store.dispatch(ACTIONS.GET_CATEGORIES);
-            if (this.IS_SELLER) {
-                this.storeFilter = 6;
-            }
             this.loading = false;
         },
         mixins: [product, product_search, cart],
@@ -372,6 +335,48 @@
             },
         },
         computed: {
+            headers () {
+                const headers =  [
+                    {
+                        text: 'Наименование',
+                        value: 'product_name',
+                        sortable: false,
+                        align: ' fz-18'
+                    },
+                    {
+                        text: 'Атрибуты',
+                        value: 'attributes',
+                        align: ' d-none'
+                    },
+                    {
+                        value: 'manufacturer.manufacturer_name',
+                        text: 'Производитель',
+                        align: ' d-none'
+                    },
+                    {
+                        text: 'Остаток',
+                        value: 'quantity'
+                    },
+                    {
+                        text: 'Стоимость',
+                        value: 'product_price'
+                    },
+                    {
+                        text: 'Добавить',
+                        value: 'actions'
+                    },
+                    {
+                        text: 'Штрих-код',
+                        value: 'product_barcode',
+                        align: ' d-none'
+                    }
+                ];
+
+                if (!this.IS_SUPERUSER) {
+                    headers.splice(3, 1);
+                }
+                return headers;
+            },
             IS_SELLER() {
                 return this.$store.getters.IS_SELLER;
             },

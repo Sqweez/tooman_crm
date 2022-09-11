@@ -1,4 +1,7 @@
+import product from '@/mixins/product';
+
 export default {
+    mixins: [product],
     data: () => ({
         storeFilter: null,
         manufacturerId: -1,
@@ -6,11 +9,8 @@ export default {
         subcategoryId: -1,
         hideNotInStock: true,
     }),
-    watch: {
-        stores() {
-            this.storeFilter = this.stores[0].id;
-            console.log('store filter is:' + this.storeFilter);
-        },
+    mounted() {
+        // this.storeFilter = this.IS_SUPERUSER ? this.stores[0].id : this.$user.store_id;
     },
     methods: {
         increaseCartCount(index) {
@@ -38,7 +38,15 @@ export default {
 
             const index = this.cart.findIndex(c => c.id === item.id);
             if (index === -1 || merge) {
-                this.cart.push({...item, count: 1, product_price: item.product_price, discount: 0, uuid: Math.random()});
+                this.cart.push(
+                    {
+                        ...item,
+                        count: 1,
+                        product_price: this.getPrice(item, this.storeFilter),
+                        discount: 0,
+                        uuid: Math.random(),
+                        initial_price: this.getPrice(item, this.storeFilter)
+                    });
             } else {
                 this.increaseCartCount(index);
             }

@@ -4,7 +4,7 @@
             <v-card-title class="justify-space-between">
                 <span>Корзина</span>
                 <div>
-                    <v-btn depressed color="error" class="top-button" @click="waybillModal = true;">
+                    <v-btn depressed color="error" class="top-button" @click="waybillModal = true;" v-if="false">
                         Сформировать накладную
                     </v-btn>
                 </div>
@@ -18,6 +18,7 @@
                                 v-model="isFree"
                                 class="ml-2 margin-28"
                                 color="white darken-2"
+                                :disabled="isDiscountDisabled"
                             />
                         </div>
                         <div v-if="!isFree">
@@ -28,7 +29,7 @@
                                 color="white darken-2"
                             />
                         </div>
-                        <div>
+                        <div v-if="false">
                             <v-checkbox
                                 label="Доставка"
                                 v-model="isDelivery"
@@ -44,7 +45,7 @@
                                 color="white darken-2"
                             />
                         </div>
-                        <div>
+                        <div v-if="false">
                             <v-checkbox
                                 label="Оплачен"
                                 v-model="is_paid"
@@ -52,7 +53,7 @@
                                 color="white darken-2"
                             />
                         </div>
-                        <div>
+                        <div v-if="false">
                             <v-checkbox
                                 label="Оптовая продажа"
                                 v-model="isOpt"
@@ -60,7 +61,7 @@
                                 color="white darken-2"
                             />
                         </div>
-                        <div>
+                        <div v-if="false">
                             <v-checkbox
                                 label="Отправить в телеграм"
                                 v-model="isSendTelegram"
@@ -81,6 +82,7 @@
                                 color="white darken-2"
                                 label="Скидка"
                                 outlined
+                                :disabled="isDiscountDisabled"
                             />
                         </div>
                         <div class="cart__payment-type" v-if="!isFree">
@@ -94,7 +96,7 @@
                                 class="w-150px"
                                 item-value="id"></v-select>
                         </div>
-                        <div v-if="!isFree">
+                        <div v-if="!isFree && false">
                             <v-autocomplete
                                 :items="certificates"
                                 :item-text="function(item) {
@@ -110,7 +112,7 @@
                                 @click:append-outer="used_certificate = null"
                             />
                         </div>
-                        <div v-if="clientChosen && !isFree">
+                        <div v-if="clientChosen && !isFree && false">
                             <v-text-field
                                 class="w-150px"
                                 type="number"
@@ -120,7 +122,7 @@
                                 outlined
                             />
                         </div>
-                        <div v-if="!isFree">
+                        <div v-if="!isFree && false">
                             <v-autocomplete
                                 label="Партнер"
                                 outlined
@@ -133,7 +135,7 @@
                                 @click:append-outer="partner_id = null"
                             ></v-autocomplete>
                         </div>
-                        <div v-if="!isFree">
+                        <div v-if="!isFree && false">
                             <v-text-field
                                 label="Промокод"
                                 :disabled="!!partner_id"
@@ -243,7 +245,8 @@
                             <th>#</th>
                             <th>Товар</th>
                             <th>Количество</th>
-                            <th>Скидка</th>
+                            <th v-if="!isDiscountDisabled">Скидка</th>
+                            <th v-if="isFullWholesalePurchase">Исходная цена</th>
                             <th>Цена</th>
                             <th>Стоимость</th>
                             <th>Удалить</th>
@@ -312,17 +315,35 @@
                                     </v-btn>
                                 </div>
                             </td>
-                            <td>
+                            <td v-if="!isDiscountDisabled">
                                 <v-text-field
                                     type="number"
                                     v-model="item.discount"
                                     @input="updateDiscount(item)"
                                     suffix="%"
                                     @change="updateDiscount(item)"
+                                    :disabled="isDiscountDisabled"
+
                                 />
                             </td>
-                            <td>{{ item.product_price | priceFilters}}</td>
-                            <td>{{ item.product_price * item.count - (Math.max(discountPercent, item.discount) / 100 * item.product_price * item.count) | priceFilters }}</td>
+                            <td v-if="isFullWholesalePurchase">
+                                {{ item.initial_price | priceFilters }}
+                            </td>
+                            <td>
+                                <span v-if="!isFullWholesalePurchase">
+                                    {{ item.product_price | priceFilters}}
+                                </span>
+                                <div v-else class="d-flex align-center">
+                                    <v-btn icon @click.prevent="item.product_price = item.initial_price" title="Восстановить исходную">
+                                        <v-icon>mdi-undo</v-icon>
+                                    </v-btn>
+                                    <v-text-field
+                                        style="min-width: 150px;"
+                                        v-model="item.product_price"
+                                    />
+                                </div>
+                            </td>
+                            <td>{{ calculateProductFinalPrice(item) | priceFilters }}</td>
                             <td>
                                 <v-btn icon color="error" @click="deleteFromCart(index)">
                                     <v-icon>mdi-close</v-icon>
@@ -338,20 +359,33 @@
                         <tr>
                             <th class="text-center">Общее количество</th>
                             <th class="text-center">Общая сумма</th>
-                            <th class="text-center">Процент скидки</th>
-                            <th class="text-center">Скидка</th>
+                            <th class="text-center" v-if="!isDiscountDisabled">Процент скидки</th>
+                            <th class="text-center" v-if="!isDiscountDisabled">Скидка</th>
                             <th class="text-center" v-if="preorder">Предоплата</th>
                             <th class="green--text darken-1 text-center">Итого к оплате</th>
+                            <th class="green-text darken-1 text-center" v-if="isCashPayment">
+                                Расчет сдачи
+                            </th>
                         </tr>
                         </thead>
                         <tbody class="background-tooman-grey fz-18">
                         <tr class="pt-5">
                             <td class="text-center">{{ cartCount }} шт.</td>
                             <td class="text-center">{{ subtotal | priceFilters}}</td>
-                            <td class="text-center">{{ discount }}%</td>
-                            <td class="text-center">{{ discountTotal | priceFilters}}</td>
+                            <td class="text-center" v-if="!isDiscountDisabled">{{ discount }}%</td>
+                            <td class="text-center" v-if="!isDiscountDisabled">{{ discountTotal | priceFilters}}</td>
                             <td class="text-center" v-if="preorder">{{ preorder.amount | priceFilters}}</td>
                             <td class="text-center green--text darken-1">{{ finalPrice | priceFilters }}</td>
+
+                            <td class="green-text darken-1 text-center" v-if="isCashPayment">
+                                <v-text-field
+                                    label="Внесенная купюра"
+                                    v-model.number="banknoteNominal"
+                                />
+                                <p :class="{'red--text': amountOfChange < 0}">
+                                    <b>Сдача:</b> {{ amountOfChange | priceFilters }}
+                                </p>
+                            </td>
                         </tr>
                         </tbody>
                     </template>
@@ -464,6 +498,9 @@
                     <template v-slot:item.attributes="{ item }">
                         {{ item.attributes.map(a => a.attribute_value).join(', ') }}
                     </template>
+                    <template v-slot:item.product_price="{item}">
+                        {{ getPrice(item) | priceFilters }}
+                    </template>
                     <template v-slot:item.actions="{item}">
                         <v-btn depressed icon @click="addToCart(item)" color="success">
                             <v-icon>mdi-plus</v-icon>
@@ -536,10 +573,9 @@
             WayBillModal
         },
         async created() {
-            this.loading = this.products.length === 0 || false;
+            this.$loading.enable();
             await this.$store.dispatch('GET_PRODUCTS_v2');
-            const store_id = (this.IS_SUPERUSER) ? null : this.user.store_id;
-            await this.$store.dispatch(ACTIONS.GET_STORES, store_id);
+            this.storeFilter = this.IS_SUPERUSER ? this.stores[0].id : this.$user.store_id;
             await this.$store.dispatch(ACTIONS.GET_MANUFACTURERS);
             await this.$store.dispatch(ACTIONS.GET_CATEGORIES);
             await this.$store.dispatch('GET_CERTIFICATES');
@@ -552,6 +588,7 @@
                     client_discount: 0,
                     total_sum: 0,
                 } : null;
+            this.$loading.disable();
             this.loading = false;
             await this.$store.dispatch(ACTIONS.GET_CLIENTS);
         },
@@ -559,6 +596,7 @@
             storeFilter() {
                 this.cart = [];
             },
+
             discountPercent(value) {
                 this.$nextTick(() => {
                     if (this.discountPercent > 99) {
@@ -582,16 +620,25 @@
                     this.discountPercent = 0;
                 }
             },
+            payment_type (value) {
+                this.isRed = value === 2;
+                this.isSplitPayment = value === 5;
+            },
             isRed(value) {
                 if (value) {
                     this.payment_type = 2;
+                    this.discountPercent = 0;
+                    this.isFree = false;
+                    this.cart = this.cart.map(c => ({...c, discount: 0}))
                 } else {
                     this.payment_type = 0;
                 }
             },
             isSplitPayment(value) {
                 if (value) {
-                    this.payment_type = 5;
+                    this.$nextTick(() => {
+                        this.payment_type = 5;
+                    })
                 } else {
                     this.payment_type = 0;
                 }
@@ -600,6 +647,9 @@
                 if (value.toString().length > 4 && /^\d+$/.test(value)) {
                     this.categoryId = this.manufacturerId = -1;
                 }
+            },
+            isFullWholesalePurchase (value) {
+                this.cart = this.cart.map(c => ({ ...c, product_price: c.initial_price, discount: 0 }));
             }
         },
         mixins: [product, product_search, cart],
@@ -638,6 +688,7 @@
             is_paid: false,
             kaspiProcessId: null,
             kaspiTransactionId: null,
+            banknoteNominal: 0,
         }),
         methods: {
             ...mapActions([
@@ -645,6 +696,14 @@
                 ACTIONS.GET_CLIENTS,
                 ACTIONS.GET_STORES,
             ]),
+            calculateProductFinalPrice (product) {
+                const priceWithoutDiscount = product.product_price * product.count;
+                if (this.isRed || this.isProductPriceChangedManually) {
+                    return priceWithoutDiscount;
+                }
+                const discountPercent = !this.isRed ? (Math.max(this.discountPercent, product.discount) / 100) : 0;
+                return priceWithoutDiscount - discountPercent * priceWithoutDiscount;
+            },
             onPreorderChosen(preorder) {
                 this.preorderModal = false;
                 const preorderProducts = preorder.products.map(p => p.product_id);
@@ -748,6 +807,7 @@
             onClientChosen(client) {
                 this.clientCartModal = false;
                 this.client = client;
+                this.isOpt = this.client && this.client.is_wholesale_buyer;
             },
             async createKaspiResponse() {
                 const kaspiTerminalIp = localStorage.getItem('kaspi_terminal_ip') ? localStorage.getItem('kaspi_terminal_ip') : this.currentStore.kaspi_terminal_ip;
@@ -825,8 +885,12 @@
                     if (this.isSendTelegram) {
                         await this.sendTelegram(this.sale_id);
                     }
-                    this.$toast.success('Продажа совершена успешно!');
-                    this.confirmationModal = true;
+                    if (this.isFullWholesalePurchase) {
+                        this.$toast.success('Продажа отправлена на одобрение!');
+                    } else {
+                        this.$toast.success('Продажа совершена успешно!');
+                        this.confirmationModal = true;
+                    }
                     this.cart = [];
                     this.client = null;
                     this.discountPercent = '';
@@ -844,6 +908,7 @@
                     this.isOpt = false;
                     this.isSendTelegram = false;
                     this.is_paid = false;
+                    this.banknoteNominal = 0;
                 } catch (e) {
                     throw e;
                 }
@@ -874,6 +939,27 @@
             },
         },
         computed: {
+            isDiscountDisabled () {
+                return this.isRed || this.isProductPriceChangedManually;
+            },
+            isProductPriceChangedManually () {
+                return this.cart.some(c => c.product_price !== c.initial_price);
+            },
+            isFullWholesalePurchase () {
+                return this.client && this.client.is_wholesale_buyer && this.isOpt;
+            },
+            amountOfChange () {
+                if (!this.isCashPayment) {
+                    return 0;
+                }
+                if (this.payment_type === 0) {
+                    return this.banknoteNominal - this.finalPrice;
+                }
+                return this.banknoteNominal - this.splitPayment[0].amount;
+            },
+            isCashPayment () {
+                return this.payment_type === 0 || (this.isSplitPayment && this.splitPayment[0].amount > 0);
+            },
             headers () {
                 const headers = [
                     {
@@ -926,9 +1012,9 @@
                 return this.$store.getters.IS_ADMIN;
             },
             discountTotal() {
-                return this.cart.reduce((a, c) => {
-                    return a + Math.max(this.discount, c.discount) /100 * c.product_price * c.count;
-                }, 0);
+                return !this.isDiscountDisabled ? this.cart.reduce((a, c) => {
+                    return a + Math.max(this.discount, c.discount) / 100 * c.product_price * c.count;
+                }, 0) : 0;
             },
             total() {
                 return this.subtotal - this.discountTotal;
@@ -936,6 +1022,9 @@
             discount() {
                 if (this.isFree) {
                     return 100;
+                }
+                if (this.isRed || this.isProductPriceChangedManually) {
+                    return 0;
                 }
                 if (!this.client) {
                     return Math.min(this.discountPercent, 100);

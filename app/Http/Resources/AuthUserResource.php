@@ -23,14 +23,14 @@ class AuthUserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'store_id' => $this->store_id,
+            'store_id' => $this->is_super_user ? -1 : $this->store_id,
             'city' => $this->is_super_user ? 'Все города' : $this->store->city,
             'login' => $this->login,
             'role_id' => $this->role_id,
             'role' => $this->role->role_name,
             'store_slug' => Str::slug($this->store->city_name->name),
             'is_super_user' => $this->is_super_user,
-            'store' => $this->store,
+            'store' => $this->is_super_user ? ['id' => -1, 'name' => 'Все склады'] : $this->store,
             'is_non_revision_pages_blocked' => $this->is_non_revision_pages_blocked,
         ];
     }

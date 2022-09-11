@@ -150,7 +150,7 @@
                         />
                     </div>
                     <v-text-field
-                        label="Стоимость"
+                        label="Базовая цена"
                         :disabled="!IS_SUPERUSER"
                         v-model.number="product_price"
                         type="number"/>
@@ -200,6 +200,46 @@
                         </div>
                     </div>
                     <div v-if="IS_SUPERUSER">
+                        <h5>Цены по городам:</h5>
+                        <div class="d-flex">
+                            <v-select
+                                style="max-width: 300px;"
+                                :items="getPriceStores(0)"
+                                item-text="name"
+                                item-value="id"
+                                label="Магазин"
+                                v-model="prices[0].store_id"
+                            ></v-select>
+                            <v-spacer/>
+                            <v-text-field
+                                label="Цена"
+                                v-model.number="prices[0].price"
+                            ></v-text-field>
+                            <v-btn icon @click="addPricesSelect">
+                                <v-icon>mdi-plus</v-icon>
+                            </v-btn>
+                        </div>
+                        <div class="d-flex" v-for="(attrs, idx) of pricesSelect" :key="idx * 1500"
+                             v-if="pricesSelect.length !== 0">
+                            <component
+                                v-if="pricesSelect.length !== 0"
+                                style="max-width: 300px;"
+                                :is="attrs"
+                                :items="getPriceStores(idx + 1)"
+                                item-text="name"
+                                item-value="id"
+                                label="Магазин"
+                                v-model="prices[idx + 1].store_id"
+                            />
+                            <v-spacer/>
+                            <v-text-field
+                                label="Стоимость"
+                                v-model.number="prices[idx + 1].price"
+                            ></v-text-field>
+                            <v-btn icon @click="removePriceSelect(idx)">
+                                <v-icon>mdi-minus</v-icon>
+                            </v-btn>
+                        </div>
                         <div v-show="false">
                             <v-checkbox
                                 label="Хит продаж"
@@ -242,46 +282,6 @@
                                 v-model="meta_description"
                             />
                             <v-divider></v-divider>
-                            <h5>Цены по городам:</h5>
-                            <div class="d-flex">
-                                <v-select
-                                    style="max-width: 300px;"
-                                    :items="getPriceStores(0)"
-                                    item-text="name"
-                                    item-value="id"
-                                    label="Магазин"
-                                    v-model="prices[0].store_id"
-                                ></v-select>
-                                <v-spacer/>
-                                <v-text-field
-                                    label="Стоимость"
-                                    v-model.number="prices[0].price"
-                                ></v-text-field>
-                                <v-btn icon @click="addPricesSelect">
-                                    <v-icon>mdi-plus</v-icon>
-                                </v-btn>
-                            </div>
-                            <div class="d-flex" v-for="(attrs, idx) of pricesSelect" :key="idx * 1500"
-                                 v-if="pricesSelect.length !== 0">
-                                <component
-                                    v-if="pricesSelect.length !== 0"
-                                    style="max-width: 300px;"
-                                    :is="attrs"
-                                    :items="getPriceStores(idx + 1)"
-                                    item-text="name"
-                                    item-value="id"
-                                    label="Магазин"
-                                    v-model="prices[idx + 1].store_id"
-                                />
-                                <v-spacer/>
-                                <v-text-field
-                                    label="Стоимость"
-                                    v-model.number="prices[idx + 1].price"
-                                ></v-text-field>
-                                <v-btn icon @click="removePriceSelect(idx)">
-                                    <v-icon>mdi-minus</v-icon>
-                                </v-btn>
-                            </div>
                             <v-divider></v-divider>
                         </div>
                         <h5>Атрибуты:</h5>

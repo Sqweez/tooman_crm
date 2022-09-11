@@ -69,6 +69,8 @@ class ReportsResource extends JsonResource
             'is_booking' => $this->booking ? true : false,
             'booking_paid_sum' => $this->booking ? $this->booking->paid_sum : 0,
             'is_paid' => $this->is_paid,
+            'is_confirmed' => $this->is_confirmed,
+            'is_full_wholesale_purchase' => $this->is_opt && optional($this->client)->is_wholesale_buyer
         ];
     }
 }

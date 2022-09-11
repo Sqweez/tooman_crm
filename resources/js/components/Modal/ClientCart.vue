@@ -11,12 +11,17 @@
             </v-card-title>
             <v-card-text>
                 <v-select
+                    v-if="false"
                     style="max-width: 270px;"
                     label="Тип лояльности"
                     :items="loyalties"
                     item-value="id"
                     item-text="name"
                     v-model="loyaltyFilter"
+                />
+                <v-checkbox
+                    v-model="isWholesaleBuyer"
+                    label="Оптовый покупатель"
                 />
                 <v-row justify="space-between">
                     <v-col>
@@ -40,7 +45,7 @@
                 <v-data-table
                     :headers="headers"
                     :items="clients"
-                    class="background-tooman-grey fz-18"
+                    class="background-iron-grey fz-18"
                     :search="search"
                     no-results-text="Нет результатов"
                     no-data-text="Нет данных"
@@ -57,6 +62,14 @@
                     <template v-slot:item.discount_percent="{item}">
                         <span class="text-center">{{ item.discountPercent }}%</span>
                     </template>
+                    <template v-slot:item.is_wholesale_buyer="{item}">
+                        <v-icon color="success" v-if="item.is_wholesale_buyer">
+                            mdi-check
+                        </v-icon>
+                        <v-icon color="error" v-else>
+                            mdi-close
+                        </v-icon>
+                    </template>
                     <template slot="footer.page-text" slot-scope="{pageStart, pageStop, itemsLength}">
                         {{ pageStart }}-{{ pageStop }} из {{ itemsLength }}
                     </template>
@@ -72,83 +85,93 @@
 </template>
 
 <script>
-    import ClientModal from "./ClientModal";
-    export default {
-        components: {ClientModal},
-        data: () => ({
-            search: '',
-            loyaltyFilter: -1,
-            clientModal: false,
-            headers: [
-                {
-                    text: 'ФИО',
-                    value: 'client_name'
-                },
-                {
-                    text: 'Телефон',
-                    value: 'client_phone'
-                },
-                {
-                    text: 'Номер карты',
-                    value: 'client_card'
-                },
-                {
-                    text: 'Процент скидки',
-                    value: 'client_discount'
-                },
-                {
-                    text: 'Выбрать',
-                    value: 'actions'
-                }
-            ]
-        }),
-        methods: {
-            chooseClient(client) {
-                this.$emit('onClientChosen', client)
+import ClientModal from "./ClientModal";
+export default {
+    components: {ClientModal},
+    data: () => ({
+        search: '',
+        loyaltyFilter: -1,
+        clientModal: false,
+        headers: [
+            {
+                text: 'ФИО',
+                value: 'client_name'
             },
-            guestSale() {
-                const client = {
-                    id: -1,
-                    client_name: 'Гость',
-                    sale_sum: 0,
-                    client_balance: 0,
-                    client_discount: 0,
-                    total_sum: 0,
-                };
+            {
+                text: 'Телефон',
+                value: 'client_phone'
+            },
+            {
+                text: 'Номер карты',
+                value: 'client_card'
+            },
+            {
+                text: 'Процент скидки',
+                value: 'client_discount'
+            },
+            {
+                text: 'Оптовый покупатель',
+                value: 'is_wholesale_buyer'
+            },
+            {
+                text: 'Выбрать',
+                value: 'actions'
+            }
+        ],
+        isWholesaleBuyer: false,
+    }),
+    methods: {
+        chooseClient(client) {
+            this.$emit('onClientChosen', client)
+        },
+        guestSale() {
+            const client = {
+                id: -1,
+                client_name: 'Гость',
+                sale_sum: 0,
+                client_balance: 0,
+                client_discount: 0,
+                total_sum: 0,
+            };
 
-                this.$emit('onClientChosen', client)
-            },
-            setClient(client) {
-                this.clientModal = false;
-                this.$emit('onClientChosen', client)
-            }
+            this.$emit('onClientChosen', client)
         },
-        computed: {
-            clients() {
-                return this.$store.getters.clients.filter(client => {
-                    if (this.loyaltyFilter === -1) {
-                        return client;
-                    }
-                    return client.loyalty_id === this.loyaltyFilter;
-                });
-            },
-            loyalties() {
-                return [
-                    {
-                        id: -1,
-                        name: 'Все'
-                    },
-                    ...this.$store.getters.LOYALTY
-                ];
-            },
+        setClient(client) {
+            this.clientModal = false;
+            this.$emit('onClientChosen', client)
+        }
+    },
+    computed: {
+        clients() {
+            return this.$store.getters.clients.filter(client => {
+                if (this.loyaltyFilter === -1) {
+                    return client;
+                }
+                return client.loyalty_id === this.loyaltyFilter;
+            }).filter(client => {
+                if (!this.isWholesaleBuyer) {
+                    return true;
+                }
+                return client.is_wholesale_buyer;
+            });
         },
-        props: {
-            state: {
-                type: Boolean,
-                default: false
-            }
+        loyalties() {
+            return [
+                {
+                    id: -1,
+                    name: 'Все'
+                },
+                ...this.$store.getters.LOYALTY
+            ];
+        },
+    },
+    props: {
+        state: {
+            type: Boolean,
+            default: false
         }
     }
+}
 </script>
 
 <style scoped>

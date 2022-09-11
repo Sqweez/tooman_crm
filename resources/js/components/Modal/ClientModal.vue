@@ -61,10 +61,16 @@
                        type="date"
                    />
                    <v-checkbox
+                       label="Оптовый покупатель"
+                       v-model="client.is_wholesale_buyer"
+                   />
+                   <v-checkbox
+                       v-if="false"
                        v-model="client.is_partner"
                        :label="`Тренер`"
                    ></v-checkbox>
                    <v-select
+                       v-if="false"
                        v-model="client.loyalty_id"
                        label="Тип лояльности"
                        :items="loyalty"

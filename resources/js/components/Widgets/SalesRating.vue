@@ -22,7 +22,7 @@
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-list-item class="darken-3 black" v-if="IS_ADMIN || IS_BOSS || IS_OBSERVER || IS_MARKETOLOG || IS_FRANCHISE">
+<!--                    <v-list-item class="darken-3 black" v-if="IS_ADMIN || IS_BOSS || IS_OBSERVER || IS_MARKETOLOG || IS_FRANCHISE">
                         <v-list-item-content>
                             <v-list-item-title>
                                 <div class="d-flex justify-space-between">
@@ -45,7 +45,7 @@
                                 </div>
                             </v-list-item-title>
                         </v-list-item-content>
-                    </v-list-item>
+                    </v-list-item>-->
                     <v-list-item class="darken-3 black" v-if="IS_ADMIN || IS_BOSS || IS_OBSERVER || IS_MARKETOLOG">
                         <v-list-item-content>
                             <v-list-item-title>
@@ -58,7 +58,7 @@
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-list-item class="darken-3 black" v-if="IS_ADMIN || IS_BOSS || IS_OBSERVER || IS_MARKETOLOG">
+<!--                    <v-list-item class="darken-3 black" v-if="IS_ADMIN || IS_BOSS || IS_OBSERVER || IS_MARKETOLOG">
                         <v-list-item-content>
                             <v-list-item-title>
                                 <div class="d-flex justify-space-between">
@@ -69,7 +69,7 @@
                                 </div>
                             </v-list-item-title>
                         </v-list-item-content>
-                    </v-list-item>
+                    </v-list-item>-->
                     <v-list-item class="darken-3 black" v-if="IS_ADMIN || IS_BOSS || IS_OBSERVER || IS_MARKETOLOG">
                         <v-list-item-content>
                             <v-list-item-title>

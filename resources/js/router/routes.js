@@ -472,6 +472,7 @@ const routes = [
         component: CreateDocuments,
         meta: {
             CAN_ENTER: {
+                ACCESS_DENIED: true,
                 IS_ADMIN: true,
                 IS_BOSS: true
             }
@@ -482,6 +483,7 @@ const routes = [
         component: DocumentsList,
         meta: {
             CAN_ENTER: {
+                ACCESS_DENIED: true,
                 IS_ADMIN: true,
                 IS_BOSS: true,
             }
@@ -492,6 +494,7 @@ const routes = [
         component: PriceList,
         meta: {
             CAN_ENTER: {
+                ACCESS_DENIED: true,
                 IS_ADMIN: true,
                 IS_BOSS: true,
             }

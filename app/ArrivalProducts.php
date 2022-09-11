@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $arrival_id
  * @property int $count
  * @property int $purchase_price
- * @property-read \App\Product $product
+ * @property-read \App\v2\Models\ProductSku $product
  * @method static \Illuminate\Database\Eloquent\Builder|ArrivalProducts newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ArrivalProducts newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|ArrivalProducts query()

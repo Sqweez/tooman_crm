@@ -89,7 +89,8 @@ class Client extends Model
     use SoftDeletes;
 
     protected $casts = [
-        'client_city' => 'integer'
+        'client_city' => 'integer',
+        'is_wholesale_buyer' => 'boolean'
     ];
 
     protected $guarded = [];

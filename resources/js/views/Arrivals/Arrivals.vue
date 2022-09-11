@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <v-card-title>
-            Поступления
+            Приемка
         </v-card-title>
         <v-card-text>
             <div
@@ -55,24 +55,24 @@
             segments() {
                 return (this.IS_SUPERUSER && !this.IS_MARKETOLOG) ? [
                     {
-                        name: 'Текущие поступления',
+                        name: 'Текущие',
                         component: 'CurrentArrivals'
                     },
                     {
-                        name: 'Новое поступление',
+                        name: 'Создать',
                         component: 'NewArrival'
                     },
                     {
-                        name: 'История поступлений',
+                        name: 'История',
                         component: 'ArrivalHistory'
                     },
                 ] : [
                     {
-                        name: 'Текущие поступления',
+                        name: 'Текущие',
                         component: 'CurrentArrivals'
                     },
                     {
-                        name: 'История поступлений',
+                        name: 'История',
                         component: 'ArrivalHistory'
                     },
                 ]

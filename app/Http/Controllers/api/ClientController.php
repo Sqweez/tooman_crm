@@ -65,7 +65,7 @@ class ClientController extends Controller {
     public function update(Request $request, Client $client) {
         if (!$request->has('site')) {
             $_client = $request->only(
-                ['client_name', 'client_card', 'client_phone', 'client_discount', 'is_partner', 'client_city', 'loyalty_id', 'job', 'instagram', 'photo', 'birth_date', 'gender']
+                ['is_wholesale_buyer', 'client_name', 'client_card', 'client_phone', 'client_discount', 'is_partner', 'client_city', 'loyalty_id', 'job', 'instagram', 'photo', 'birth_date', 'gender']
             );
             $_client = collect($_client)->filter(function ($i) {
                 return strlen($i) > 0;

@@ -43,6 +43,10 @@ Router.beforeEach(async (to, from, next) => {
 
     if (HAS_CAN_ENTER) {
         const CAN_ENTER_ROLES = to.meta.CAN_ENTER;
+        const ACCESS_DENIED = !!CAN_ENTER_ROLES.ACCESS_DENIED;
+        if (ACCESS_DENIED) {
+            return next(BASE_ROUTE);
+        }
         const CAN_ENTER = !!CAN_ENTER_ROLES[CURRENT_ROLE];
         if (!CAN_ENTER) {
             next(BASE_ROUTE);

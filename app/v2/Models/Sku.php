@@ -2,7 +2,11 @@
 
 namespace App\v2\Models;
 
+use App\Price;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
  * App\v2\Models\Sku
@@ -51,7 +55,7 @@ class Sku extends Model
         'discount_price' => 'integer'
     ];
 
-    public function product() {
+    public function product(): BelongsTo {
         return $this->belongsTo(BaseProduct::class, 'product_id', 'id');
     }
 
@@ -76,12 +80,12 @@ class Sku extends Model
         return $this->morphToMany('App\v2\Models\Image', 'imagable', 'imagable');
     }
 
-    public function product_thumbs() {
+    public function product_thumbs(): MorphToMany {
         return $this->morphToMany('App\v2\Models\Thumb', 'thumbable', 'thumbable');
     }
 
-    public function price() {
-        return $this->hasMany('App\Price', 'product_id');
+    public function prices(): HasMany {
+        return $this->hasMany(Price::class, 'product_id');
     }
 
     public function getProductPriceAttribute() {

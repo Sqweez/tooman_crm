@@ -14,7 +14,10 @@ use App\v2\Models\ProductSku;
 
 class SaleService {
 
-    public function createSale($sale): Sale{
+    public function createSale ($sale): Sale{
+        if (isset($sale['is_opt']) && $sale['is_opt']) {
+            $sale['is_confirmed'] = false;
+        }
         return Sale::create($sale);
     }
 

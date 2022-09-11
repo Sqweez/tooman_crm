@@ -35,7 +35,7 @@
                         </v-col>
                         <v-col cols="12" xl="4" v-show="IS_SUPERUSER">
                             <v-select
-                                :items="stores"
+                                :items="storeFilters"
                                 item-text="name"
                                 v-model="storeFilter"
                                 item-value="id"
@@ -152,27 +152,57 @@
                             </v-list>
                         </template>
                         <template v-slot:item.quantity="{item}">
-                            <span v-if="storeFilter === -1">
-                                <v-list v-if="quantities[item.id]">
-                                    <v-list-item v-for="(quantity) of getQuantities(item.id)">
-                                        <v-list-item-content>
-                                            <v-list-item-title>{{ quantity.quantity }} шт</v-list-item-title>
-                                            <v-list-item-title
-                                                class="font-weight-black">{{ quantity.name }}</v-list-item-title>
-                                        </v-list-item-content>
-                                    </v-list-item>
-                                </v-list>
-                                <v-list v-else>
-                                    <v-list-item>
-                                         <v-list-item-content>
-                                            <v-list-item-title>0 шт</v-list-item-title>
-                                            <v-list-item-title class="font-weight-black">Всего</v-list-item-title>
-                                        </v-list-item-content>
-                                    </v-list-item>
-                                </v-list>
-                            </span>
+                            <v-expansion-panels v-if="storeFilter === -1" accordion flat style="width: 300px;">
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>
+                                        Количество по городам
+                                    </v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <v-list v-if="quantities[item.id]">
+                                            <v-list-item v-for="(quantity) of getQuantities(item.id)">
+                                                <v-list-item-content>
+                                                    <v-list-item-title>{{ quantity.quantity }} шт</v-list-item-title>
+                                                    <v-list-item-title
+                                                        class="font-weight-black">{{ quantity.name }}</v-list-item-title>
+                                                </v-list-item-content>
+                                            </v-list-item>
+                                        </v-list>
+                                        <v-list v-else>
+                                            <v-list-item>
+                                                <v-list-item-content>
+                                                    <v-list-item-title>0 шт</v-list-item-title>
+                                                    <v-list-item-title class="font-weight-black">Всего</v-list-item-title>
+                                                </v-list-item-content>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
                             <span v-else>
-                                {{ item.quantity }}
+                                {{ item.quantity }} шт.
+                            </span>
+                        </template>
+                        <template v-slot:item.product_price="{item}">
+                            <v-expansion-panels v-if="storeFilter === -1" accordion flat style="width: 300px;">
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>
+                                        Стоимость по городам
+                                    </v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <v-list>
+                                            <v-list-item v-for="store of stores">
+                                                <v-list-item-content>
+                                                    <v-list-item-title>{{ getPrice(item, store.id) | priceFilters}}</v-list-item-title>
+                                                    <v-list-item-title
+                                                        class="font-weight-black">{{ store.name }}</v-list-item-title>
+                                                </v-list-item-content>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
+                            <span v-else>
+                                {{ getPrice(item) | priceFilters }}
                             </span>
                         </template>
                         <template v-slot:item.actions="{ item }">
@@ -317,29 +347,19 @@
             ProductRangeModal
         },
         async created() {
+            this.$loading.enable();
             this.showMainProducts = !!this.IS_MODERATOR;
-            const store_id = (this.is_admin || this.IS_BOSS) ? null : this.user.store_id;
-            console.log(store_id);
             try {
                 await this.$store.dispatch('GET_PRODUCTS_v2');
             } catch (e) {
                 console.log(e.response);
             }
-            await this.$store.dispatch(ACTIONS.GET_STORES, store_id);
-            if (this.IS_SUPERUSER) {
-                this.storeFilter = -1;
-            } else {
-                this.storeFilter = -1;
-            }
-
-            if (this.IS_FRANCHISE) {
-                this.storeFilter = this.user.store_id;
-            }
-
+            this.storeFilter = this.$user.store_id;
             await this.$store.dispatch(ACTIONS.GET_CATEGORIES);
             await this.$store.dispatch(ACTIONS.GET_MANUFACTURERS);
             await this.$store.dispatch(ACTIONS.GET_ATTRIBUTES);
             await this.$store.dispatch(ACTIONS.GET_SUPPLIERS);
+            this.$loading.disable();
         },
         data: () => ({
             priceTagModal: false,
@@ -417,7 +437,22 @@
             products() {
                 let products = this.showMainProducts ? this.$store.getters.MAIN_PRODUCTS_v2 : this.$store.getters.PRODUCTS_v2;
                 if (this.hideNotInStock) {
-                    products = products.filter(product => product.quantity > 0);
+                    if (this.hideNotInStock) {
+                        if (this.storeFilter !== -1) {
+                            products = products.filter(product => product.quantity > 0);
+                        } else {
+                            products = products.filter(product => {
+                                const qnts = this.quantities[product.id];
+                                if (!qnts) {
+                                    return false;
+                                }
+                                const total = qnts.reduce((a, c) => {
+                                    return a + c.quantity;
+                                }, 0);
+                                return total > 0;
+                            })
+                        }
+                    }
                 }
 
                 if (this.manufacturerId !== -1) {
@@ -442,11 +477,17 @@
 
                 return products;
             },
-            stores() {
-                return [{
-                    name: 'Все',
-                    id: -1
-                }, ...this.$store.getters.stores];
+            storeFilters() {
+                return [
+                    {
+                        name: 'Все',
+                        id: -1
+                    },
+                    ...this.stores
+                ];
+            },
+            stores () {
+                return this.$store.getters.stores;
             },
             categories() {
                 return [{

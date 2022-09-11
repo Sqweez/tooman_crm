@@ -18,6 +18,7 @@ class ArrivalController extends Controller
                 ->with([
                     'products', 'products.product',
                     'products.product.product',
+                    'products.product.product.prices',
                     'products.product.product.manufacturer',
                     'products.product.product_images',
                     'products.product.attributes',

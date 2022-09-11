@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -207,7 +208,7 @@ class Product extends Model
 
     public $timestamps = true;
 
-    public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany {
+    public function comments(): HasMany {
         return $this->hasMany('App\v2\Models\ProductComment');
     }
 
@@ -275,8 +276,8 @@ class Product extends Model
         return $this->hasMany('App\v2\Models\ProductSaleEarning');
     }
 
-    public function price() {
-        return $this->hasMany('App\Price', 'product_id');
+    public function prices(): HasMany {
+        return $this->hasMany(Price::class, 'product_id');
     }
 
 

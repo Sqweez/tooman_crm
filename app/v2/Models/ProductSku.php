@@ -80,7 +80,7 @@ class ProductSku extends Model
 
     const PRODUCT_SKU_WITH_ADMIN_LIST =  [
         'product:id,product_name,product_price,category_id,subcategory_id,manufacturer_id,grouping_attribute_id,product_name_web,is_kaspi_visible,is_iherb',
-        'product.category', 'product.manufacturer', 'product.attributes', 'product.price',
+        'product.category', 'product.manufacturer', 'product.attributes', 'product.prices',
         'product.attributes.attribute_name', 'attributes', 'attributes.attribute_name', 'margin_type',
     ];
 
@@ -92,7 +92,7 @@ class ProductSku extends Model
 
     const PRODUCT_SKU_WITH_CART_LIST = [
         'product:id,product_name,product_price,manufacturer_id,grouping_attribute_id,category_id',
-        'product.manufacturer', 'product.attributes', 'product.category',
+        'product.manufacturer', 'product.attributes', 'product.category', 'product.prices',
         'product.attributes.attribute_name', 'attributes', 'attributes.attribute_name', 'margin_type'
     ];
 
@@ -197,7 +197,7 @@ class ProductSku extends Model
     }
 
     public function getPricesAttribute() {
-        return $this->product->price;
+        return $this->product->prices;
     }
 
     public function getGeneralImagesAttribute() {
