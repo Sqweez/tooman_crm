@@ -34,7 +34,9 @@ class ProductController extends Controller
      * */
 
     public function index(Request $request) {
-        return ProductsResource::collection(ProductService::all());
+        return ProductsResource::collection(
+            ProductService::all()
+        );
     }
 
     /*

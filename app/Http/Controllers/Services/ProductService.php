@@ -22,7 +22,16 @@ class ProductService {
             ->orderBy('product_id')
             ->orderBy('id')
             ->get()
-            ->sortBy('product_name')
+            ->map(function ($sku) {
+                $additionalAttributes = collect($sku->attributes)->pluck('attribute_value')->join('|');
+                $productName = $sku->product->product_name;
+                if (strlen($additionalAttributes)) {
+                    $productName .= ', ' . $additionalAttributes;
+                }
+                $sku->product_name_full = $productName;
+                return $sku;
+            })
+            ->sortBy('product_name_full')
         );
     }
 
