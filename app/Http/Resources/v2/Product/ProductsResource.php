@@ -26,6 +26,7 @@ class ProductsResource extends JsonResource
         return [
             'id' => $this->id,
             'product_name' => $this->product_name_full,
+            'product_name_base' => $this->product_name,
             'category' => $this->category,
             'subcategory_id' => $this->product->subcategory_id,
             'manufacturer' => $this->manufacturer,
@@ -34,11 +35,13 @@ class ProductsResource extends JsonResource
                 return [
                     'attribute_value' => $attribute->attribute_value,
                     'attribute_name' => $attribute->attribute_name->attribute_name,
+                    'is_main' => false,
                 ];
             })->merge(collect($this->product->attributes)->map(function ($attribute) {
                 return [
                     'attribute_value' => $attribute->attribute_value,
                     'attribute_name' => $attribute->attribute_name->attribute_name,
+                    'is_main' => true
                 ];
             })),
             'product_barcode' => $this->product_barcode,

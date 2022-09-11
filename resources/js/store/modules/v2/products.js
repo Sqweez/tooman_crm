@@ -44,7 +44,11 @@ const getters = {
                 return true;
             }
             return false;
-        });
+        }).map(product => ({
+            ...product,
+            product_name: product.product_name_base,
+            attributes: product.attributes.filter(a => a.is_main)
+        }));
     },
     QUANTITIES_v2: state => state.quantities,
     PRODUCT_v2: state => state.product_v2,
