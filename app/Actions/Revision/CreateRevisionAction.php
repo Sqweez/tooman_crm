@@ -106,9 +106,10 @@ class CreateRevisionAction {
                 return $query->where('store_id', $revision->store_id);
             }])
             ->with('product:id,product_price')
+            ->with('product.prices')
             ->get();
 
-        foreach ($this->_transformProductCollection($products) as $product) {
+        foreach ($this->_transformProductCollection($products, $revision) as $product) {
             $revision->revision_products()->create([
                 'product_id' => $product['id'],
                 'stock_quantity' => $product['quantity'],
@@ -125,12 +126,13 @@ class CreateRevisionAction {
             ->toArray();
     }
 
-    private function _transformProductCollection($products): array {
-        return collect($products)->map(function ($item) {
+    private function _transformProductCollection($products, Revision $revision): array {
+        return collect($products)->map(function ($item) use ($revision) {
             $item['quantity'] = collect($item['batches'])->reduce(function ($a, $c) {
                 return $a + $c['quantity'];
             }, 0);
-            $item['price'] = $item['product']['product_price'];
+            $needlePrice = collect($item->prices)->where('store_id', $revision->store_id)->first();
+            $item['price'] = $needlePrice ? $needlePrice->price : $item['product_price'];
             $item['purchase_price'] = collect($item['batches'])
                     ->sortByDesc('created_at')
                     ->first()['purchase_price'] ?? 0;

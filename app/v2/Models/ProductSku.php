@@ -69,6 +69,7 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|ProductSku whereMarginTypeId($value)
  * @property-read mixed $excel_name
  * @property-read mixed $is_iherb
+ * @property-read string $full_product_name
  */
 class ProductSku extends Model
 {

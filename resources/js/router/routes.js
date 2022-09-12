@@ -70,6 +70,7 @@ import ProductSubcategories from "@/views/Moderator/ProductSubcategories";
 import IherbIndexPage from "@/views/IHerb/IherbIndexPage";
 import RevisionShow from '@/views/Revision/RevisionShow';
 import ProductRemainsIndex from '@/views/ProductRemains/ProductRemainsIndex';
+import WriteOffIndex from '@/views/WriteOffs/WriteOffIndex';
 
 const routes = [
     {
@@ -495,6 +496,16 @@ const routes = [
         meta: {
             CAN_ENTER: {
                 ACCESS_DENIED: true,
+                IS_ADMIN: true,
+                IS_BOSS: true,
+            }
+        }
+    },
+    {
+        path: '/write-offs',
+        component: WriteOffIndex,
+        meta: {
+            CAN_ENTER: {
                 IS_ADMIN: true,
                 IS_BOSS: true,
             }

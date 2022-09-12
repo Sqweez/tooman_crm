@@ -103,6 +103,7 @@ const authModule = {
                 axios.defaults.headers.Authorization = token;
                 axios.defaults.headers.store_id = user.store_id;
                 axios.defaults.headers.user_id = user.id;
+                axios.defaults.headers.accept = 'application/json';
                 axios.interceptors.response.use((response) => {
                     console.groupCollapsed('API response url:' + response.config.url);
                     console.log(response);

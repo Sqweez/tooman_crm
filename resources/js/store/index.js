@@ -36,6 +36,7 @@ import vuexPlugins from "@/store/plugins/vuexPlugins";
 import analyticsModule from "@/store/modules/v2/analytics";
 import bookingModule from "@/store/modules/booking";
 import revisionModule from "@/store/modules/revisions";
+import writeOffModule from "@/store/modules/write-offs";
 
 Vue.use(Vuex);
 
@@ -91,6 +92,7 @@ const store = new Store({
         analyticsModule,
         bookingModule,
         revisionModule,
+        writeOffModule
     },
     plugins: [
         createPersistedState({

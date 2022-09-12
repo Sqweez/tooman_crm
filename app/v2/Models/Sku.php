@@ -38,6 +38,8 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Sku newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Sku query()
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|Price[] $prices
+ * @property-read int|null $prices_count
  */
 class Sku extends Model
 {

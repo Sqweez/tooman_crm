@@ -24,7 +24,7 @@
                                 v-model="storeFilter"
                                 item-value="id"
                                 label="Склад"
-                                :disabled="!(is_admin || IS_BOSS)"
+                                :disabled="!IS_SUPERUSER"
                             />
                         </v-col>
                         <v-col cols="12" xl="2" v-if="IS_SUPERUSER">
@@ -97,7 +97,27 @@
                             </v-list>
                         </template>
                         <template v-slot:item.product_price="{ item }">
-                            <span>{{ item.product_price | priceFilters }}</span>
+                            <v-expansion-panels v-if="storeFilter === -1" accordion flat style="width: 300px;">
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>
+                                        Стоимость по городам
+                                    </v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <v-list>
+                                            <v-list-item v-for="store of stores">
+                                                <v-list-item-content>
+                                                    <v-list-item-title>{{ getPrice(item, store.id) | priceFilters}}</v-list-item-title>
+                                                    <v-list-item-title
+                                                        class="font-weight-black">{{ store.name }}</v-list-item-title>
+                                                </v-list-item-content>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
+                            <span v-else>
+                                {{ getPrice(item) | priceFilters }}
+                            </span>
                         </template>
                         <template v-slot:item.category="{ item }">
                             <span>{{ item.category.category_name }}</span>
@@ -142,7 +162,7 @@
                             </v-list>
                         </template>
                         <template v-slot:item.quantity="{item}">
-                            <span v-if="storeFilter === -1">
+                            <div v-if="storeFilter === -1">
                                 <v-list v-if="quantities[item.id]">
                                     <v-list-item v-for="(quantity) of getQuantities(item.id)">
                                         <v-list-item-content>
@@ -154,19 +174,40 @@
                                 </v-list>
                                 <v-list v-else>
                                     <v-list-item>
-                                         <v-list-item-content>
+                                        <v-list-item-content>
                                             <v-list-item-title>0 шт</v-list-item-title>
                                             <v-list-item-title class="font-weight-black">Всего</v-list-item-title>
                                         </v-list-item-content>
                                     </v-list-item>
                                 </v-list>
-                            </span>
+                            </div>
                             <span v-else>
-                                {{ item.quantity }}
+                                {{ item.quantity }} шт.
                             </span>
                         </template>
                         <template v-slot:item.purchase_price="{item}">
-                            {{ (item.purchase_price || 0) | priceFilters }}
+                            <div v-if="storeFilter === -1">
+                                <v-list v-if="quantities[item.id]">
+                                    <v-list-item v-for="(quantity) of getPurchasePrices(item.id)">
+                                        <v-list-item-content>
+                                            <v-list-item-title>{{ quantity.purchase_price | priceFilters }}</v-list-item-title>
+                                            <v-list-item-title
+                                                class="font-weight-black">{{ quantity.name }}</v-list-item-title>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                </v-list>
+                                <v-list v-else>
+                                    <v-list-item>
+                                        <v-list-item-content>
+                                            <v-list-item-title>{{ 0 | priceFilters }}</v-list-item-title>
+                                            <v-list-item-title class="font-weight-black">Всего</v-list-item-title>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                </v-list>
+                            </div>
+                            <span v-else>
+                                {{ (item.purchase_price || 0) | priceFilters }}
+                            </span>
                         </template>
                         <template slot="footer.page-text" slot-scope="{pageStart, pageStop, itemsLength}">
                             {{ pageStart }}-{{ pageStop }} из {{ itemsLength }}
@@ -413,7 +454,7 @@ export default {
                 });
                 headers.splice(4, 0,  {
                     value: 'purchase_price',
-                    text: 'Закупочная стоимость'
+                    text: 'Общая закупочная стоимость'
                 });
             }
 
@@ -446,6 +487,23 @@ export default {
             this.waitingQuantities = true;
         },
         getQuantities(id) {
+            let qnt = this.quantities[id];
+            if (!this.IS_SUPERUSER) {
+                qnt = qnt.filter(q => {
+                    return [-1, 1, 6, this.user.store_id].includes(q.store_id);
+                });
+                qnt = qnt.map(q => {
+                    if (q.store_id === -1) {
+                        q.quantity = qnt.filter(q => q.store_id !== -1).reduce((a, c) => {
+                            return a + c.quantity;
+                        }, 0)
+                    }
+                    return q;
+                })
+            }
+            return qnt;
+        },
+        getPurchasePrices (id) {
             let qnt = this.quantities[id];
             if (!this.IS_SUPERUSER) {
                 qnt = qnt.filter(q => {

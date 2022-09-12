@@ -6,6 +6,7 @@ use App\Http\Controllers\api\v2\CertificateController;
 use App\Http\Controllers\api\v2\CompanionController;
 use App\Http\Controllers\api\v2\RevisionController;
 use App\Http\Controllers\api\v2\SeoController;
+use App\Http\Controllers\api\v2\WriteOffController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthorizationMiddleware;
 use App\Http\Controllers\api\v2\FavoriteController;
@@ -43,7 +44,7 @@ Route::get('set-tags', 'api\ProductController@setTags'); */
 
 // HelpController
 Route::get('set-partner-expired-at', 'HelpController@setPartnerExpiredAt');
-Route::get('backup', 'Services\BackupController@backup');
+//Route::get('backup', 'Services\BackupController@backup');
 
 Route::middleware(AuthorizationMiddleware::class)->group(function () {
     Route::prefix('shop')->group(function () {
@@ -400,6 +401,11 @@ Route::middleware(AuthorizationMiddleware::class)->group(function () {
             Route::get('/generate-pivot/{revision}', [RevisionController::class, 'generatePivotTable']);
             Route::post('/edit/{revision}', [RevisionController::class, 'editRevision']);
             Route::post('/rollback/{revision}', [RevisionController::class, 'rollbackRevision']);
+        });
+
+        Route::prefix('write-offs')->group(function () {
+            Route::get('/', [WriteOffController::class, 'index']);
+            Route::post('/', [WriteOffController::class, 'store']);
         });
     });
 });
