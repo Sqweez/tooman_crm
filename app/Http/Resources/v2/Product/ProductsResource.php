@@ -20,12 +20,19 @@ class ProductsResource extends JsonResource
      */
     public function toArray($request)
     {
-
-
+        $productNameFull = $this->product_name_full;
+        if (!$productNameFull) {
+            $additionalAttributes = collect($this->attributes)->pluck('attribute_value')->join('|');
+            $productName = $this->product_name;
+            if (strlen($additionalAttributes)) {
+                $productName .= ', ' . $additionalAttributes;
+            }
+            $productNameFull = $productName;
+        }
 
         return [
             'id' => $this->id,
-            'product_name' => $this->product_name_full,
+            'product_name' => $productNameFull,
             'product_name_base' => $this->product_name,
             'category' => $this->category,
             'subcategory_id' => $this->product->subcategory_id,

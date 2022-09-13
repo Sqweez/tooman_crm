@@ -130,7 +130,7 @@ class ProductController extends Controller
             });
     }
 
-    public function update(Product $product, Request $request) {
+    public function update(Product $product, Request $request): AnonymousResourceCollection {
         $product_attributes = ProductService::getProductFields($request);
         $product_fields = ProductService::getRelationFields($request);
         ProductService::updateProduct($product, $product_attributes, $product_fields);
@@ -140,7 +140,11 @@ class ProductController extends Controller
             $product_sku_attributes = ProductService::getSkuFields($request);
             ProductService::updateSku($productSku, $product_sku_attributes);
         }
-        return ProductsResource::collection(ProductSku::whereProductId($product->id)->with(ProductSku::PRODUCT_SKU_WITH_ADMIN_LIST)->get());
+        return ProductsResource::collection(
+            ProductSku::whereProductId($product->id)
+                ->with(ProductSku::PRODUCT_SKU_WITH_ADMIN_LIST)
+                ->get()
+        );
     }
 
     public function delete($id) {

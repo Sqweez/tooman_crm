@@ -236,6 +236,14 @@ class ProductSku extends Model
         return sprintf("%s | %s %s", $this->manufacturer->manufacturer_name, $this->product->product_name, $attrs);
     }
 
+    /*public function getProductNameFullAttribute(): string {
+        $ownAttributesString = collect($this['attributes'])->pluck('attribute_name')->join('|');
+        $name = $this->product->product_name;
+        if (strlen($ownAttributesString)) {
+            $name .= ', ' . $ownAttributesString;
+        }
+        return $name;
+    }*/
 
     public function mergeAttributes($attributes, $productAttributes): Collection {
         return collect($attributes)->map(function ($attribute) {
