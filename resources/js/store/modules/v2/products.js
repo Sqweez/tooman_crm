@@ -21,10 +21,12 @@ import {getArrivals} from "@/api/arrivals";
 import store from "@/store";
 import {getTransfers} from "@/api/transfers";
 import MUTATIONS from "@/store/mutations";
+import axiosClient from '@/utils/axiosClient';
 
 const state = {
     products_v2: [],
     quantities: [],
+    all_quantities: [],
     product_v2: null,
     certificates: [],
     moderator_products: [],
@@ -32,6 +34,7 @@ const state = {
     product_earnings: [],
     margin_types: [],
     iherb_products: [],
+    searched_products: [],
 };
 
 const getters = {
@@ -68,6 +71,8 @@ const getters = {
     PRODUCT_EARNINGS: s => s.product_earnings,
     MARGIN_TYPES: s => s.margin_types,
     IHERB_PRODUCTS: s => s.iherb_products,
+    SEARCHED_PRODUCTS: s => s.searched_products,
+    ALL_QUANTITIES: s => s.all_quantities,
 };
 
 const mutations = {
@@ -113,9 +118,22 @@ const mutations = {
             }))
             state.quantities = {...state.quantities, [store_id]: _quantities};
             state.products_v2 = products;
+            state.all_quantities = quantities;
+            state.searched_products = state.searched_products.map(p => {
+                const qnt = quantities.find(a => a.product_id == p.id);
+                p.quantity = qnt?.quantity ?? 0;
+                return p;
+            });
         } else {
             state.quantities = quantities;
         }
+    },
+    setSearchedProducts (state, payload) {
+        state.searched_products = payload.map(p => {
+            const qnt = state.all_quantities.find(a => a.product_id == p.id);
+            p.quantity = qnt?.quantity ?? 0;
+            return p;
+        });
     },
     CREATE_PRODUCT_v2(state, product) {
         state.products_v2.push(product);
@@ -224,6 +242,16 @@ const actions = {
             console.log(e.response);
         } finally {
 
+        }
+    },
+    async SEARCH_PRODUCTS ({ commit, dispatch }, search) {
+        try {
+            const { data } = await axiosClient.post(`/v2/products/search`, {
+                search
+            });
+            commit('setSearchedProducts', data.data);
+        } catch (e) {
+            console.log(e);
         }
     },
     async GET_IHERB_PRODUCTS ({commit}) {
@@ -507,7 +535,7 @@ const actions = {
         } finally {
             this.$loading.disable();
         }
-    }
+    },
 };
 
 

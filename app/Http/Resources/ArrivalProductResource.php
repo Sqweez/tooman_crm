@@ -25,10 +25,15 @@ class ArrivalProductResource extends JsonResource
                 return collect($image)->only('image');
             })->first()['image'])  ?? null;
 
-        $productPrice =
-            $this->product->product->prices->where('store_id', $this->arrival->store_id)->first() ?
-            $this->product->product->prices->where('store_id', $this->arrival->store_id)->first()['price'] :
-            $this->product->product_price;
+
+        $actualPrice = $this
+            ->product
+            ->product
+            ->prices
+            ->where('store_id', $this->arrival->store_id)
+            ->first();
+
+        $actualPrice = $actualPrice ? $actualPrice->price : $this->product->product->product_price;
 
         return [
             'attributes' => collect($this->product->attributes)->map(function ($attribute) {
@@ -43,11 +48,12 @@ class ArrivalProductResource extends JsonResource
                 ];
             })),
             'id' => $this->product->id,
+            'base_product_id' => $this->product->product_id,
             'count' => $this->count,
             'available_booking_count' => $this->available_booking_count,
             'booking_count' => $this->booking_count,
             'product_name' => $this->product->product_name,
-            'product_price' =>  $productPrice,
+            'product_price' => $actualPrice,
             'purchase_price' => $this->purchase_price,
             'manufacturer' => $this->product->manufacturer,
             'arrival_product_id' => $this->id,

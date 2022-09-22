@@ -18,12 +18,15 @@ axios.defaults.withCredentials = true;
 import VueFroala from 'vue-froala-wysiwyg'
 import { VueEditor } from "vue2-editor";
 import vuePlugins from "@/utils/vuePlugins";
+import BaseModal from '@/components/Modal/BaseModal';
 
 Vue.use(VueFroala);
 Vue.use(VueEditor);
 Vue.use(loadingPlugin);
 Vue.use(vuePlugins);
 Vue.component('downloadExcel', JsonExcel);
+Vue.component('base-modal', BaseModal);
+
 
 
 Vue.config.productionTip = false;

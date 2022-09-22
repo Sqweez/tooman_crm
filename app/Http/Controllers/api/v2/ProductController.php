@@ -33,10 +33,26 @@ class ProductController extends Controller
      * Получение всех товаров
      * */
 
-    public function index(Request $request) {
+    public function index(Request $request): AnonymousResourceCollection {
         return ProductsResource::collection(
             ProductService::all()
         );
+    }
+
+    public function search(Request $request) {
+        $search = $request->get('search', '');
+        $sku = ProductSku::query()
+            ->where(function ($query) use ($search) {
+                $query
+                    ->whereHas('product', function ($query) use ($search) {
+                        return $query->where('product_name', 'like', $this->prepareSearchString($search));
+                    })
+                    ->orWhere('product_barcode', $search);
+            })
+            ->with(ProductSku::PRODUCT_SKU_WITH_CART_LIST)
+            ->get();
+
+        return ProductsResource::collection($sku);
     }
 
     /*

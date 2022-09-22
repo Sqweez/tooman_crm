@@ -21,6 +21,6 @@ export default {
                 searchDebouncedFn();
             }
             this.awaitingSearch = true;
-        }
+        },
     }
 }

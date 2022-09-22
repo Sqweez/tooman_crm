@@ -65,10 +65,10 @@
                                     </v-list-item-subtitle>
                                 </v-list-item-content>
                             </v-list-item>
-                            <v-list-item v-if="item.arrived_at">
+                            <v-list-item v-if="item.arrive_date">
                                 <v-list-item-content>
                                     <v-list-item-title>
-                                        {{ item.arrived_at }}
+                                        {{ item.arrive_date }}
                                     </v-list-item-title>
                                     <v-list-item-subtitle>
                                         Ожидаемая дата
@@ -150,7 +150,7 @@
                             <v-list-item>
                                 <v-list-item-content>
                                     <v-btn color="error" @click="current_arrival = item; confirmationModal = true;" v-if="IS_SUPERUSER && !IS_MARKETOLOG">
-                                       Отмена <v-icon>mdi-cancel</v-icon>
+                                        Отмена <v-icon>mdi-cancel</v-icon>
                                     </v-btn>
                                 </v-list-item-content>
                             </v-list-item>
@@ -163,11 +163,11 @@
             </v-card-text>
         </v-card>
         <ArrivalInfoModal
-                :state="arrivalModal"
-                :arrival="current_arrival"
-                :confirm-mode="false"
-                @cancel="arrivalModal = false; current_arrival = {}"
-                :search="search"
+            :state="arrivalModal"
+            :arrivalProp="current_arrival"
+            :confirm-mode="false"
+            @cancel="arrivalModal = false; current_arrival = {}"
+            :search="search"
         />
         <ConfirmationModal
             :state="confirmationModal"
@@ -179,78 +179,78 @@
 </template>
 
 <script>
-    import {cancelArrival, getArrivals} from "@/api/arrivals";
-    import ArrivalInfoModal from "@/components/Modal/ArrivalInfoModal";
-    import axios from "axios";
-    import ConfirmationModal from "@/components/Modal/ConfirmationModal";
+import {cancelArrival, getArrivals} from "@/api/arrivals";
+import ArrivalInfoModal from "@/components/Modal/ArrivalInfoModal";
+import axios from "axios";
+import ConfirmationModal from "@/components/Modal/ConfirmationModal";
 
-    export default {
-        components: {ConfirmationModal, ArrivalInfoModal},
-        data: () => ({
-            search: '',
-            overlay: true,
-            loading: false,
-            confirmationModal: false,
-            arrivals: [],
-            current_arrival: {},
-            arrivalModal: false,
-            headers: [
-                {
-                    text: 'Общая информация',
-                    value: 'common_info'
-                },
-                {
-                    text: 'Общая информация',
-                    value: 'economy_info'
-                },
-                {
-                    text: 'Комментарий',
-                    value: 'comment',
-                    align: ' d-none'
-                },
-                {
-                    text: 'Действие',
-                    value: 'actions',
-                    sortable: false
-                },
-                {
-                    text: 'Поиск',
-                    value: 'search',
-                    align: ' d-none'
-                }
-            ],
-        }),
-        methods: {
-            async printWaybill(id) {
-                this.loading = true;
-                const { data } = await axios.get(`/api/excel/transfer/waybill?arrival=${id}`)
-                const link = document.createElement('a');
-                link.href = data.path;
-                link.click();
-                this.loading = false;
+export default {
+    components: {ConfirmationModal, ArrivalInfoModal},
+    data: () => ({
+        search: '',
+        overlay: true,
+        loading: false,
+        confirmationModal: false,
+        arrivals: [],
+        current_arrival: {},
+        arrivalModal: false,
+        headers: [
+            {
+                text: 'Общая информация',
+                value: 'common_info'
             },
-            async cancelArrival() {
-                this.confirmationModal = false;
-                this.loading = true;
-                await cancelArrival(this.current_arrival.id);
-                this.arrivals = this.arrivals.filter(s => s.id !== this.current_arrival.id);
-                this.current_arrival = {};
-                this.loading = false;
-                this.$toast.success('Поставка отменена!');
+            {
+                text: 'Общая информация',
+                value: 'economy_info'
+            },
+            {
+                text: 'Комментарий',
+                value: 'comment',
+                align: ' d-none'
+            },
+            {
+                text: 'Действие',
+                value: 'actions',
+                sortable: false
+            },
+            {
+                text: 'Поиск',
+                value: 'search',
+                align: ' d-none'
             }
+        ],
+    }),
+    methods: {
+        async printWaybill(id) {
+            this.loading = true;
+            const { data } = await axios.get(`/api/excel/transfer/waybill?arrival=${id}`)
+            const link = document.createElement('a');
+            link.href = data.path;
+            link.click();
+            this.loading = false;
         },
-        computed: {},
-        async mounted() {
-            const { data } = await getArrivals(true);
-            this.arrivals = data.map(arrival => {
-                arrival.search = arrival.products.map(product => {
-                    return `${product.product_name} ${product.manufacturer.manufacturer_name} ${product.attributes.map(a => a.attribute_value).join(' ')}`
-                }).join(' ')
-                return arrival
-            });
-            this.overlay = false;
+        async cancelArrival() {
+            this.confirmationModal = false;
+            this.loading = true;
+            await cancelArrival(this.current_arrival.id);
+            this.arrivals = this.arrivals.filter(s => s.id !== this.current_arrival.id);
+            this.current_arrival = {};
+            this.loading = false;
+            this.$toast.success('Поставка отменена!');
         }
+    },
+    computed: {},
+    async mounted() {
+        const { data } = await getArrivals(true);
+        this.arrivals = data.map(arrival => {
+            arrival.search = arrival.products.map(product => {
+                return `${product.product_name} ${product.manufacturer.manufacturer_name} ${product.attributes.map(a => a.attribute_value).join(' ')}`
+            }).join(' ')
+            return arrival
+        });
+        this.overlay = false;
     }
+}
 </script>
 
 <style scoped>

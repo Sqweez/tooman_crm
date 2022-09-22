@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-card class="background-tooman-darkgrey mb-5 mt-5" v-if="!emptyCart">
+        <v-card class="background-iron-darkgrey mb-5 mt-5" v-if="!emptyCart">
             <v-card-title class="justify-end">
                 <div>
                     <v-btn color="error" class="top-button mr-3" @click="$refs.fileInput.click()">
@@ -27,7 +27,7 @@
             <v-card-text style="padding: 0;">
                 <v-simple-table v-slot:default class="mt-5">
                     <template>
-                        <thead class="background-tooman-darkgrey fz-18">
+                        <thead class="background-iron-darkgrey fz-18">
                         <tr>
                             <th>#</th>
                             <th>Наименование</th>
@@ -36,7 +36,7 @@
                             <th>Удалить</th>
                         </tr>
                         </thead>
-                        <tbody class="background-tooman-grey">
+                        <tbody class="background-iron-grey">
                         <tr v-for="(item, index) of cart" :key="item.id * 85">
                             <td>{{ index + 1 }}</td>
                             <td><v-list class="product__list" flat>
@@ -78,14 +78,14 @@
                 </v-simple-table>
                 <v-simple-table v-slot:default>
                     <template>
-                        <thead class="background-tooman-darkgrey fz-18">
+                        <thead class="background-iron-darkgrey fz-18">
                         <tr>
                             <th class="text-center">Общее количество</th>
                             <th class="text-center">Общая сумма</th>
                             <th class="text-center">Склад</th>
                         </tr>
                         </thead>
-                        <tbody class="background-tooman-grey fz-18">
+                        <tbody class="background-iron-grey fz-18">
                         <tr>
                             <td class="text-center">{{ cartCount }} шт.</td>
                             <td class="text-center">{{ subtotal }} ₸</td>
@@ -103,7 +103,7 @@
                         </tbody>
                     </template>
                 </v-simple-table>
-                <div class="background-tooman-grey pa-10">
+                <div class="background-iron-grey pa-10">
                     <v-btn color="error" block style="font-size: 16px" @click="onTransfer">
                         Создать перемещение
                     </v-btn>
@@ -113,14 +113,12 @@
         <v-select
             v-if="IS_SUPERUSER"
             label="Поступления"
-            :item-text="function(item) {
-              return !item.name ? `${item.date} | ${item.total_sale_cost} тнг | ${item.product_count} шт` : item.name;
-            }"
+            item-text="full_name"
             item-value="id"
             :items="arrivals"
             v-model="currentArrival"
         />
-        <v-card class="background-tooman-darkgrey">
+        <v-card class="background-iron-darkgrey">
             <v-card-title>
                 Товары
             </v-card-title>
@@ -185,7 +183,7 @@
                     </v-col>
                 </v-row>
                 <v-data-table
-                    class="background-tooman-grey fz-18"
+                    class="background-iron-grey fz-18"
                     :search="searchQuery"
                     no-results-text="Нет результатов"
                     no-data-text="Нет данных"
@@ -211,7 +209,7 @@
                         </v-list>
                     </template>
                     <template v-slot:item.product_price="{ item }">
-                        {{ getPrice(item) | priceFilters}}
+                        {{ item.product_price | priceFilters}}
                     </template>
                     <template v-slot:item.actions="{item}">
                         <v-btn icon @click="addToCart(item)" color="success">
@@ -244,244 +242,241 @@
 </template>
 
 <script>
-    import ConfirmationModal from "@/components/Modal/ConfirmationModal";
-    import WayBillModal from "@/components/Modal/WayBillModal";
-    import ACTIONS from "@/store/actions";
-    import axios from 'axios';
-    import uploadFile, {deleteFile} from "@/api/upload";
-    import product from "@/mixins/product";
-    import product_search from "@/mixins/product_search";
-    import cart from "@/mixins/cart";
-    import {db} from "@/db";
+import ConfirmationModal from "@/components/Modal/ConfirmationModal";
+import WayBillModal from "@/components/Modal/WayBillModal";
+import ACTIONS from "@/store/actions";
+import axios from 'axios';
+import uploadFile, {deleteFile} from "@/api/upload";
+import product from "@/mixins/product";
+import product_search from "@/mixins/product_search";
+import cart from "@/mixins/cart";
+import {db} from "@/db";
+import {__hardcoded} from '@/utils/helpers';
 
-    export default {
-        components: {
-            ConfirmationModal,
-            WayBillModal
+export default {
+    components: {
+        ConfirmationModal,
+        WayBillModal
+    },
+    watch: {
+        storeFilter() {
+            this.cart = [];
         },
-        watch: {
-            storeFilter() {
-                this.cart = [];
+    },
+    data: () => ({
+        cart: [],
+        currentArrival: -1,
+        completedArrivals: [],
+        search: '',
+        confirmationModal: false,
+        wayBillModal: false,
+        child_store: 1,
+        overlay: false,
+        loading: false,
+        photos: [],
+        headers: [
+            {
+                text: 'Наименование',
+                value: 'product_name',
+                sortable: false,
+                align: ' fz-18'
             },
-        },
-        data: () => ({
-            cart: [],
-            currentArrival: -1,
-            search: '',
-            confirmationModal: false,
-            wayBillModal: false,
-            child_store: 1,
-            overlay: false,
-            loading: false,
-            photos: [],
-        }),
-        async mounted() {
-            this.loading = true;
-            await this.$store.dispatch('GET_ARRIVALS', true);
-            await this.$store.dispatch('GET_PRODUCTS_v2');
-            this.storeFilter = this.$user.store_id;
-            await this.$store.dispatch(ACTIONS.GET_MANUFACTURERS);
-            await this.$store.dispatch(ACTIONS.GET_CATEGORIES);
-            this.loading = false;
-        },
-        mixins: [product, product_search, cart],
-        methods: {
-            async uploadPhoto(e) {
-                const file = e.target.files[0];
-                const result = await uploadFile(file, 'file', 'transfers');
-                this.photos.push(result.data);
+            {
+                text: 'Атрибуты',
+                value: 'attributes',
+                align: ' d-none'
             },
-            async deleteImage(key) {
-                await deleteFile(this.photos[key]);
-                this.photos.splice(key, 1);
+            {
+                value: 'manufacturer.manufacturer_name',
+                text: 'Производитель',
+                align: ' d-none'
             },
-            async onTransfer() {
-                this.overlay = true;
-
-                const sale = {
-                    cart: this.cart.map(c => {
-                        return {id: c.id, count: c.count, discount: 0};
-                    }),
-                    parent_store_id: this.storeFilter,
-                    user_id: this.user.id,
-                    child_store_id: this.child_store,
-                    photos: JSON.stringify(this.photos),
-                    discount: 0,
-                    is_accepted: !!this.IS_SUPERUSER
-                };
-
-                await this.$store.dispatch(ACTIONS.MAKE_TRANSFER, sale);
-                await this.$store.dispatch('GET_PRODUCTS_QUANTITIES', this.storeFilter);
-
-                this.overlay = false;
-
-                this.confirmationModal = true;
-
-                this.$toast.success('Перемещение создано успешно!');
-                //this.cart = [];
+            {
+                text: 'Остаток',
+                value: 'quantity'
             },
-            async getWayBill() {
-                this.confirmationModal = false;
-                const {data} = await axios.post('/api/excel/transfer/waybill', {
-                    child_store: this.child_store,
-                    parent_store: this.storeFilter,
-                    cart: this.cart,
-                });
-
-                const link = document.createElement('a');
-                link.href = data.path;
-                link.click();
-                this.cart = [];
+            {
+                text: 'Стоимость',
+                value: 'product_price'
             },
-        },
-        computed: {
-            headers () {
-                const headers =  [
-                    {
-                        text: 'Наименование',
-                        value: 'product_name',
-                        sortable: false,
-                        align: ' fz-18'
-                    },
-                    {
-                        text: 'Атрибуты',
-                        value: 'attributes',
-                        align: ' d-none'
-                    },
-                    {
-                        value: 'manufacturer.manufacturer_name',
-                        text: 'Производитель',
-                        align: ' d-none'
-                    },
-                    {
-                        text: 'Остаток',
-                        value: 'quantity'
-                    },
-                    {
-                        text: 'Стоимость',
-                        value: 'product_price'
-                    },
-                    {
-                        text: 'Добавить',
-                        value: 'actions'
-                    },
-                    {
-                        text: 'Штрих-код',
-                        value: 'product_barcode',
-                        align: ' d-none'
-                    }
-                ];
-
-                if (!this.IS_SUPERUSER) {
-                    headers.splice(3, 1);
-                }
-                return headers;
+            {
+                text: 'Добавить',
+                value: 'actions'
             },
-            IS_SELLER() {
-                return this.$store.getters.IS_SELLER;
-            },
-            IS_ADMIN() {
-                return this.$store.getters.IS_ADMIN;
-            },
-            _stores() {
-                const stores = this.stores.filter(s => s.id !== this.storeFilter);
-                this.child_store = this.IS_SUPERUSER ? stores[0].id : this.user.store_id;
-                return stores;
-            },
-            arrivals() {
-                return [
-                    {
-                        id: -1,
-                        name: 'Все'
-                    },
-                    ...this.$store.getters.ARRIVALS
-                ];
-            },
-            products() {
-                let products = this.$store.getters.PRODUCTS_v2;
-
-                if (this.currentArrival !== -1) {
-                    const arrivalProducts = this.arrivals.find(a => a.id === this.currentArrival)
-                        .products
-                        .map(p => p.id);
-                    products = products.filter(p => {
-                        return arrivalProducts.find(a => a == p.id);
-                    })
-                }
-
-                if (this.manufacturerId !== -1) {
-                    products = products.filter(product => product.manufacturer.id === this.manufacturerId);
-                }
-                if (this.hideNotInStock) {
-                    products = products.filter(product => product.quantity > 0);
-                }
-                if (this.categoryId !== -1) {
-                    products = products.filter(product => product.category.id === this.categoryId);
-                }
-
-                return products;
-            },
+            {
+                text: 'Штрих-код',
+                value: 'product_barcode',
+                align: ' d-none'
+            }
+        ],
+    }),
+    async mounted() {
+        this.$loading.enable('Пожалуйста, подождите');
+        await this.$store.dispatch('GET_PRODUCTS_v2');
+        await this.$store.dispatch(ACTIONS.GET_MANUFACTURERS);
+        await this.$store.dispatch(ACTIONS.GET_CATEGORIES);
+        this.storeFilter = this.IS_SUPERUSER ? this.stores[0]?.id : __hardcoded(6);
+        if (this.IS_SELLER) {
+            this.storeFilter = 6;
         }
+        this.$loading.disable();
+        if (this.IS_SUPERUSER) {
+            const { data: { data } } = await axios.get(`/api/arrivals/transfers`);
+            this.completedArrivals = data;
+        }
+    },
+    mixins: [product, product_search, cart],
+    methods: {
+        async uploadPhoto(e) {
+            const file = e.target.files[0];
+            const result = await uploadFile(file, 'file', 'transfers');
+            this.photos.push(result.data);
+        },
+        async deleteImage(key) {
+            await deleteFile(this.photos[key]);
+            this.photos.splice(key, 1);
+        },
+        async onTransfer() {
+            this.overlay = true;
+
+            const sale = {
+                cart: this.cart.map(c => {
+                    return {id: c.id, count: c.count, discount: 0};
+                }),
+                parent_store_id: this.storeFilter,
+                user_id: this.user.id,
+                child_store_id: this.child_store,
+                photos: JSON.stringify(this.photos),
+                discount: 0,
+                is_accepted: !!this.IS_SUPERUSER
+            };
+
+            await this.$store.dispatch(ACTIONS.MAKE_TRANSFER, sale);
+            await this.$store.dispatch('GET_PRODUCTS_QUANTITIES', this.storeFilter);
+
+            this.overlay = false;
+
+            this.confirmationModal = true;
+
+            this.$toast.success('Перемещение создано успешно!');
+            //this.cart = [];
+        },
+        async getWayBill() {
+            this.confirmationModal = false;
+            const {data} = await axios.post('/api/excel/transfer/waybill', {
+                child_store: this.child_store,
+                parent_store: this.storeFilter,
+                cart: this.cart,
+            });
+
+            const link = document.createElement('a');
+            link.href = data.path;
+            link.click();
+            this.cart = [];
+        },
+    },
+    computed: {
+        IS_SELLER() {
+            return this.$store.getters.IS_SELLER;
+        },
+        IS_ADMIN() {
+            return this.$store.getters.IS_ADMIN;
+        },
+        _stores() {
+            const stores = this.stores.filter(s => s.id !== this.storeFilter);
+            this.child_store = this.IS_SUPERUSER ? stores[0].id : this.user.store_id;
+            return stores;
+        },
+        arrivals() {
+            return [
+                {
+                    id: -1,
+                    full_name: 'Все'
+                },
+                ...this.completedArrivals,
+            ];
+        },
+        products() {
+            let products = this.$store.getters.PRODUCTS_v2;
+
+            if (this.currentArrival !== -1) {
+                const productIds = this.arrivals.find(a => a.id === this.currentArrival).product_ids;
+                products = products.filter(product => productIds.includes(product.id));
+            }
+
+            if (this.manufacturerId !== -1) {
+                products = products.filter(product => product.manufacturer.id === this.manufacturerId);
+            }
+            if (this.hideNotInStock) {
+                products = products.filter(product => product.quantity > 0);
+            }
+            if (this.categoryId !== -1) {
+                products = products.filter(product => product.category.id === this.categoryId);
+            }
+
+            return products;
+        },
     }
+}
 </script>
 
 <style scoped lang="scss">
-    * {
+* {
+}
+
+h5 {
+    color: #fff;
+    font-weight: 300;
+    font-size: 18px;
+}
+
+.top-button {
+    width: 340px;
+}
+
+.background-iron-grey {
+    background-color: #444444;
+}
+
+.background-iron-darkgrey {
+    background-color: #333333;
+}
+
+.margin-28 {
+    margin-top: 28px;
+}
+
+.fz-18 th, td {
+    font-size: 18px !important;
+}
+
+.v-data-table {
+    font-size: 18px !important;
+}
+
+.image-container {
+    img {
+        object-fit: contain;
+        object-position: center;
     }
 
-    h5 {
+    position: relative;
+
+    .delete-image {
+        padding: 8px 10px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.3);
         color: #fff;
-        font-weight: 300;
-        font-size: 18px;
-    }
+        position: absolute;
+        right: 14px;
+        top: 14px;
+        font-size: 2rem;
+        border: none;
+        transition: .3s;
 
-    .top-button {
-        width: 340px;
-    }
-
-    .background-tooman-grey {
-        background-color: #444444;
-    }
-
-    .background-tooman-darkgrey {
-        background-color: #333333;
-    }
-
-    .margin-28 {
-        margin-top: 28px;
-    }
-
-    .fz-18 th, td {
-        font-size: 18px !important;
-    }
-
-    .v-data-table {
-        font-size: 18px !important;
-    }
-
-    .image-container {
-        img {
-            object-fit: contain;
-            object-position: center;
-        }
-
-        position: relative;
-
-        .delete-image {
-            padding: 8px 10px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.3);
-            color: #fff;
-            position: absolute;
-            right: 14px;
-            top: 14px;
-            font-size: 2rem;
-            border: none;
-            transition: .3s;
-
-            &:hover {
-                background-color: rgba(255, 255, 255, 0.6);
-            }
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.6);
         }
     }
+}
 </style>

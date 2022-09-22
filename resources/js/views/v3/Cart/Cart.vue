@@ -410,7 +410,6 @@
                         <v-text-field
                             class="mt-2"
                             v-on:input="searchInput"
-                            v-model="searchValue"
                             solo
                             clearable
                             label="Поиск товара"
@@ -458,29 +457,30 @@
                         <v-icon>mdi-refresh</v-icon>
                     </v-btn>
                 </v-row>
-                <v-row>
-                    <v-btn depressed color="success" class="float-right ml-2 mt-2" @click="certificateModal = true;">
-                        Добавить сертификат +
-                    </v-btn>
-                    <v-btn depressed color="success" class="float-right ml-2 mt-2" @click="preorderModal = true;">
-                        По предоплате
-                    </v-btn>
-                </v-row>
                 <v-data-table
+                    :calculate-widths="true"
                     class="background-tooman-grey fz-18"
                     no-results-text="Нет результатов"
                     no-data-text="Нет данных"
                     @current-items="getFiltered"
-                    :headers="headers"
-                    :loading="loading"
                     :search="searchQuery"
-                    loading-text="Идет загрузка товаров..."
+                    :headers="headers"
                     :items="products"
-                    :footer-props="{
-                            'items-per-page-options': [10, 15, {text: 'Все', value: -1}],
-                            'items-per-page-text': 'Записей на странице',
-                        }"
                 >
+                    <template v-slot:body="{}" v-if="loading">
+                        <tbody>
+                        <tr>
+                            <td colspan="6">
+                                <div class="py-8 d-flex justify-center align-center">
+                                    <v-progress-circular
+                                        indeterminate
+                                        color="blue"
+                                    ></v-progress-circular>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </template>
                     <template v-slot:item.product_name="{item}">
                         <v-list flat>
                             <v-list-item>
@@ -563,6 +563,7 @@
     import cart from "@/mixins/cart";
     import CertificateModal from "@/components/Modal/CertificateModal";
     import PreordersListModal from "@/components/Modal/PreordersListModal";
+    import { debounce } from 'lodash';
     export default {
         components: {
             PreordersListModal,
@@ -575,11 +576,14 @@
         async created() {
             this.$loading.enable();
             await this.$store.dispatch('GET_PRODUCTS_v2');
-            this.storeFilter = this.IS_SUPERUSER ? this.stores[0].id : this.$user.store_id;
             await this.$store.dispatch(ACTIONS.GET_MANUFACTURERS);
             await this.$store.dispatch(ACTIONS.GET_CATEGORIES);
             await this.$store.dispatch('GET_CERTIFICATES');
             await this.$store.dispatch('GET_PREORDERS');
+            if (this.stores.length === 0) {
+                await this.$store.dispatch(ACTIONS.GET_USERS);
+            }
+            this.storeFilter = this.IS_SUPERUSER ? this.stores[0].id : this.$user.store_id;
             this.client = this.user.store.type_id === 3 ? {
                     id: -1,
                     client_name: 'Гость',
@@ -589,7 +593,9 @@
                     total_sum: 0,
                 } : null;
             this.$loading.disable();
-            this.loading = false;
+            setTimeout(() => {
+                this.loading = false;
+            }, 500);
             await this.$store.dispatch(ACTIONS.GET_CLIENTS);
         },
         watch: {
@@ -696,6 +702,13 @@
                 ACTIONS.GET_CLIENTS,
                 ACTIONS.GET_STORES,
             ]),
+            searchInput: debounce(function (value) {
+                this.loading = true;
+                this.searchQuery = value;
+                setTimeout(() => {
+                    this.loading = false;
+                    }, 500);
+            }, 1000),
             calculateProductFinalPrice (product) {
                 const priceWithoutDiscount = product.product_price * product.count;
                 if (this.isRed || this.isProductPriceChangedManually) {
@@ -971,7 +984,8 @@
                     {
                         text: 'Атрибуты',
                         value: 'attributes',
-                        align: ' d-none'
+                        align: ' d-none',
+                        filterable: false,
                     },
                     {
                         value: 'manufacturer.manufacturer_name',
@@ -980,15 +994,18 @@
                     },
                     {
                         text: 'Остаток',
-                        value: 'quantity'
+                        value: 'quantity',
+                        filterable: false,
                     },
                     {
                         text: 'Стоимость',
-                        value: 'product_price'
+                        value: 'product_price',
+                        filterable: false,
                     },
                     {
                         text: 'Добавить',
-                        value: 'actions'
+                        value: 'actions',
+                        filterable: false,
                     },
                     {
                         text: 'Штрих-код',

@@ -28,6 +28,12 @@ if (!function_exists('format_date')) {
     }
 }
 
+if (!function_exists('format_datetime')) {
+    function format_datetime ($date = null): ?string {
+        return is_null($date) ? null : Carbon::parse($date)->format('d.m.Y H:i:s');
+    }
+}
+
 if (!function_exists('get_external_file_url')) {
     function get_external_file_url ($filePath, $storageWrap = true): ?string {
         if (is_null($filePath)) {
