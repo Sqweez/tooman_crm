@@ -271,7 +271,7 @@ export default {
                     {
                         ...item,
                         count: 1,
-                        product_price: item.purchase_price || 0,
+                        product_price: item.purchase_price ? item.purchase_price / item.quantity : 0,
                         discount: 0,
                         uuid: Math.random(),
                         initial_price: this.getPrice(item, this.storeFilter)
