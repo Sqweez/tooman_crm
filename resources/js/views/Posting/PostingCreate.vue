@@ -177,7 +177,7 @@
                         </v-list>
                     </template>
                     <template v-slot:item.purchase_price="{ item }">
-                        {{ item.purchase_price || 0 | priceFilters}}
+                        {{ (item.purchase_price ? item.purchase_price / item.quantity : 0) | priceFilters}}
                     </template>
                     <template v-slot:item.product_price="{ item }">
                         {{ getPrice(item) | priceFilters}}
