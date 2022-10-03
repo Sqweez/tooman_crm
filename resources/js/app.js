@@ -3,6 +3,7 @@ import App from './App.vue';
 import router from './router/router';
 import vuetify from "./plugins/vuetify";
 import store from "./store";
+import confirmationPlugin from '@/utils/confirmationPlugin';
 import 'froala-editor/js/plugins.pkgd.min.js';
 import 'froala-editor/js/third_party/embedly.min';
 import 'froala-editor/js/third_party/font_awesome.min';
@@ -21,6 +22,7 @@ import vuePlugins from "@/utils/vuePlugins";
 import BaseModal from '@/components/Modal/BaseModal';
 
 Vue.use(VueFroala);
+Vue.use(confirmationPlugin);
 Vue.use(VueEditor);
 Vue.use(loadingPlugin);
 Vue.use(vuePlugins);

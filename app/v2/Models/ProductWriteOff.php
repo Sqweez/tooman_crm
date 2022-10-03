@@ -2,8 +2,10 @@
 
 namespace App\v2\Models;
 
+use App\BatchWriteOff;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -31,6 +33,8 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|ProductWriteOff whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ProductWriteOff whereWriteOffId($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|BatchWriteOff[] $batch
+ * @property-read int|null $batch_count
  */
 class ProductWriteOff extends Model
 {
@@ -44,5 +48,9 @@ class ProductWriteOff extends Model
 
     public function sku(): BelongsTo {
         return $this->belongsTo(ProductSku::class, 'product_id');
+    }
+
+    public function batch(): HasMany {
+        return $this->hasMany(BatchWriteOff::class, 'product_write_off_id');
     }
 }

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\api\v2;
 
+use App\Actions\Posting\CreatePostingAction;
 use App\Actions\Revision\CreateRevisionAction;
 use App\Actions\Revision\EditRevisionAction;
 use App\Actions\Revision\FinishRevisionAction;
 use App\Actions\Revision\GenerateRevisionPivotTableAction;
 use App\Actions\Revision\RollbackRevisionAction;
 use App\Actions\Revision\SendRevisionToApprovementAction;
+use App\Actions\WriteOff\CreateWriteOffAction;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Services\ExcelService;
 use App\Http\Resources\v2\Revision\RevisionProductResource;
@@ -32,6 +34,8 @@ class RevisionController extends Controller
     }
 
     public function show(Revision $revision): array {
+        $revision->load('writeOff');
+        $revision->load('posting');
         return [
             'revision' => RevisionsListResource::make($revision),
             'products' => RevisionProductResource::collection(RevisionService::loadRevisionProductWithNested($revision, false))
@@ -51,6 +55,8 @@ class RevisionController extends Controller
             ->when(!$isSuperUser, function ($query) use ($user) {
                 return $query->where('user_id', $user->id);
             })
+            ->with('writeOff')
+            ->with('posting')
             ->latest()
             ->get();
 
@@ -103,6 +109,54 @@ class RevisionController extends Controller
             'path' => $action->handle($revision),
             'revision' => RevisionsListResource::make($revision->fresh())
         ];
+    }
 
+    public function createWriteOff(Revision $revision, CreateWriteOffAction $action): \Illuminate\Http\Response {
+        $writeOffRequest = [
+            'user_id' => auth()->id(),
+            'store_id' => $revision->store_id,
+            'description' => 'Списание на основании ревизии',
+            'revision_id' => $revision->id,
+            'products' => $revision
+                ->revision_products
+                ->filter(function ($product) {
+                    return $product['fact_quantity'] < $product['stock_quantity'];
+                })
+                ->map(function ($product) {
+                    return [
+                        'id' => $product->id,
+                        'quantity' => $product['stock_quantity'] - $product['fact_quantity'],
+                        'product_price' => $product['price']
+                    ];
+            })
+                ->toArray()
+        ];
+
+        $action->handle($writeOffRequest);
+        return response()->noContent();
+    }
+
+    public function createPosting(Revision $revision, CreatePostingAction $action): \Illuminate\Http\Response {
+        $postingRequest = [
+            'user_id' => auth()->id(),
+            'store_id' => $revision->store_id,
+            'description' => 'Списание на основании ревизии',
+            'revision_id' => $revision->id,
+            'products' => $revision
+                ->revision_products
+                ->filter(function ($product) {
+                    return $product['fact_quantity'] > $product['stock_quantity'];
+                })
+                ->map(function ($product) {
+                    return [
+                        'id' => $product->id,
+                        'quantity' => $product['fact_quantity'] - $product['stock_quantity'],
+                        'purchase_price' => $product['purchase_price']
+                    ];
+                })
+                ->toArray()
+        ];
+        $action->handle($postingRequest);
+        return response()->noContent();
     }
 }

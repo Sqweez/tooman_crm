@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 
 class CreateWriteOffAction {
 
-    public function handle(CreateWriteOffRequest $request): WriteOff {
-        $writeOff = $this->createWriteOff($request->except('products'));
-        $this->createWriteOffProducts($writeOff, $request->get('products', []));
+    public function handle(array $request): WriteOff {
+        $writeOff = $this->createWriteOff(\Arr::except($request, ['products']));
+        $this->createWriteOffProducts($writeOff, $request['products']);
         return $writeOff;
     }
 

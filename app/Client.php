@@ -82,6 +82,8 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $real_sales_count
  * @method static \Illuminate\Database\Eloquent\Builder|Client whereBirthDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Client whereGender($value)
+ * @property bool $is_wholesale_buyer
+ * @method static \Illuminate\Database\Eloquent\Builder|Client whereIsWholesaleBuyer($value)
  */
 class Client extends Model
 {

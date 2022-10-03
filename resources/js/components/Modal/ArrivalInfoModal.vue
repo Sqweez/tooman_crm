@@ -1,5 +1,5 @@
 <template>
-    <base-modal :state="state" :title="modalTitle" @cancel="$emit('cancel')">
+    <base-modal :state="state" :title="modalTitle" @cancel="$emit('cancel')" max-width="1500">
         <template #default>
             <v-row v-if="editMode || confirmMode">
                 <v-col cols="8"></v-col>

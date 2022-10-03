@@ -74,34 +74,36 @@
                 </v-list>
             </template>
             <template v-slot:item.actions="{ item }">
-                <span v-if="item.has_not_actions && !IS_SUPERUSER">
-                    Нет доступных действий
-                </span>
-                <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="d-none" ref="sentToApproveFileInput" @change="sentToApprove">
-                <v-btn text color="success" v-if="item.can_sent_to_approve" @click="revisionId = item.id; $refs.sentToApproveFileInput.click()">
-                    Отправить на проверку <v-icon>mdi-check</v-icon>
-                </v-btn>
-                <v-btn text color="success" v-if="item.can_generate_pivot_table" @click="generatePivotTable(item.id)">
-                    Сгенерировать промежуточную сводную таблицу <v-icon>mdi-check</v-icon>
-                </v-btn>
-                <v-btn text v-if="IS_SUPERUSER" @click="onRevisionDelete(item.id)" color="error">
-                    Удалить ревизию<v-icon>mdi-close</v-icon>
-                </v-btn>
-                <div v-if="item.can_finish">
-                    <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="d-none" ref="editRevisionFileInput" @change="editRevision">
-                    <v-btn v-if="item.can_edit" text color="success" @click="revisionId = item.id; $refs.editRevisionFileInput.click()">
-                        Загрузить исправления <v-icon>mdi-check</v-icon>
+                <div class="d-flex flex-column">
+                     <span v-if="item.has_not_actions && !IS_SUPERUSER">
+                        Нет доступных действий
+                        </span>
+                    <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="d-none" ref="sentToApproveFileInput" @change="sentToApprove">
+                    <v-btn text color="success" v-if="item.can_sent_to_approve" @click="revisionId = item.id; $refs.sentToApproveFileInput.click()">
+                        Отправить на проверку <v-icon>mdi-check</v-icon>
                     </v-btn>
-                    <v-btn v-if="item.can_rollback" text color="error" @click="rollbackRevision(item.id)">
-                        Откатить исправления <v-icon>mdi-backup-restore</v-icon>
+                    <v-btn text color="success" v-if="item.can_generate_pivot_table" @click="generatePivotTable(item.id)">
+                        Сгенерировать промежуточную сводную таблицу <v-icon>mdi-check</v-icon>
                     </v-btn>
-                    <v-btn text color="success" @click="finishRevision(item.id)">
-                        Завершить без исправления <v-icon>mdi-check</v-icon>
+                    <v-btn text v-if="IS_SUPERUSER" @click="onRevisionDelete(item.id)" color="error">
+                        Удалить ревизию<v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <div v-if="item.can_finish">
+                        <input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="d-none" ref="editRevisionFileInput" @change="editRevision">
+                        <v-btn v-if="item.can_edit" text color="success" @click="revisionId = item.id; $refs.editRevisionFileInput.click()">
+                            Загрузить исправления <v-icon>mdi-check</v-icon>
+                        </v-btn>
+                        <v-btn v-if="item.can_rollback" text color="error" @click="rollbackRevision(item.id)">
+                            Откатить исправления <v-icon>mdi-backup-restore</v-icon>
+                        </v-btn>
+                        <v-btn text color="success" @click="finishRevision(item.id)">
+                            Завершить без исправления <v-icon>mdi-check</v-icon>
+                        </v-btn>
+                    </div>
+                    <v-btn v-if="item.is_finished" color="primary" text @click="$router.push(`/revision/${item.id}`)">
+                        Подробная информация <v-icon>mdi-information-outline</v-icon>
                     </v-btn>
                 </div>
-                <v-btn v-if="item.is_finished" color="primary" text @click="$router.push(`/revision/${item.id}`)">
-                    Подробная информация <v-icon>mdi-information-outline</v-icon>
-                </v-btn>
             </template>
         </v-data-table>
     </div>

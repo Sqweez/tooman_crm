@@ -45,6 +45,7 @@ use function foo\func;
  * @method static \Illuminate\Database\Eloquent\Builder|Category whereMetaDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Category whereMetaH1($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Category whereMetaTitle($value)
+ * @property-read string $name
  */
 class Category extends Model
 {

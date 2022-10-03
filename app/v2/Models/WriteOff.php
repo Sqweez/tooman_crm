@@ -44,6 +44,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|WriteOff whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WriteOff whereUserId($value)
  * @mixin \Eloquent
+ * @property-read string $status_text
  */
 class WriteOff extends Model
 {
@@ -57,6 +58,7 @@ class WriteOff extends Model
         'items.sku.product:id,product_name,manufacturer_id,grouping_attribute_id,category_id',
         'items.sku.product.manufacturer', 'items.sku.product.attributes', 'items.sku.product.category', 'items.sku.product.prices',
         'items.sku.product.attributes.attribute_name', 'items.sku.attributes', 'items.sku.attributes.attribute_name',
+        //'store:id,name', 'user:id,name'
     ];
 
     public function items(): HasMany {
@@ -77,6 +79,21 @@ class WriteOff extends Model
 
     public function acceptor(): BelongsTo {
         return $this->belongsTo(User::class, 'accepted_by_id')->select(['id', 'name']);
+    }
+
+    public function accept(): bool {
+        return $this->update([
+            'accepted_at' => now(),
+            'status' => self::STATUS_ACCEPTED,
+            'accepted_by_id' => auth()->id()
+        ]);
+    }
+
+    public function decline() {
+        $this->update([
+            'status' => self::STATUS_DECLINED,
+            'declined_at' => now(),
+        ]);
     }
 
     public function getStatusTextAttribute(): string {

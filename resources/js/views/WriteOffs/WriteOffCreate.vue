@@ -260,6 +260,8 @@ export default {
                 this.$loading.enable();
                 await this.$createWriteOff(payload);
                 this.$toast.success('Списание успешно создано!');
+                this.cart = [];
+                this.description = '';
             } catch (e) {
                 console.log(e);
             } finally {

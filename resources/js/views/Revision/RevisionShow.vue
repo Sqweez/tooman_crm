@@ -87,10 +87,22 @@
                                 </v-list>
                             </td>
                             <td>
-                                <v-btn color="primary" v-if="revision.is_finished" style="width: 290px;">
+                                <v-btn
+                                    @click="onWriteOffClick"
+                                    :disabled="disableWriteOffCreation || revision.write_off_disabled"
+                                    color="primary"
+                                    v-if="revision.is_finished"
+                                    style="width: 290px;"
+                                >
                                     Сформировать списание
                                 </v-btn>
-                                <v-btn color="primary" v-if="revision.is_finished" class="mt-4" style="width: 290px;">
+                                <v-btn
+                                    @click="onPostingClick"
+                                    :disabled="disablePostingCreation || revision.posting_disabled"
+                                    color="primary"
+                                    v-if="revision.is_finished"
+                                    class="mt-4" style="width: 290px;"
+                                >
                                     Сформировать оприходование
                                 </v-btn>
                             </td>
@@ -184,10 +196,13 @@
 import axios from 'axios';
 import {mapGetters} from 'vuex';
 import Actions from '@/store/actions';
+import axiosClient from '@/utils/axiosClient';
 
 export default {
     data: () => ({
         search: '',
+        disableWriteOffCreation: false,
+        disablePostingCreation: false,
         headers: [
             {
                 value: 'product_id',
@@ -279,6 +294,36 @@ export default {
                 this.$loading.disable();
             }
 
+        },
+        async onWriteOffClick () {
+            await this.$confirm('Вы действительно хотите создать списание на основании данной ревизии?')
+                .then(async () => {
+                    try {
+                        this.$loading.enable();
+                        await axios.get(`/api/v2/revision/${this.id}/write-off`);
+                        this.disableWriteOffCreation = true;
+                        this.$toast.success('Списание успешно создано!')
+                    } catch (e) {
+                        this.$toast.error(e.response.data.message);
+                    } finally {
+                        this.$loading.disable();
+                    }
+                })
+        },
+        async onPostingClick () {
+            await this.$confirm('Вы действительно хотите создать оприходование на основании данной ревизии?')
+                .then(async () => {
+                    try {
+                        this.$loading.enable();
+                        await axios.get(`/api/v2/revision/${this.id}/posting`);
+                        this.disablePostingCreation = true;
+                        this.$toast.success('Оприходование успешно создано!')
+                    } catch (e) {
+                        this.$toast.error(e.response.data.message);
+                    } finally {
+                        this.$loading.disable();
+                    }
+                })
         }
     },
     async mounted() {

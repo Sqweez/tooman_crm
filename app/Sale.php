@@ -74,6 +74,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read mixed $final_price_without_red
  * @method static \Illuminate\Database\Eloquent\Builder|Sale whereIsOpt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Sale whereIsPaid($value)
+ * @property bool $is_confirmed
+ * @method static \Illuminate\Database\Eloquent\Builder|Sale whereIsConfirmed($value)
  */
 class Sale extends Model
 {

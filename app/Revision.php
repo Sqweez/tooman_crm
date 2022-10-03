@@ -3,10 +3,12 @@
 namespace App;
 
 use App\Traits\HasFormattedDate;
+use App\v2\Models\WriteOff;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -70,6 +72,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Revision whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|Revision withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Revision withoutTrashed()
+ * @property-read WriteOff|null $writeOff
+ * @property-read bool $is_posting_disabled
+ * @property-read bool $is_write_off_disabled
+ * @property-read \App\Posting|null $posting
  */
 class Revision extends Model
 {
@@ -125,6 +131,14 @@ class Revision extends Model
         return $this->finished_at ? Carbon::parse($this->finished_at)->format('d.m.Y H:i:s') : null;
     }
 
+    public function writeOff(): HasOne {
+        return $this->hasOne(WriteOff::class)->whereIn('status', [WriteOff::STATUS_ACCEPTED, WriteOff::STATUS_PENDING]);
+    }
+
+    public function posting(): HasOne {
+        return $this->hasOne(Posting::class)->whereIn('status', [Posting::STATUS_ACCEPTED, Posting::STATUS_PENDING]);
+    }
+
     public function getStatusTextAttribute(): string {
         switch ($this->status) {
             case self::STATUS_STARTED:
@@ -166,6 +180,18 @@ class Revision extends Model
 
     public function getCanRollbackAttribute(): bool {
         return $this->getIsCheckerAttribute() && !is_null($this->edited_pivot_file);
+    }
+
+    public function getIsWriteOffDisabledAttribute(): bool {
+        return $this->writeOff|| $this->revision_products->filter(function ($item) {
+                return $item['fact_quantity'] < $item['stock_quantity'];
+            })->count() === 0;
+    }
+
+    public function getIsPostingDisabledAttribute(): bool {
+        return isset($this->posting) || $this->revision_products->filter(function ($item) {
+            return $item['fact_quantity'] > $item['stock_quantity'];
+        })->count() === 0;
     }
 
     public function getFilesAttribute(): \Illuminate\Support\Collection {

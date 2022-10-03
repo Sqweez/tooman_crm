@@ -89,6 +89,10 @@ const navigationModule = {
                     {
                         title: 'Списания',
                         url: '/write-offs'
+                    },
+                    {
+                        title: 'Оприходования',
+                        url: '/posting'
                     }
                 ],
             },
@@ -451,6 +455,10 @@ const navigationModule = {
                     {
                         title: 'Списания',
                         url: '/write-offs'
+                    },
+                    {
+                        title: 'Оприходования',
+                        url: '/posting'
                     }
                 ],
             },

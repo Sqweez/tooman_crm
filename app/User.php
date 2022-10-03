@@ -47,6 +47,9 @@ use Illuminate\Support\Facades\Hash;
  * @method static \Illuminate\Database\Query\Builder|User withTrashed()
  * @method static \Illuminate\Database\Query\Builder|User withoutTrashed()
  * @mixin \Eloquent
+ * @property-read bool $is_non_revision_pages_blocked
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Revision[] $revisions
+ * @property-read int|null $revisions_count
  */
 class User extends Authenticatable
 {

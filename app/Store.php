@@ -49,6 +49,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|Store whereKaspiTerminalIp($value)
  * @property array|null $etc
  * @method static \Illuminate\Database\Eloquent\Builder|Store whereEtc($value)
+ * @property string $iin
+ * @property string $legal_name
+ * @method static \Illuminate\Database\Eloquent\Builder|Store whereIin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Store whereLegalName($value)
  */
 class Store extends Model
 {

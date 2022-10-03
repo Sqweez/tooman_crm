@@ -1,5 +1,6 @@
 <template>
     <v-dialog
+        :max-width="maxWidth"
         v-bind="$attrs"
         persistent
         v-model="state"
@@ -54,6 +55,9 @@ export default {
         state: {
             type: Boolean,
             default: false,
+        },
+        maxWidth: {
+            default: '800'
         }
     },
     data: () => ({}),

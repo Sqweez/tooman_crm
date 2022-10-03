@@ -40,6 +40,8 @@ class RevisionsListResource extends JsonResource
             'can_edit' => $this->can_edit,
             'can_rollback' => $this->can_rollback,
             'is_finished' => $this->is_finished,
+            'write_off_disabled' => $this->is_write_off_disabled,
+            'posting_disabled' => $this->is_posting_disabled
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\ArrivalController;
 use App\Http\Controllers\api\TransferController;
+use App\Http\Controllers\api\v2\PostingController;
 use App\Http\Controllers\api\v2\ProductController;
 use App\Http\Controllers\api\v2\CertificateController;
 use App\Http\Controllers\api\v2\CompanionController;
@@ -400,11 +401,26 @@ Route::middleware(AuthorizationMiddleware::class)->group(function () {
             Route::get('/generate-pivot/{revision}', [RevisionController::class, 'generatePivotTable']);
             Route::post('/edit/{revision}', [RevisionController::class, 'editRevision']);
             Route::post('/rollback/{revision}', [RevisionController::class, 'rollbackRevision']);
+            Route::get('/{revision}/write-off', [RevisionController::class, 'createWriteOff']);
+            Route::get('/{revision}/posting', [RevisionController::class, 'createPosting']);
         });
 
         Route::prefix('write-offs')->group(function () {
             Route::get('/', [WriteOffController::class, 'index']);
+            Route::get('/{writeOff}', [WriteOffController::class, 'show']);
+            Route::get('/{writeOff}/accept', [WriteOffController::class, 'accept']);
+            Route::get('/{writeOff}/decline', [WriteOffController::class, 'decline']);
+            Route::get('/{writeOff}', [WriteOffController::class, 'show']);
             Route::post('/', [WriteOffController::class, 'store']);
+        });
+
+        Route::prefix('posting')->group(function () {
+            Route::get('/', [PostingController::class, 'index']);
+            Route::get('/{posting}', [PostingController::class, 'show']);
+            Route::get('/{posting}/accept', [PostingController::class, 'accept']);
+            Route::get('/{posting}/decline', [PostingController::class, 'decline']);
+            Route::get('/{posting}', [PostingController::class, 'show']);
+            Route::post('/', [PostingController::class, 'store']);
         });
     });
 });
