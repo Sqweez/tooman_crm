@@ -36,7 +36,7 @@ class Manufacturer extends Model
     ];
 
     public function products() {
-        return $this->hasManyThrough(Product::class, ManufacturerProducts::class);
+        return $this->hasMany(Product::class);
     }
 
     protected static function boot() {

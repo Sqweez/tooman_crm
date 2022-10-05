@@ -13,6 +13,7 @@ use App\Http\Requests\Arrival\UpdateArrivalRequest;
 use App\Http\Resources\ArrivalForTransferResource;
 use App\Http\Resources\ArrivalResource;
 use App\ProductBatch;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -21,8 +22,13 @@ class ArrivalController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection {
         $is_completed = !!$request->get('is_completed', 0);
+        /* @var User $user */
+        $user = auth()->user();
         return ArrivalResource::collection(
             Arrival::where('is_completed', $is_completed)
+                ->when(!$user->is_super_user, function ($query) use ($user) {
+                    return $query->where('store_id', $user->store_id);
+                })
                 ->with([
                     'products', 'products.product',
                     'products.product.product',

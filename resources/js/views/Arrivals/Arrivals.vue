@@ -53,7 +53,7 @@
         },
         computed: {
             segments() {
-                return (this.IS_SUPERUSER && !this.IS_MARKETOLOG) ? [
+                return [
                     {
                         name: 'Текущие',
                         component: 'CurrentArrivals'
@@ -61,15 +61,6 @@
                     {
                         name: 'Создать',
                         component: 'NewArrival'
-                    },
-                    {
-                        name: 'История',
-                        component: 'ArrivalHistory'
-                    },
-                ] : [
-                    {
-                        name: 'Текущие',
-                        component: 'CurrentArrivals'
                     },
                     {
                         name: 'История',

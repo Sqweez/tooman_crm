@@ -57,7 +57,7 @@
                                 </v-list-item>
                             </v-list>
                         </td>
-                        <td v-if="IS_SUPERUSER">
+                        <td v-if="IS_SUPERUSER || IS_SENIOR_SELLER">
                             <v-text-field
                                 v-if="confirmMode && editMode"
                                 v-model.number="item.purchase_price"
@@ -96,7 +96,7 @@
                                     {{ item.product_price | priceFilters }}
                                 </span>
                         </td>
-                        <td v-if="IS_SUPERUSER">
+                        <td v-if="IS_SUPERUSER || IS_SENIOR_SELLER">
                             <v-list flat>
                                 <v-list-item>
                                     <v-list-item-content>
@@ -121,7 +121,7 @@
                                 <v-list-item>
                                     <v-list-item-content>
                                         <v-list-item-title>
-                                            {{ deliverySurcharge + item.purchase_price | priceFilters}}
+                                            {{ deliverySurcharge + (item.purchase_price * moneyRate) | priceFilters}}
                                         </v-list-item-title>
                                         <v-list-item-subtitle>
                                             Итоговая закупочная
@@ -191,7 +191,7 @@
             <v-btn
                 color="primary"
                 text
-                v-if="confirmMode && editMode && IS_SUPERUSER"
+                v-if="confirmMode && editMode && (IS_SUPERUSER || IS_SENIOR_SELLER)"
                 @click="updateArrival"
             >
                 Сохранить изменения
@@ -200,7 +200,7 @@
             <v-btn
                 color="success"
                 text
-                v-if="confirmMode && hasAccepted && !editMode && !search && IS_SUPERUSER"
+                v-if="confirmMode && hasAccepted && !editMode && !search && (IS_SUPERUSER || IS_SENIOR_SELLER)"
                 @click="submitArrival"
             >
                 Подтвердить <v-icon>mdi-check</v-icon>
@@ -305,7 +305,7 @@ export default {
             const payload = {
                 ...this.arrival,
                 products: this.products.map(product => ({
-                    purchase_price: product.purchase_price,
+                    purchase_price: product.purchase_price * this.moneyRate,
                     count: product.count,
                     product_id: product.id,
                     base_product_id: product.base_product_id,
@@ -339,7 +339,7 @@ export default {
                     .map(p => ({
                         product_id: p.id,
                         count: p.count - p.booking_count,
-                        purchase_price: p.purchase_price + this.deliverySurcharge,
+                        purchase_price: (p.purchase_price * this.moneyRate) + this.deliverySurcharge,
                         product_price: p.product_price,
                         base_product_id: p.base_product_id
                     }))

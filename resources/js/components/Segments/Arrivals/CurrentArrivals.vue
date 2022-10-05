@@ -136,7 +136,7 @@
                                                 <v-btn
                                                     color="primary"
                                                     @click="current_arrival = item; arrivalModal = true; editArrivalMode = true;"
-                                                    v-if="IS_SUPERUSER && !IS_MARKETOLOG"
+                                                    v-if="IS_SUPERUSER || IS_SENIOR_SELLER"
                                                 >
                                                     Редактировать <v-icon>mdi-pencil</v-icon>
                                                 </v-btn>

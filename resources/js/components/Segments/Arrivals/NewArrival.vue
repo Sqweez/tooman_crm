@@ -174,6 +174,7 @@
                             <td class="text-center" style="max-width: 300px; min-width: 300px;">
                                 <v-select
                                     :items="stores"
+                                    :disabled="!IS_SUPERUSER"
                                     item-text="name"
                                     v-model="child_store"
                                     item-value="id"
@@ -402,6 +403,7 @@ export default {
         await this.$store.dispatch(ACTIONS.GET_CATEGORIES);
         await this.$store.dispatch(ACTIONS.GET_MANUFACTURERS);
         await this.$store.dispatch(ACTIONS.GET_ATTRIBUTES);
+        this.child_store = this.IS_SUPERUSER ? this.stores[0].id : this.$user.store_id;
         const response = await db.arrivals.toArray();
         if (response && response.length > 0) {
             const arrival = response[0];
@@ -521,6 +523,7 @@ export default {
                 this.$loading.enable('Поступление создается...');
                 await this.$createArrival(arrival);
                 await db.arrivals.clear();
+                this.clearCache();
                 this.$toast.success('Поступление создано успешно!');
                 this.cart = [];
                 this.comment = '';
@@ -544,11 +547,6 @@ export default {
         }
     },
     computed: {
-        _stores() {
-            const stores = this.stores.filter(s => s.id !== this.storeFilter);
-            this.child_store = stores[0].id;
-            return stores;
-        },
         totalCost() {
             return this.cart.reduce((a, c) => {
                 return a + (+c.count * +c.purchase_price);
@@ -562,7 +560,7 @@ export default {
         }
     },
     watch: {
-        child_store () {
+        child_store (val) {
             this.cart = this.cart.map(c => {
                 return {
                     ...c,
