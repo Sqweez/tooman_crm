@@ -3,6 +3,7 @@
 namespace App;
 
 use App\v2\Models\SeoText;
+use App\v2\Models\SortByNameScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -60,6 +61,7 @@ class Category extends Model
 
     public static function boot() {
         parent::boot();
+        static::addGlobalScope(new SortByNameScope('category_name'));
         static::deleting(function($category) {
             $category->subcategories()->delete();
             Cache::forget('categories');

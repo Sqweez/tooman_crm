@@ -3,6 +3,7 @@
 namespace App;
 
 use App\v2\Models\SeoText;
+use App\v2\Models\SortByNameScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
@@ -41,6 +42,12 @@ use Illuminate\Support\Carbon;
 class Subcategory extends Model
 {
     protected $guarded = [];
+
+    protected static function boot() {
+        parent::boot();
+        static::addGlobalScope(new SortByNameScope('subcategory_name'));
+    }
+
 
     public function scopeOfSlug($query, $slug) {
         return $query->where('subcategory_slug', $slug);

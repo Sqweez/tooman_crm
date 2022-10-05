@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\v2\Models\SortByNameScope;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -38,6 +39,9 @@ class Manufacturer extends Model
         return $this->hasManyThrough(Product::class, ManufacturerProducts::class);
     }
 
+    protected static function boot() {
+        parent::boot();
+        static::addGlobalScope(new SortByNameScope('manufacturer_name'));
 
-
+    }
 }
