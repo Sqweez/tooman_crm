@@ -43,7 +43,7 @@ class RevisionProducts extends Model
 
 
     public function sku(): BelongsTo {
-        return $this->belongsTo(ProductSku::class, 'product_id');
+        return $this->belongsTo(ProductSku::class, 'product_id')->withTrashed();
     }
 
     public function getDeltaAttribute(): int {
