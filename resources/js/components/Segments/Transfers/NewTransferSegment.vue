@@ -315,10 +315,7 @@ export default {
         await this.$store.dispatch('GET_PRODUCTS_v2');
         await this.$store.dispatch(ACTIONS.GET_MANUFACTURERS);
         await this.$store.dispatch(ACTIONS.GET_CATEGORIES);
-        this.storeFilter = this.IS_SUPERUSER ? this.stores[0]?.id : __hardcoded(6);
-        if (this.IS_SELLER) {
-            this.storeFilter = 6;
-        }
+        this.storeFilter = this.IS_SUPERUSER ? this.stores[0]?.id : this.$user.store_id;
         this.$loading.disable();
         if (this.IS_SUPERUSER) {
             const { data: { data } } = await axios.get(`/api/arrivals/transfers`);
@@ -359,7 +356,7 @@ export default {
             this.confirmationModal = true;
 
             this.$toast.success('Перемещение создано успешно!');
-            //this.cart = [];
+            this.cart = [];
         },
         async getWayBill() {
             this.confirmationModal = false;
