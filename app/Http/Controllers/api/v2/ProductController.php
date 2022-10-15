@@ -91,6 +91,7 @@ class ProductController extends Controller
             return ProductBatch::query()
                 ->where('quantity', '>', 0)
                 ->where('store_id', $store)
+                ->with('product:id,product_id')
                 ->get()
                 ->groupBy('product_id')
                 ->map(function ($quantities, $productId) {
@@ -105,6 +106,7 @@ class ProductController extends Controller
                         'purchase_price' => $purchase,
                         'quantity' => $quantity,
                         'product_id' => $productId,
+                        'main_product_id' => optional($quantities->first()->product)->product_id,
                     ];
                 })
                 ->values();
@@ -112,6 +114,7 @@ class ProductController extends Controller
 
         return ProductBatch::query()
             ->where('quantity', '>', 0)
+            ->with('product:id,product_id')
             ->get()
             ->groupBy('product_id')
             ->map(function ($item) {
@@ -127,7 +130,8 @@ class ProductController extends Controller
                         'purchase_price' => collect($store)->reduce(function ($a, $c) {
                             return $a + $c['purchase_price'] * $c['quantity'];
                         }, 0),
-                        'name' => collect($store)->first()['store']['name']
+                        'name' => collect($store)->first()['store']['name'],
+                        'main_product_id' => optional(collect($store)->first()->product)->product_id,
                     ];
                 })->values()->all();
                 $totalQuantity = collect($storesQuantity)->reduce(function ($a, $c) {

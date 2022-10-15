@@ -40,9 +40,40 @@ const state = {
 const getters = {
     PRODUCTS_v2: state => state.products_v2,
     MAIN_PRODUCTS_v2: state => {
-        const array = [];
-        return state.products_v2.filter(product => {
-            if (array.findIndex(a => a.product_id === product.product_id) === -1) {
+        return state.products_v2
+            .reduce((group, product) => {
+                const { product_id } = product;
+                group[product_id] = group[product_id] ?? [];
+                group[product_id].push(product);
+                return group;
+            }, [])
+            .filter(product => !!product)
+            .map(product => {
+                return {
+                    ...product[0],
+                    product_name: product[0].product_name_base,
+                    attributes: product[0].attributes.filter(a => a.is_main),
+                    product_ids: product.map(p => p.id),
+                    quantity: product.reduce((a, c) => {
+                        return a + c.quantity
+                    }, 0),
+                    purchase_price: product.reduce((a, c) => {
+                        return a + c.purchase_price
+                    }, 0),
+                }
+            })
+            .sort((a, b) => {
+                if (a.product_name > b.product_name) {
+                    return 1;
+                }
+                if (a.product_name < b.product_name) {
+                    return -1;
+                }
+                return 0;
+            });
+        /*return state.products_v2.filter(product => {
+            const findIndex = array.findIndex(a => a.product_id === product.product_id);
+            if (findIndex === -1) {
                 array.push(product);
                 return true;
             }
@@ -51,7 +82,7 @@ const getters = {
             ...product,
             product_name: product.product_name_base,
             attributes: product.attributes.filter(a => a.is_main)
-        }));
+        }));*/
     },
     QUANTITIES_v2: state => state.quantities,
     PRODUCT_v2: state => state.product_v2,

@@ -90,7 +90,8 @@
                                             {{ item.product_name }}
                                         </v-list-item-title>
                                         <v-list-item-subtitle>
-                                            {{ item.attributes.map(a => a.attribute_value).join(', ') }}, {{ item.manufacturer.manufacturer_name }}
+                                            <span v-if="item.attributes.length">{{ item.attributes.map(a => a.attribute_value).join(', ') }}, </span>
+                                            <span>{{ item.manufacturer.manufacturer_name }}</span>
                                         </v-list-item-subtitle>
                                     </v-list-item-content>
                                 </v-list-item>
@@ -164,7 +165,7 @@
                         <template v-slot:item.quantity="{item}">
                             <div v-if="storeFilter === -1">
                                 <v-list v-if="quantities[item.id]">
-                                    <v-list-item v-for="(quantity) of getQuantities(item.id)">
+                                    <v-list-item v-for="(quantity) of getQuantities(item)">
                                         <v-list-item-content>
                                             <v-list-item-title>{{ quantity.quantity }} шт</v-list-item-title>
                                             <v-list-item-title
@@ -188,7 +189,7 @@
                         <template v-slot:item.purchase_price="{item}">
                             <div v-if="storeFilter === -1">
                                 <v-list v-if="quantities[item.id]">
-                                    <v-list-item v-for="(quantity) of getPurchasePrices(item.id)">
+                                    <v-list-item v-for="(quantity) of getPurchasePrices(item)">
                                         <v-list-item-content>
                                             <v-list-item-title>{{ quantity.purchase_price | priceFilters }}</v-list-item-title>
                                             <v-list-item-title
@@ -241,29 +242,22 @@ import _ from 'lodash';
 
 export default {
     async created() {
-        this.showMainProducts = !!this.IS_MODERATOR;
-        const store_id = (this.is_admin || this.IS_BOSS) ? null : this.user.store_id;
-        console.log(store_id);
+        this.$loading.enable('Идет загрузка...');
+        this.storeFilter = this.IS_SUPERUSER ? -1 : this.$user.store_id;
         try {
             await this.$store.dispatch('GET_PRODUCTS_v2');
         } catch (e) {
             console.log(e.response);
         }
-        await this.$store.dispatch(ACTIONS.GET_STORES, store_id);
-        if (this.IS_SUPERUSER) {
-            this.storeFilter = -1;
-        } else {
-            this.storeFilter = -1;
-        }
-
         if (this.IS_FRANCHISE) {
-            this.storeFilter = this.user.store_id;
+            this.storeFilter = this.$user.store_id;
         }
 
         await this.$store.dispatch(ACTIONS.GET_CATEGORIES);
         await this.$store.dispatch(ACTIONS.GET_MANUFACTURERS);
         await this.$store.dispatch(ACTIONS.GET_ATTRIBUTES);
         await this.$store.dispatch(ACTIONS.GET_SUPPLIERS);
+        this.$loading.disable();
     },
     data: () => ({
         priceTagModal: false,
@@ -439,10 +433,10 @@ export default {
                 },
             ];
 
-            if (this.is_admin || this.IS_BOSS || this.IS_SENIOR_SELLER || this.IS_MODERATOR || this.IS_FRANCHISE) {
+            if (this.IS_SUPERUSER || this.IS_SENIOR_SELLER || this.IS_MODERATOR || this.IS_FRANCHISE) {
                 headers.unshift({
                     value: 'id',
-                    text: 'ID',
+                    text: 'Артикул',
                     sortable: true
                 })
             }
@@ -486,39 +480,81 @@ export default {
 
             this.waitingQuantities = true;
         },
-        getQuantities(id) {
-            let qnt = this.quantities[id];
-            if (!this.IS_SUPERUSER) {
-                qnt = qnt.filter(q => {
-                    return [-1, 1, 6, this.user.store_id].includes(q.store_id);
-                });
-                qnt = qnt.map(q => {
-                    if (q.store_id === -1) {
-                        q.quantity = qnt.filter(q => q.store_id !== -1).reduce((a, c) => {
-                            return a + c.quantity;
-                        }, 0)
+        getQuantities(product) {
+            if (!this.showMainProducts) {
+                let qnt = this.quantities[product.id];
+                if (!this.IS_SUPERUSER) {
+                    qnt = qnt.filter(q => {
+                        return [-1, 1, 6, this.user.store_id].includes(q.store_id);
+                    });
+                    qnt = qnt.map(q => {
+                        if (q.store_id === -1) {
+                            q.quantity = qnt.filter(q => q.store_id !== -1).reduce((a, c) => {
+                                return a + c.quantity;
+                            }, 0)
+                        }
+                        return q;
+                    })
+                }
+                return qnt;
+            } else {
+                const quantities = [];
+                product.product_ids.forEach(id => {
+                    const needle = this.quantities[id];
+                    if (needle) {
+                        needle.forEach(qnt => {
+                            const idx = quantities.findIndex(q => q.store_id === qnt.store_id);
+                            if (idx === -1) {
+                                quantities.push(qnt);
+                            } else {
+                                quantities.splice(idx, 1, {
+                                    ...quantities[idx],
+                                    quantity: quantities[idx].quantity + qnt.quantity,
+                                })
+                            }
+                        })
                     }
-                    return q;
                 })
+                return quantities;
             }
-            return qnt;
         },
-        getPurchasePrices (id) {
-            let qnt = this.quantities[id];
-            if (!this.IS_SUPERUSER) {
-                qnt = qnt.filter(q => {
-                    return [-1, 1, 6, this.user.store_id].includes(q.store_id);
-                });
-                qnt = qnt.map(q => {
-                    if (q.store_id === -1) {
-                        q.quantity = qnt.filter(q => q.store_id !== -1).reduce((a, c) => {
-                            return a + c.quantity;
-                        }, 0)
+        getPurchasePrices (product) {
+            if (!this.showMainProducts) {
+                let qnt = this.quantities[product.id];
+                if (!this.IS_SUPERUSER) {
+                    qnt = qnt.filter(q => {
+                        return [-1, 1, 6, this.user.store_id].includes(q.store_id);
+                    });
+                    qnt = qnt.map(q => {
+                        if (q.store_id === -1) {
+                            q.quantity = qnt.filter(q => q.store_id !== -1).reduce((a, c) => {
+                                return a + c.quantity;
+                            }, 0)
+                        }
+                        return q;
+                    })
+                }
+                return qnt;
+            } else {
+                const quantities = [];
+                product.product_ids.forEach(id => {
+                    const needle = this.quantities[id];
+                    if (needle) {
+                        needle.forEach(qnt => {
+                            const idx = quantities.findIndex(q => q.store_id === qnt.store_id);
+                            if (idx === -1) {
+                                quantities.push(qnt);
+                            } else {
+                                quantities.splice(idx, 1, {
+                                    ...quantities[idx],
+                                    purchase_price: quantities[idx].purchase_price + qnt.purchase_price,
+                                })
+                            }
+                        })
                     }
-                    return q;
                 })
+                return quantities;
             }
-            return qnt;
         },
         async exportProductBatches() {
             this.loading = true;
