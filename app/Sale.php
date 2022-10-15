@@ -117,24 +117,28 @@ class Sale extends Model
         1 => [
             'name' => 'Безналичная оплата'
         ],
-        2 => [
-            'name' => 'Kaspi RED/PayDa!'
+        8 => [
+            'name' => 'Jysan терминал'
         ],
         3 => [
             'name' => 'Перевод на карту'
         ],
-        4 => [
-            'name' => 'Kaspi Магазин'
+        2 => [
+            'name' => 'Kaspi RED!'
         ],
+
+       /* 4 => [
+            'name' => 'Kaspi Магазин'
+        ],*/
         5 => [
             'name' => 'Раздельная оплата'
         ],
-        6 => [
+       /* 6 => [
             'name' => 'Онлайн-оплата'
         ],
         7 => [
             'name' => 'Почта'
-        ]
+        ]*/
     ];
 
     public function client() {

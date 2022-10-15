@@ -441,9 +441,9 @@ class SaleController extends Controller {
         return collect(Sale::PAYMENT_TYPES)->map(function ($item, $key) {
             return [
                 'id' => $key,
-                'name' => collect($item)->first()
+                'name' => collect($item)->first()->name,
             ];
-        });
+        })->values();
     }
 
     public function sendTelegramOrderMessage(Sale $sale, TelegramService $telegramService) {
