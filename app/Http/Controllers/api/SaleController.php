@@ -441,7 +441,7 @@ class SaleController extends Controller {
         return collect(Sale::PAYMENT_TYPES)->map(function ($item, $key) {
             return [
                 'id' => $key,
-                'name' => collect($item)->first()->name,
+                'name' => collect($item)->first(),
             ];
         })->values();
     }
