@@ -175,13 +175,13 @@ export default {
                 const formData = new FormData;
                 formData.append('file', excelFile);
                 const { data: { data } } = await axios.post(`/api/v2/revision/to-approve/${this.revisionId}`, formData);
+                this.$toast.success('Ревизия отправлена на проверку!');
                 this.$store.commit('updateRevision', data);
                 await this.$store.dispatch('AUTH');
                 this.revisionId = null;
             } catch (e) {
                 console.log(e);
                 this.$toast.error('Произошла ошибка!');
-                this.$toast.success('Ревизия отправлена на проверку!');
             } finally {
                 this.$loading.disable();
             }

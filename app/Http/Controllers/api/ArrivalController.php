@@ -46,7 +46,7 @@ class ArrivalController extends Controller
                 ->get()
                 ->map(function ($arrival) {
                     $products = collect($arrival->products)->filter(function ($batch) {
-                        return $batch['product'] !== null;
+                        return $batch['product'] !== null && $batch['product']['product'] !== null;
                     });
                     unset($arrival['products']);
                     $arrival['products'] = $products;
