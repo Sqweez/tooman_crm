@@ -16,6 +16,7 @@ const navigationModule = {
                 url: '/clients',
                 icon: 'person'
             },
+
            /* {
                 title: 'Документооборот',
                 url: '#',
@@ -129,6 +130,22 @@ const navigationModule = {
                 ]
             },
             {
+                title: 'Бухгалтерия',
+                url: '#',
+                hasDropdown: true,
+                icon: 'account_balance_wallet',
+                children: [
+                    {
+                        title: 'Кассовые смены',
+                        url: '/accounting/shifts'
+                    },
+                    {
+                        title: 'ЗП ведомость',
+                        url: '/accounting/salary'
+                    },
+                ]
+            },
+            {
                 title: 'Продавцы',
                 url: '#',
                 hasDropdown: true,
@@ -143,6 +160,11 @@ const navigationModule = {
                         url: '/education/index'
                     }
                 ],
+            },
+            {
+                title: 'Изъятия',
+                url: '/with-drawal',
+                icon: 'report'
             },
             {
                 title: 'Статистика',
@@ -463,6 +485,11 @@ const navigationModule = {
                 ],
             },
             {
+                title: 'Изъятия',
+                url: '/with-drawal',
+                icon: 'report'
+            },
+            {
                 title: 'Продавцы',
                 url: '#',
                 hasDropdown: true,
@@ -670,7 +697,12 @@ const navigationModule = {
                 title: 'Промокоды',
                 url: '/promocode',
                 icon: 'receipt'
-            }
+            },
+            {
+                title: 'Изъятия',
+                url: '/with-drawal',
+                icon: 'report'
+            },
         ],
         sellerMenu: [
             {
@@ -738,7 +770,12 @@ const navigationModule = {
                 title: 'Промокоды',
                 url: '/promocode',
                 icon: 'receipt'
-            }
+            },
+            {
+                title: 'Изъятия',
+                url: '/with-drawal',
+                icon: 'report'
+            },
         ],
         observerMenu: [
             {

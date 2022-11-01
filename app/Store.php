@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\v2\Models\WorkingDay;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -93,5 +95,10 @@ class Store extends Model
 
     public function scopeShops($q) {
         return $q->whereTypeId(1);
+    }
+
+    public function activeWorkingDay(): HasOne {
+        return $this->hasOne(WorkingDay::class)
+            ->whereNull('closed_at');
     }
 }

@@ -183,3 +183,24 @@ if (!function_exists('number2string')) {
 
     }
 }
+
+if (!function_exists('get_dates_range')) {
+    function get_dates_range ($_start, $_finish) {
+        $start = Carbon::parse($_start);
+        $finish = Carbon::parse($_finish);
+        $dates = [
+            $start->format('Y-m-d')
+        ];
+        $diffInDays = $finish->diffInDays($start);
+        foreach (range(0, $diffInDays - 1) as $_) {
+            $dates[] = $start->addDay()->format('Y-m-d');
+        }
+        return $dates;
+    }
+}
+
+if (!function_exists('__hardcoded')) {
+    function __hardcoded ($value) {
+        return $value;
+    }
+}

@@ -1019,6 +1019,7 @@ export default {
                 is_delivery: this.isDelivery,
                 is_paid: this.is_paid,
                 is_opt: this.isOpt,
+                working_day_id: this.$user.working_day_id
             };
             try {
                 this.overlay = true;

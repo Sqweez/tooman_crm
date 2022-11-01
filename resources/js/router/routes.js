@@ -73,6 +73,11 @@ import RevisionShow from '@/views/Revision/RevisionShow';
 import ProductRemainsIndex from '@/views/ProductRemains/ProductRemainsIndex';
 import WriteOffIndex from '@/views/WriteOffs/WriteOffIndex';
 import PostingIndex from '@/views/Posting/PostingIndex';
+import CreateWorkingDay from '@/views/WorkingDay/CreateWorkingDay';
+import CloseWorkingDay from '@/views/WorkingDay/CloseWorkingDay';
+import AccountingWorkingDays from '@/views/Accounting/AccountingWorkingDays';
+import AccountingSalaryInformation from '@/views/Accounting/AccountingSalaryInformation';
+import WithDrawalIndex from '@/views/WithDrawal/WithDrawalIndex';
 
 const routes = [
     {
@@ -737,7 +742,27 @@ const routes = [
     {
         path: '/products/iherb',
         component: IherbIndexPage
-    }
+    },
+    {
+        path: '/working-day/create',
+        component: CreateWorkingDay
+    },
+    {
+        path: '/working-day/close',
+        component: CloseWorkingDay
+    },
+    {
+        path: '/accounting/shifts',
+        component: AccountingWorkingDays
+    },
+    {
+        path: '/accounting/salary',
+        component: AccountingSalaryInformation
+    },
+    {
+        path: '/with-drawal',
+        component: WithDrawalIndex
+    },
 ];
 
 export default routes;

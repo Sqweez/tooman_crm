@@ -135,6 +135,12 @@
                 </li>
             </ul>-->
 
+            <div>
+                <v-btn color="error" v-if="USER && USER.working_day_id" @click="$router.push('/working-day/close')">
+                    Закрыть смену
+                </v-btn>
+            </div>
+
             <div class="avatar-dropdown" id="icon" v-if="LOGGED_IN" @click="showDropdown = !showDropdown">
                 <span>{{ USER.name}}</span>
                 <img src="../../../assets/images/login_icon.png">

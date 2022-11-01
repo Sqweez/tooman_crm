@@ -2,8 +2,10 @@
 
 namespace App;
 
+use App\v2\Models\WorkingDay;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -86,6 +88,11 @@ class User extends Authenticatable
             ->first();
     }
 
+    public function activeWorkingDay(): HasOne {
+        return $this->hasOne(WorkingDay::class)
+            ->whereNull('closed_at');
+    }
+
     public function scopeLogin($q, $login) {
         $q->where('login', $login);
     }
@@ -104,5 +111,13 @@ class User extends Authenticatable
 
     public function getIsNonRevisionPagesBlockedAttribute(): bool {
         return !$this->getIsSuperUserAttribute() && !!$this->activeRevision();
+    }
+
+    public function getIsSellerAttribute(): bool {
+        return in_array($this->role_id, [UserRole::SELLER_ROLE_ID, UserRole::SENIOR_SELLER_ROLE_ID]);
+    }
+
+    public function hasOpenedWorkingDay(): bool {
+        return isset($this->activeWorkingDay);
     }
 }

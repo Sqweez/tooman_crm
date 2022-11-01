@@ -2,12 +2,15 @@
 
 use App\Http\Controllers\api\ArrivalController;
 use App\Http\Controllers\api\TransferController;
+use App\Http\Controllers\api\v2\AccountingController;
 use App\Http\Controllers\api\v2\PostingController;
 use App\Http\Controllers\api\v2\ProductController;
 use App\Http\Controllers\api\v2\CertificateController;
 use App\Http\Controllers\api\v2\CompanionController;
 use App\Http\Controllers\api\v2\RevisionController;
 use App\Http\Controllers\api\v2\SeoController;
+use App\Http\Controllers\api\v2\WithDrawalController;
+use App\Http\Controllers\api\v2\WorkingDayController;
 use App\Http\Controllers\api\v2\WriteOffController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AuthorizationMiddleware;
@@ -422,5 +425,17 @@ Route::middleware(AuthorizationMiddleware::class)->group(function () {
             Route::get('/{posting}', [PostingController::class, 'show']);
             Route::post('/', [PostingController::class, 'store']);
         });
+
+        Route::prefix('working-day')->group(function () {
+            Route::patch('close', [WorkingDayController::class, 'close']);
+            Route::post('/', [WorkingDayController::class, 'store']);
+        });
+
+        Route::prefix('accounting')->group(function () {
+            Route::get('shifts', [AccountingController::class, 'getShiftReport']);
+        });
+
+        Route::get('with-drawal/types', [WithDrawalController::class, 'getTypes']);
+        Route::apiResource('with-drawal', 'api\v2\WithDrawalController');
     });
 });

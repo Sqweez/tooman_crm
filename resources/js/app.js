@@ -13,22 +13,20 @@ import 'froala-editor/css/froala_editor.pkgd.min.css';
 import axios from 'axios';
 import './filters/filters';
 import loadingPlugin from "./utils/loadingPlugin";
-import JsonExcel from "vue-json-excel";
 axios.defaults.withCredentials = true;
 
 import VueFroala from 'vue-froala-wysiwyg'
 import { VueEditor } from "vue2-editor";
 import vuePlugins from "@/utils/vuePlugins";
-import BaseModal from '@/components/Modal/BaseModal';
+import GlobalComponents from '@/components/GlobalComponents';
 
 Vue.use(VueFroala);
 Vue.use(confirmationPlugin);
 Vue.use(VueEditor);
 Vue.use(loadingPlugin);
 Vue.use(vuePlugins);
-Vue.component('downloadExcel', JsonExcel);
-Vue.component('base-modal', BaseModal);
 
+GlobalComponents.connect()
 
 
 Vue.config.productionTip = false;

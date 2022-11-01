@@ -5,6 +5,7 @@ import store from "@/store";
 import FileService from "@/utils/fileService";
 import EconomyService from "@/utils/economyService";
 import DatePlugin from "@/utils/datePlugin";
+import {mapGetters} from 'vuex';
 
 export default {
     install(Vue, options) {
@@ -13,12 +14,12 @@ export default {
                 $evaluate: param => eval('this.'+param)
             },
             computed: {
-                $users () {
-                    return this.$store.getters.users;
-                },
-                $stores () {
-                    return this.$store.getters.stores;
-                },
+                ...mapGetters({
+                    $stores: 'stores',
+                    $storeFilters: 'store_filters',
+                    $users: 'users',
+                    $userFilters: 'user_filters'
+                }),
                 $toast() {
                     return new ToastService();
                 },
