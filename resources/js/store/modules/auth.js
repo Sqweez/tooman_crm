@@ -2,6 +2,7 @@ import {auth, login} from '@/api/auth';
 import axios from 'axios';
 import {getKeyByValue} from '@/utils/objects';
 import ACTIONS from "@/store/actions";
+import {clearDatabase, db} from '@/db';
 
 const authModule = {
     state: {
@@ -114,6 +115,7 @@ const authModule = {
             }
         },
         async LOGOUT({commit}) {
+            clearDatabase();
             commit('SET_TOKEN', null);
             commit('SET_USER', null);
             axios.defaults.headers.Authorization = null;

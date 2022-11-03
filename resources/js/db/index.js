@@ -10,4 +10,9 @@ db.version(3).stores({
     transfers: '++id, cart, storeFilter, child_store'
 })
 
+export function clearDatabase () {
+    db.arrivals.clear();
+    db.transfers.clear();
+}
+
 

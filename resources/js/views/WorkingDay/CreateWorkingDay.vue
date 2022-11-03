@@ -1,6 +1,6 @@
 <template>
     <div>
-        <t-card-page title="Открытие смены">
+        <t-card-page title="Открытие смены" v-if="!anotherSellerAtWork">
             <v-text-field
                 label="Сумма денег в кассе"
                 type="number"
@@ -9,6 +9,12 @@
             <v-btn color="success" @click="createWorkingDay">
                 Открыть смену <v-icon>mdi-check</v-icon>
             </v-btn>
+        </t-card-page>
+        <t-card-page title="Действие невозможно" v-else>
+            <h4>
+                На смене находится другой продавец!<br>
+                Попросите его закрыть смену или выйдите из программы!
+            </h4>
         </t-card-page>
     </div>
 </template>
@@ -27,7 +33,11 @@ export default {
             return this.$router.push('/');
         }
     },
-    computed: {},
+    computed: {
+        anotherSellerAtWork () {
+            return this.$user && this.$user.another_seller_at_work;
+        }
+    },
     methods: {
         async createWorkingDay () {
             if (this.cashInHand === '') {

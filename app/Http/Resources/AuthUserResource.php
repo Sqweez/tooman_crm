@@ -21,8 +21,6 @@ class AuthUserResource extends JsonResource
     public function toArray($request)
     {
 
-        \Log::debug('AUTH');
-
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -37,6 +35,7 @@ class AuthUserResource extends JsonResource
             'is_non_revision_pages_blocked' => $this->is_non_revision_pages_blocked,
             'must_open_working_day' => $this->is_seller && !$this->hasOpenedWorkingDay(),
             'working_day_id' => optional($this->activeWorkingDay)->id,
+            'another_seller_at_work' => $this->anotherSellerAtWork()
         ];
     }
 }

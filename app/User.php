@@ -120,4 +120,8 @@ class User extends Authenticatable
     public function hasOpenedWorkingDay(): bool {
         return isset($this->activeWorkingDay);
     }
+
+    public function anotherSellerAtWork(): bool {
+        return $this->store->activeWorkingDay && $this->store->activeWorkingDay->user_id !== auth()->id();
+    }
 }
