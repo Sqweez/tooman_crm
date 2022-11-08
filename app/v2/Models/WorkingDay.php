@@ -68,6 +68,10 @@ class WorkingDay extends Model
         return $this->hasMany(Sale::class);
     }
 
+    public function withdrawal(): HasMany {
+        return $this->hasMany(WithDrawal::class);
+    }
+
     public function getTotalByShiftAttribute(): int {
         return $this->hard_cash + $this->jysan_transfers_cash + $this->kaspi_terminal_cash + $this->kaspi_transfers_cash;
     }

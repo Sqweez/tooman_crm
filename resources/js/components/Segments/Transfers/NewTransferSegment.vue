@@ -96,7 +96,6 @@
                                     v-model="child_store"
                                     item-value="id"
                                     label="Склад"
-                                    :disabled="!IS_SUPERUSER"
                                 />
                             </td>
                         </tr>

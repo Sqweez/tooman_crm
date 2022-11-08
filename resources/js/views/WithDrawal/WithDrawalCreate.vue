@@ -13,7 +13,7 @@
                         v-model.trim="description"
                     />
                     <v-select
-                        label="Склад"
+                        label="Тип изъятия"
                         v-model="type_id"
                         :items="types"
                         item-text="name"

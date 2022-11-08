@@ -25,7 +25,8 @@ class CollectAccountingShiftsReportAction {
         $workingDays = WorkingDay::query()
             ->whereDate('created_at', '>=', $this->start)
             ->whereDate('created_at', '<=', $this->finish)
-            ->with('sales', 'sales.products')
+            ->where('store_id', $this->store_id)
+            ->with('sales', 'sales.products', 'withdrawal')
             ->orderBy('created_at')
             ->get()
             ->groupBy(function ($item) {
@@ -58,7 +59,33 @@ class CollectAccountingShiftsReportAction {
             'kaspi_sales' => $this->getKaspiSales($item),
             'jysan_sales' => $this->getJysanSales($item),
             'total_sales' => $this->getTotalSales($item),
+            'with_drawals' => $this->getWithDrawals($item),
+            'closing_day_cash_in_hand' => $this->getClosingCashInHand($item),
         ];
+    }
+
+    private function getWithDrawals($item) {
+        if ($item['empty']) {
+            return [
+                'total' => 0
+            ];
+        }
+        return [
+            'total' => collect($item['days'])->reduce(function ($a, $c) {
+                return $a + collect($c['withdrawal'])->reduce(function ($_a, $_c) {
+                    return $_a + $_c['amount'];
+                    }, 0);
+            }, 0)
+        ];
+    }
+
+    private function getClosingCashInHand($item): int {
+        if ($item['empty']) {
+            return 0;
+        }
+
+        $lastShift = end($item['days']);
+        return intval($lastShift['closing_cash_in_hand']);
     }
 
     private function getPrevDayCashInHand($items, $index) {

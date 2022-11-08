@@ -50,6 +50,7 @@ class WithDrawal extends Model
         'Оплата интернета',
         'Хоз товары',
         'Прочее',
+        'Инкассация'
     ];
 
     protected $guarded = [

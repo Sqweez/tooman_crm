@@ -18,8 +18,4 @@ class AccountingController extends Controller
             'report' => $report
         ]);
     }
-
-    private function getR() {
-
-    }
 }
