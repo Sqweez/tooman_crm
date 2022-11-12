@@ -11,13 +11,27 @@
                     clearable
                     v-model="search"
                 />
+                <v-autocomplete
+                    label="Склад"
+                    :items="$storeFilters"
+                    item-value="id"
+                    item-text="name"
+                    v-model="storeId"
+                />
+                <v-autocomplete
+                    label="Пользователь"
+                    :items="$userFilters"
+                    item-value="id"
+                    item-text="name"
+                    v-model="userId"
+                />
                 <v-data-table
                     :search="search"
                     class="background-tooman-grey fz-18 mt-2"
                     no-results-text="Нет результатов"
                     no-data-text="Нет данных"
                     :headers="headers"
-                    :items="arrivals"
+                    :items="filteredArrivals"
                     :footer-props="{
                         'items-per-page-options': [10, 15, {text: 'Все', value: -1}],
                         'items-per-page-text': 'Записей на странице',
@@ -187,6 +201,8 @@ import ConfirmationModal from "@/components/Modal/ConfirmationModal";
 export default {
     components: {ConfirmationModal, ArrivalInfoModal},
     data: () => ({
+        storeId: -1,
+        userId: -1,
         search: '',
         overlay: true,
         loading: false,
@@ -239,7 +255,15 @@ export default {
             this.$toast.success('Поставка отменена!');
         }
     },
-    computed: {},
+    computed: {
+        filteredArrivals () {
+            return this.arrivals.filter(a => {
+                return this.storeId === -1 ? true : a.store_id === this.storeId;
+            }).filter(a => {
+                return this.userId === -1 ? true : a.user_id === this.userId;
+            })
+        }
+    },
     async mounted() {
         const { data } = await getArrivals(true);
         this.arrivals = data.map(arrival => {
