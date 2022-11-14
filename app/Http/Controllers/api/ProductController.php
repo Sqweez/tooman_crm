@@ -37,7 +37,7 @@ class ProductController extends Controller {
 
         return ProductResource::collection(Product::orderBy('group_id')->with(['manufacturer', 'price', 'attributes', 'attributes.attribute_name', 'categories', 'subcategories', 'product_images', 'tag'])
             ->with(['quantity' => function ($q) use ($request) {
-                $q->where('quantity', '>', 0);
+                /*$q->where('quantity', '>', 0);*/
                 if ($request->has('store_id')) {
                     $q->where('store_id', $request->get('store_id'));
                 }

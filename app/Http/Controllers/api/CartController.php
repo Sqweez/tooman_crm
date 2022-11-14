@@ -62,9 +62,9 @@ class CartController extends Controller {
                     'products.product.attributes', 'products.product.product.attributes'])
                 ->with(['products.product.batches' => function ($q) use ($store_id) {
                     if (intval($store_id) === -1) {
-                        return $q->whereIn('store_id', [1, 6])->where('quantity', '>', 0);
+                        return $q->whereIn('store_id', [1, 6])/*->where('quantity', '>', 0)*/;
                     }
-                    return $q->where('store_id', $store_id)->where('quantity', '>', 0);
+                    return $q->where('store_id', $store_id)/*->where('quantity', '>', 0)*/;
                 }])
                 ->first()
         );

@@ -72,11 +72,11 @@ class ProductBatch extends Model
     }
 
     public function scopePositive($query) {
-        $query->where('quantity', '>', 0);
+        $query/*->where('quantity', '>', 0)*/;
     }
 
     public function scopeQuantitiesOfStore($query, $store_id) {
-        return $query->where('quantity', '>', 0)
+        return $query/*->where('quantity', '>', 0)*/
             ->whereStoreId($store_id)
             ->groupBy('product_id')
             ->select('product_id')
@@ -85,7 +85,7 @@ class ProductBatch extends Model
 
     public function scopeQuantities($query) {
         return $query
-            ->where('quantity', '>', 0)
+            /*->where('quantity', '>', 0)*/
             ->with('store:id,name')
             ->select(['id', 'store_id', 'quantity', 'product_id']);
     }

@@ -337,7 +337,7 @@ class Product extends Model
 
     public function scopeInStock($query, $store_id) {
         return $query->whereHas('batches', function ($q) use ($store_id) {
-            return $q->where('quantity', '>', 0)->where('store_id', $store_id);
+            return $q/*->where('quantity', '>', 0)*/->where('store_id', $store_id);
         });
     }
 

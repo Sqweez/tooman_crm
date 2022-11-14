@@ -89,7 +89,7 @@ class ProductController extends Controller
 
         if (intval($store) > 0 && $request->has('with-purchase')) {
             return ProductBatch::query()
-                ->where('quantity', '>', 0)
+                /*->where('quantity', '>', 0)*/
                 ->where('store_id', $store)
                 ->with('product:id,product_id')
                 ->get()
@@ -113,7 +113,7 @@ class ProductController extends Controller
         }
 
         return ProductBatch::query()
-            ->where('quantity', '>', 0)
+            /*->where('quantity', '>', 0)*/
             ->with('product:id,product_id')
             ->get()
             ->groupBy('product_id')
@@ -253,7 +253,7 @@ class ProductController extends Controller
             ->when($isFranchise, function ($builder) {
                 return $builder->where('store_id', auth()->user()->store_id);
             })
-            ->where('quantity', '>', 0)
+            /*->where('quantity', '>', 0)*/
             ->with('product', 'product.product:id,product_price,product_name')
             ->get();
 

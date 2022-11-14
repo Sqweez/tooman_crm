@@ -101,7 +101,6 @@ class CronController extends Controller
         $products = ProductsResource::collection(ProductService::all())->toArray($request);
         $batches = ProductBatch::query()
             ->whereIn('store_id', [1, 6])
-            ->where('quantity', '>', 0)
             ->select(['quantity', 'product_id'])
             ->get();
 

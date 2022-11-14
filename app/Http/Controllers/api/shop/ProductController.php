@@ -128,15 +128,15 @@ class ProductController extends Controller {
 
         $productQuery->whereHas('batches', function ($q) use ($store_id) {
             if ($store_id === -1) {
-                return $q->where('quantity', '>', 0)->whereIn('store_id', [1, 6]);
+                return $q/*->where('quantity', '>', 0)*/->whereIn('store_id', [1, 6]);
             } else {
-                return $q->where('quantity', '>', 0)->where('store_id', $store_id);
+                return $q/*->where('quantity', '>', 0)*/->where('store_id', $store_id);
             }
         })->with(['batches' => function ($q) use ($store_id) {
             if ($store_id === -1) {
-                return $q->where('quantity', '>', 0)->whereIn('store_id', [1, 6]);
+                return $q/*->where('quantity', '>', 0)*/->whereIn('store_id', [1, 6]);
             } else {
-                return $q->where('quantity', '>', 0)->where('store_id', $store_id);
+                return $q/*->where('quantity', '>', 0)*/->where('store_id', $store_id);
             }
         }]);
 
