@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Services\ExcelService;
 use App\Http\Resources\v2\Revision\RevisionProductResource;
 use App\Http\Resources\v2\Revision\RevisionsListResource;
+use App\Jobs\Revision\SendRevisionToApprove;
 use App\Revision;
 use App\Services\Revision\RevisionService;
 use App\User;
@@ -72,7 +73,17 @@ class RevisionController extends Controller
             $request->file('file'),
             ExcelService::generateExcelName('ФАЙЛ_РЕВИЗИИ')
         );
-        $action->handle($revision, str_replace('storage/public/', '', $filePath));
+        SendRevisionToApprove::dispatch(
+            $revision,
+            str_replace('storage/public/', '', $filePath)
+        );
+
+        // $revision->update(['status' => Revision::STATUS_ON_APPROVE]);
+
+        // $action->handle($revision, str_replace('storage/public/', '', $filePath));
+        return response([
+            'message' => 'Ревизия была отправлена на проверку!'
+        ]);
         return RevisionsListResource::make($revision->fresh());
     }
 
