@@ -43,7 +43,7 @@
                                 {{ item.edited_pivot_at }}
                             </v-list-item-title>
                             <v-list-item-subtitle>
-                                Дата редактирования сводной таблица
+                                Дата редактирования сводной таблицы
                             </v-list-item-subtitle>
                         </v-list-item-content>
                     </v-list-item>
@@ -74,7 +74,7 @@
                 </v-list>
             </template>
             <template v-slot:item.actions="{ item }">
-                <div class="d-flex flex-column">
+                <div class="d-flex flex-column" v-if="item.status !== 4">
                      <span v-if="item.has_not_actions && !IS_SUPERUSER">
                         Нет доступных действий
                         </span>
@@ -103,6 +103,9 @@
                     <v-btn v-if="item.is_finished" color="primary" text @click="$router.push(`/revision/${item.id}`)">
                         Подробная информация <v-icon>mdi-information-outline</v-icon>
                     </v-btn>
+                </div>
+                <div v-else>
+                    Ревизия находится в обработке...
                 </div>
             </template>
         </v-data-table>
@@ -164,6 +167,13 @@ export default {
             const { data: { data } } = await axios.get('/api/v2/revision');
             this.$store.commit('setRevisions', data);
         },
+        setRevisionInProcess (revisionId) {
+            this.$store.commit('updateRevision', {
+                ...this.revisions.find(r => r.id === revisionId),
+                status: 4,
+                status_text: 'Обрабатывается'
+            })
+        },
         async sentToApprove (e) {
             try {
                 this.$loading.enable();
@@ -176,6 +186,7 @@ export default {
                 formData.append('file', excelFile);
                 await axios.post(`/api/v2/revision/to-approve/${this.revisionId}`, formData);
                 this.$toast.success('Ревизия отправлена на проверку! Вернитесь на эту страницу позже');
+                this.setRevisionInProcess(this.revisionId);
                 // this.$store.commit('updateRevision', data);
                 await this.$store.dispatch('AUTH');
                 this.revisionId = null;
@@ -223,9 +234,9 @@ export default {
                 const formData = new FormData;
                 formData.append('file', file);
                 const { data: { data } } = await axios.post(`/api/v2/revision/edit/${this.revisionId}`, formData);
-                this.$store.commit('updateRevision', data);
+                this.setRevisionInProcess(this.revisionId);
                 this.revisionId = null;
-                this.$toast.success('Исправление успешно загружено!');
+                this.$toast.success('Исправление успешно загружено! Вернитесь на страницу позже.');
             } catch (e) {
                 console.log(e);
             } finally {
@@ -236,8 +247,9 @@ export default {
             try {
                 this.$loading.enable();
                 const { data: { data } } = await axios.post(`/api/v2/revision/rollback/${id}`);
-                this.$store.commit('updateRevision', data);
-                this.$toast.success('Исправление успешно откачено!');
+                this.setRevisionInProcess(this.revisionId);
+                this.revisionId = null;
+                this.$toast.success('Исправление успешно загружено! Вернитесь на страницу позже.');
             } catch (e) {
                 console.log(e);
             } finally {

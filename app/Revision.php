@@ -223,4 +223,10 @@ class Revision extends Model
             return !is_null($file['value']);
         });
     }
+
+    public function setInProcess() {
+        $this->update([
+            'status' => self::STATUS_IN_PROCESS
+        ]);
+    }
 }
