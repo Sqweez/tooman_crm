@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Exception;
 
 class SendRevisionToApprove implements ShouldQueue
@@ -39,6 +40,7 @@ class SendRevisionToApprove implements ShouldQueue
      */
     public function handle()
     {
+        Log::info('The job was started');
         $this->action->handle($this->revision, $this->filePath);
     }
 }

@@ -6,6 +6,7 @@ use App\Revision;
 use App\RevisionProducts;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -20,6 +21,7 @@ class SendRevisionToApprovementAction {
         $excelFile = $this->loadFile($filePath);
         $results = $this->parseRevisionFile($excelFile);
         $results->each(function ($result) use ($revision) {
+            Log::info('Product id: #' . $result['id']);
             RevisionProducts::where('revision_id', $revision->id)
                 ->where('product_id', $result['id'])
                 ->where('fact_quantity', '!=', $result['count'])

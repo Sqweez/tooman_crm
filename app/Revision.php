@@ -91,6 +91,7 @@ class Revision extends Model
     const STATUS_STARTED = 1;
     const STATUS_ON_APPROVE = 2;
     const STATUS_FINISHED = 3;
+    const STATUS_IN_PROCESS = 4;
 
     const FILE_TEMPLATE = 'revision_template.xlsx';
     const PIVOT_FILE_TEMPLATE = 'revision_pivot_template.xlsx';
@@ -147,6 +148,8 @@ class Revision extends Model
                 return 'На проверке';
             case self::STATUS_FINISHED:
                 return 'Закончена';
+            case self::STATUS_IN_PROCESS:
+                return 'Обрабатывается';
             default:
                 return 'Неизвестно';
         }
