@@ -43,6 +43,9 @@ Route::get('/unauthorised', function () {
 
 Route::get('order/{order}/accept', 'api\v2\OrderController@accept');
 Route::get('order/{order}/decline', 'api\v2\OrderController@decline');
+Route::get('test-job', function () {
+    \App\Jobs\Tests\TestJob::dispatch();
+});
 /*Route::get('excel/products', 'api\ProductController@excelProducts');
 Route::get('json/products/parse', 'api\ProductController@jsonParseProduct');
 Route::get('set-tags', 'api\ProductController@setTags'); */
