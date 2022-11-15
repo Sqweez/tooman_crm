@@ -67,7 +67,7 @@ class RevisionController extends Controller
     /**
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
-    public function sendToApprove(Revision $revision, Request $request, SendRevisionToApprovementAction $action): RevisionsListResource {
+    public function sendToApprove(Revision $revision, Request $request) {
         $filePath = \Storage::putFileAs(
             'public/excel/revisions',
             $request->file('file'),
@@ -84,7 +84,6 @@ class RevisionController extends Controller
         return response([
             'message' => 'Ревизия была отправлена на проверку!'
         ]);
-        return RevisionsListResource::make($revision->fresh());
     }
 
     public function generatePivotTable(Revision $revision, GenerateRevisionPivotTableAction $action): array {
