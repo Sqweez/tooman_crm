@@ -30,13 +30,11 @@ class SendRevisionToApprovementAction {
                 );
         });
 
-        if ($revision->status === Revision::STATUS_STARTED) {
-            $revision->update([
-                'original_loaded_revision_file' => 'storage/' . str_replace('public/', '', $filePath),
-                'revision_sent_to_approve_at' => now(),
-                'status' => Revision::STATUS_ON_APPROVE,
-            ]);
-        }
+        $revision->update([
+            'original_loaded_revision_file' => 'storage/' . str_replace('public/', '', $filePath),
+            'revision_sent_to_approve_at' => now(),
+            'status' => Revision::STATUS_ON_APPROVE,
+        ]);
     }
 
     /**
