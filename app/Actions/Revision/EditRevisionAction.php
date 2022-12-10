@@ -22,6 +22,7 @@ class EditRevisionAction {
         $revision->update([
             'edited_pivot_file' => 'storage/' . $filePath,
             'edited_pivot_at' => now(),
+            'status' => 2
         ]);
     }
 
@@ -38,7 +39,7 @@ class EditRevisionAction {
             }
         }
         return $output->filter(function ($item) {
-            return !is_null($item['count'] > 0);
+            return !is_null($item['count']);
         });
     }
 
