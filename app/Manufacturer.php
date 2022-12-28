@@ -42,6 +42,5 @@ class Manufacturer extends Model
     protected static function boot() {
         parent::boot();
         static::addGlobalScope(new SortByNameScope('manufacturer_name'));
-
     }
 }

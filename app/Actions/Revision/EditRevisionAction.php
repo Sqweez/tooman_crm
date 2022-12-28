@@ -32,9 +32,15 @@ class EditRevisionAction {
         $output = collect([]);
         foreach ($rows as $key => $row) {
             if ($key > 2) {
+                $countText = trim($sheet->getCell('H' . $key)->getValue());
+                if (strlen($countText) === 0) {
+                    $count = null;
+                } else {
+                    $count = intval($countText);
+                }
                 $output->push([
                     'id' => $sheet->getCell('A' . $key)->getValue(),
-                    'count' => intval($sheet->getCell('H' . $key)->getValue()) ?: null
+                    'count' => $count,
                 ]);
             }
         }

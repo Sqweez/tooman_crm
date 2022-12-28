@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\v2\Models\SortByNameScope;
 use App\v2\Models\WorkingDay;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -123,5 +124,10 @@ class User extends Authenticatable
 
     public function anotherSellerAtWork(): bool {
         return $this->store->activeWorkingDay && $this->store->activeWorkingDay->user_id !== auth()->id();
+    }
+
+    protected static function boot() {
+        parent::boot();
+        static::addGlobalScope(new SortByNameScope('name'));
     }
 }

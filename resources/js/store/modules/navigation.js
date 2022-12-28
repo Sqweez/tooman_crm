@@ -94,7 +94,7 @@ const navigationModule = {
                     {
                         title: 'Оприходования',
                         url: '/posting'
-                    }
+                    },
                 ],
             },
             {
@@ -481,7 +481,7 @@ const navigationModule = {
                     {
                         title: 'Оприходования',
                         url: '/posting'
-                    }
+                    },
                 ],
             },
             {

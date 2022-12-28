@@ -246,6 +246,9 @@
                                 </v-btn>
                             </div>
                             <div class="actions-products__container" v-if="IS_SUPERUSER">
+                                <v-btn color="primary" @click="$router.push(`/products/movement/${item.id}`)">
+                                    Движение <v-icon>mdi-information-outline</v-icon>
+                                </v-btn>
                                 <v-btn color="success" @click="showProductSkuModal(item.id)"
                                        v-if="item.sku_can_be_created">
                                     Ассортимент
@@ -555,11 +558,11 @@
                         sortable: false
                     });
 
-                    headers.unshift({
+                   /* headers.unshift({
                         value: 'id',
                         text: 'ID',
                         sortable: true
-                    })
+                    })*/
                 }
 
                 if (this.IS_SUPERUSER || this.IS_FRANCHISE) {

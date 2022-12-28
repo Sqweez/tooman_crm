@@ -77,6 +77,8 @@ class Category extends Model
             Cache::forget('categories');
             Cache::forget('shop-categories');
         });
+
+        static::addGlobalScope(new SortByNameScope('category_name'));
     }
 
     public function relatedProducts() {

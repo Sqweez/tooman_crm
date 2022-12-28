@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\v2\Models\SortByNameScope;
 use App\v2\Models\WorkingDay;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -100,5 +101,10 @@ class Store extends Model
     public function activeWorkingDay(): HasOne {
         return $this->hasOne(WorkingDay::class)
             ->whereNull('closed_at');
+    }
+
+    protected static function boot() {
+        parent::boot();
+        static::addGlobalScope(new SortByNameScope('name'));
     }
 }

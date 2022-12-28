@@ -413,7 +413,7 @@
                             @input="backendSearch"
                             solo
                             clearable
-                            label="Поиск товара"
+                            label="Поиск"
                             single-line
                             hide-details
                         ></v-text-field>

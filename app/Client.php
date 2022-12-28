@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\v2\Models\SortByNameScope;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -229,5 +230,7 @@ class Client extends Model
         static::updating(function ($query) {
             $query->loyalty_id = $query->loyalty_id ?? 1;
         });
+
+        static::addGlobalScope(new SortByNameScope('client_name'));
     }
 }

@@ -415,6 +415,8 @@
                             label="Поиск товара"
                             single-line
                             hide-details
+                            ref="searchInputRef"
+                            v-model.trim="searchInputValue"
                         ></v-text-field>
                     </v-col>
                     <v-col cols="12" xl="2" v-if="IS_SUPERUSER">
@@ -595,6 +597,7 @@
             this.$loading.disable();
             setTimeout(() => {
                 this.loading = false;
+                this.$refs.searchInputRef.focus();
             }, 500);
             await this.$store.dispatch(ACTIONS.GET_CLIENTS);
         },
@@ -660,6 +663,7 @@
         },
         mixins: [product, product_search, cart],
         data: () => ({
+            searchInputValue: '',
             isSendTelegram: false,
             isOpt: false,
             isDelivery: false,
@@ -707,7 +711,7 @@
                 this.searchQuery = value;
                 setTimeout(() => {
                     this.loading = false;
-                    }, 500);
+                    }, 200);
             }, 1000),
             calculateProductFinalPrice (product) {
                 const priceWithoutDiscount = product.product_price * product.count;
@@ -760,8 +764,13 @@
             getFiltered(e) {
                 if (e.length === 1 && e[0].product_barcode === this.searchQuery) {
                     this.addToCart(e[0], false);
-                    this.searchQuery = "";
-                    this.searchValue = "";
+                    this.searchQuery = '';
+                    this.searchValue = '';
+                    this.searchInputValue = '';
+                    /*const input = this.$refs.searchInputRef;
+                    if (input) {
+                        input.value = ' ';
+                    }*/
                 }
             },
             async deleteCertificate() {
