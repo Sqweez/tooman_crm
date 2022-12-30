@@ -3,6 +3,7 @@
 use App\Http\Controllers\api\ArrivalController;
 use App\Http\Controllers\api\TransferController;
 use App\Http\Controllers\api\v2\AccountingController;
+use App\Http\Controllers\api\v2\PartnerController;
 use App\Http\Controllers\api\v2\PostingController;
 use App\Http\Controllers\api\v2\ProductController;
 use App\Http\Controllers\api\v2\CertificateController;
@@ -146,6 +147,7 @@ Route::middleware(AuthorizationMiddleware::class)->group(function () {
 
     // UserController
     Route::get('users/roles', 'api\UserController@indexRoles');
+    Route::get('users/partners', 'api\UserController@indexPartners');
     Route::resource('users', 'api\UserController');
 
     // END UserController
@@ -441,5 +443,10 @@ Route::middleware(AuthorizationMiddleware::class)->group(function () {
 
         Route::get('with-drawal/types', [WithDrawalController::class, 'getTypes']);
         Route::apiResource('with-drawal', 'api\v2\WithDrawalController');
+        Route::prefix('partners')->group(function () {
+            Route::get('/', [PartnerController::class, 'index']);
+            Route::get('/product-ids/{user}', [PartnerController::class, 'getPartnerProductIds']);
+            Route::post('/sync/{user}', [PartnerController::class, 'syncPartnerProducts']);
+        });
     });
 });

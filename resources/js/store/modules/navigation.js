@@ -16,6 +16,11 @@ const navigationModule = {
                 url: '/clients',
                 icon: 'person'
             },
+            {
+                title: 'Партнеры',
+                url: '/users/partners',
+                icon: 'person',
+            },
 
            /* {
                 title: 'Документооборот',

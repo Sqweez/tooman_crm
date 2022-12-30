@@ -83,6 +83,7 @@ class ProductSku extends Model
         'product:id,product_name,product_price,category_id,subcategory_id,manufacturer_id,grouping_attribute_id,product_name_web,is_kaspi_visible,is_iherb',
         'product.category', 'product.manufacturer', 'product.attributes', 'product.prices',
         'product.attributes.attribute_name', 'attributes', 'attributes.attribute_name', 'margin_type',
+        'product.subcategory'
     ];
 
     const PRODUCT_SKU_MODERATOR_LIST = [

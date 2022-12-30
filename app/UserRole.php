@@ -26,4 +26,5 @@ class UserRole extends Model
     const BOSS_ROLE_ID = 8;
     const SELLER_ROLE_ID = 2;
     const SENIOR_SELLER_ROLE_ID = 9;
+    const ROLE_PARTNER = 12;
 }

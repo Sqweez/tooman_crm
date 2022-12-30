@@ -130,4 +130,10 @@ class User extends Authenticatable
         parent::boot();
         static::addGlobalScope(new SortByNameScope('name'));
     }
+
+    public function scopePartners($q) {
+        $q->whereHas('role', function ($query) {
+            return $query->where('id', UserRole::ROLE_PARTNER);
+        });
+    }
 }

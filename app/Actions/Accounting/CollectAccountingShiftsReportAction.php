@@ -95,15 +95,25 @@ class CollectAccountingShiftsReportAction {
                 ->latest()
                 ->first();
 
-            return optional($prevDay)->closing_cash_in_hand ?? 0;
+            $byReport = optional($prevDay)->closing_cash_in_hand ?? 0;
+        } else {
+            $prevElement = $items[$index - 1];
+            if ($prevElement['empty']) {
+                $byReport = 0;
+            } else {
+                $prevDay = end($prevElement['days']);
+                $byReport = $prevDay['closing_cash_in_hand'];
+            }
         }
-        $prevElement = $items[$index - 1];
-        if ($prevElement['empty']) {
-            return 0;
-        }
-        $prevDay = end($prevElement['days']);
-        return $prevDay['closing_cash_in_hand'];
+        $byFact = $items[$index]['days'][0]['opening_cash_in_hand'] ?? 0;
+
+        return [
+            'report' => $byReport,
+            'fact' => $byFact,
+            'diff' => $byFact - $byReport
+        ];
     }
+
 
     private function getTotalSaleAmount($item, $paymentType = null) {
         if ($item['empty']) {

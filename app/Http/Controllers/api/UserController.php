@@ -29,6 +29,17 @@ class UserController extends Controller
         return UserRole::all();
     }
 
+    public function indexPartners(): AnonymousResourceCollection {
+        return UserResource::collection(
+            User::query()
+                ->whereHas('role', function ($query) {
+                    return $query->where('id', UserRole::ROLE_PARTNER);
+                })
+                ->with(['store.city_name', 'role'])
+                ->get()
+        );
+    }
+
 
     /**
      * Store a newly created resource in storage.
