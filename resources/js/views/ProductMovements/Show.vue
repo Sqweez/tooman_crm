@@ -11,6 +11,47 @@
             <v-btn color="primary" @click="onSubmit">
                 Получить отчет
             </v-btn>
+            <div v-if="currentProduct">
+                <h5>
+                    <b>Товар:</b> {{ currentProduct.product_name }}
+                </h5>
+                <p>
+                    <b>
+                        Текущее количество:
+                    </b>
+                    {{ currentQuantity }}
+                </p>
+                <v-simple-table v-slot:default>
+                    <thead>
+                    <tr>
+                        <th>
+                            Документ
+                        </th>
+                        <th>
+                            Начальный остаток
+                        </th>
+                        <th>
+                            Приход
+                        </th>
+                        <th>
+                            Расход
+                        </th>
+                        <th>
+                            Конечный остаток
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item, idx) of productMovements" :key="idx">
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.start_quantity }}</td>
+                        <td>{{ item.count > 0 ? item.count : '-' }}</td>
+                        <td>{{ item.count < 0 ? item.count * -1 : '-' }}</td>
+                        <td>{{ item.final_quantity }}</td>
+                    </tr>
+                    </tbody>
+                </v-simple-table>
+            </div>
         </t-card-page>
     </div>
 </template>
@@ -21,6 +62,9 @@ import axiosClient from '@/utils/axiosClient';
 export default {
     data: () => ({
         storeId: null,
+        currentQuantity: null,
+        currentProduct: null,
+        productMovements: null,
     }),
     computed: {
         stores () {
@@ -35,7 +79,9 @@ export default {
                 product: this.$route.params.product,
             })
             const { data } = await axiosClient.get(`v2/products/movements?${params}`);
-            console.log(data);
+            this.currentProduct = data.product;
+            this.currentQuantity = data.current;
+            this.productMovements = data.output;
             this.$loading.disable();
         },
     },
