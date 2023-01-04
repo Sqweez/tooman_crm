@@ -7,7 +7,7 @@
                     item-text="name"
                     item-value="value"
                     v-model="currentDate"
-                    label="Время:"
+                    :label="`${label}:`"
                     @change="updateValue"
                 />
             </v-col>
@@ -120,6 +120,12 @@ const DATE_FILTERS = {
 };
 export default {
     name: 'IDatePicker',
+    props: {
+        label: {
+            type: String,
+            default: 'Время'
+        }
+    },
     data: () => ({
         dateFilters: [
             {

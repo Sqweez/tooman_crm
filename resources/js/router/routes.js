@@ -81,6 +81,7 @@ import ProductMovementIndex from '@/views/ProductMovements/Index';
 import ProductMovementShow from '@/views/ProductMovements/Show';
 import PartnersIndex from '@/views/Partners/PartnersIndex';
 import PartnersEdit from '@/views/Partners/PartnersEdit';
+import PartnersInfo from '@/views/Partners/PartnersInfo';
 
 const routes = [
     {
@@ -777,6 +778,16 @@ const routes = [
     {
         path: '/users/partners/:id/edit',
         component: PartnersEdit,
+        meta: {
+            CAN_ENTER: {
+                IS_BOSS: true,
+                IS_ADMIN: true,
+            }
+        }
+    },
+    {
+        path: '/users/partners/:id/info',
+        component: PartnersInfo,
         meta: {
             CAN_ENTER: {
                 IS_BOSS: true,

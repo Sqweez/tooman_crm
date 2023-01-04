@@ -9,6 +9,9 @@
                     <v-btn icon @click="$router.push(`/users/partners/${item.id}/edit`)">
                         <v-icon>mdi-pencil</v-icon>
                     </v-btn>
+                    <v-btn icon @click="$router.push(`/users/partners/${item.id}/info`)">
+                        <v-icon>mdi-information-outline</v-icon>
+                    </v-btn>
                 </template>
             </v-data-table>
         </t-card-page>

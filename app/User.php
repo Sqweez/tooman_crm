@@ -72,7 +72,7 @@ class User extends Authenticatable
     }
 
     public function store(): BelongsTo {
-        return $this->belongsTo('App\Store', 'store_id');
+        return $this->belongsTo('App\Store', 'store_id')->withTrashed();
     }
 
     public function role(): BelongsTo {

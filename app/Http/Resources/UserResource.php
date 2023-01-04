@@ -28,7 +28,7 @@ class UserResource extends JsonResource
             'login' => $this->login,
             'role_id' => $this->role_id,
             'role' => $this->role->role_name,
-            'store_slug' => Str::slug($this->store->city_name->name),
+            'store_slug' => $this->store ? Str::slug($this->store->city_name->name) : null,
             'is_super_user' => $this->is_super_user,
             'store' => $this->is_super_user ? ['id' => -1, 'name' => 'Все склады'] : $this->store,
         ];

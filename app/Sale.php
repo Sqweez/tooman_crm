@@ -4,6 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Sale
@@ -172,13 +173,13 @@ class Sale extends Model
     public function store() {
         return $this->belongsTo('App\Store', 'store_id')
             ->withDefault([
-                'name' => 'Iron Addicts - Казахстан',
+                'name' => 'Tooman - Казахстан',
                 'id' => -1,
             ])
             ->withTrashed();
     }
 
-    public function products() {
+    public function products(): HasMany {
         return $this->hasMany('App\SaleProduct', 'sale_id');
     }
 
@@ -205,7 +206,8 @@ class Sale extends Model
     }
 
     public function scopeReport($q) {
-        return $q->with(['client:id,client_name,is_wholesale_buyer', 'user:id,name,store_id', 'store:id,name,type_id','products.product', 'products'])
+        return $q
+            ->with(['client:id,client_name,is_wholesale_buyer', 'user:id,name,store_id', 'store:id,name,type_id','products.product', 'products'])
             ->with(['products.product.product:id,product_name,manufacturer_id'])
             ->with(['certificate', 'preorder'])
             ->with(['products.product.product.manufacturer', 'products.product.product.attributes', 'products.product.attributes']);

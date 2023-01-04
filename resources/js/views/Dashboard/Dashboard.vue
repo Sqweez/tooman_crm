@@ -1,6 +1,9 @@
 <template>
     <div>
-        <v-row>
+        <div v-if="IS_PARTNER">
+            <partner-dashboard />
+        </div>
+        <v-row v-if="!IS_PARTNER">
             <v-col sm="12" lg="12" md="12" v-if="IS_PARTNER_SELLER">
                 <DashboardCompanion />
             </v-col>
@@ -34,12 +37,14 @@
     import DashboardCompanion from "@/components/Widgets/DashboardCompanion";
     import TasksWidget from "@/components/Widgets/TasksWidget";
     import BrandsWidget from "@/components/Widgets/BrandsWidget";
+    import PartnerDashboard from '@/components/Dashboard/PartnerDashboard';
 
     export default {
         data: () => ({
             items: ['Сегодня', 'Текущая неделя', 'Текущий месяц', 'Последние 3 месяца'],
         }),
         components: {
+            PartnerDashboard,
             BrandsWidget,
             TasksWidget,
             DashboardCompanion,
@@ -48,7 +53,7 @@
             Weather, SalesRating
         },
         computed: {
-            ...mapGetters(['CAN_SALE', 'IS_MALOY', 'IS_PARTNER_SELLER', 'USER']),
+            ...mapGetters(['CAN_SALE', 'IS_MALOY', 'IS_PARTNER_SELLER', 'USER', 'IS_PARTNER']),
             store() {
                 return this.$store.getters.stores.find(s => s.id == this.USER.store_id);
             }

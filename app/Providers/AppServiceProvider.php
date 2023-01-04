@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Observers\BatchObserver;
 use App\ProductBatch;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 

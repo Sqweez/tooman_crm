@@ -445,6 +445,7 @@ Route::middleware(AuthorizationMiddleware::class)->group(function () {
         Route::apiResource('with-drawal', 'api\v2\WithDrawalController');
         Route::prefix('partners')->group(function () {
             Route::get('/', [PartnerController::class, 'index']);
+            Route::get('/{user}', [PartnerController::class, 'show']);
             Route::get('/product-ids/{user}', [PartnerController::class, 'getPartnerProductIds']);
             Route::post('/sync/{user}', [PartnerController::class, 'syncPartnerProducts']);
         });
