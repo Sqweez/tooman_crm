@@ -28,14 +28,27 @@
                         :items="roles"
                         v-model="user.role_id"
                     />
-                    <v-select
-                        class="mt-3"
-                        label="Город"
-                        :items="stores"
-                        item-text="name"
-                        item-value="id"
-                        v-model="user.store_id"
-                    />
+                    <div class="d-flex align-center" v-if="!isGeneralManager">
+                        <v-select
+                            class="mt-3"
+                            label="Магазин"
+                            :items="stores"
+                            item-text="name"
+                            item-value="id"
+                            v-model="user.store_id"
+                        />
+                    </div>
+                    <div class="d-flex align-center" v-else>
+                        <v-select
+                            class="mt-3"
+                            label="Магазины"
+                            :items="stores"
+                            item-text="name"
+                            item-value="id"
+                            v-model="user_stores"
+                            multiple
+                        />
+                    </div>
                 </v-form>
             </v-card-text>
             <v-card-actions class="p-2" v-if="!loading">
@@ -69,8 +82,10 @@
         watch: {
             state() {
                 this.user = {};
+                this.user_stores = [];
                 if (this.id !== null) {
                     this.user = {...this.$store.getters.user(this.id)};
+                    this.user_stores = this.user.stores.map(s => s.id);
                 }
             }
         },
@@ -78,6 +93,7 @@
             loading: false,
             user: {},
             changePass: false,
+            user_stores: [],
         }),
         props: {
             state: {
@@ -98,6 +114,9 @@
             },
             shops() {
                 return this.$store.getters.shops;
+            },
+            isGeneralManager () {
+                return this.user.role_id === 14;
             }
         },
         methods: {
@@ -107,12 +126,18 @@
                     login: this.user.login,
                     password: this.user.password,
                     role_id: this.user.role_id,
-                    store_id: this.user.store_id
+                    store_id: this.user.store_id,
                 };
+
+                if (this.isGeneralManager) {
+                    user.store_id = this.user_stores[0];
+                }
 
                 if (!Object.keys(user).every(key => !!user[key])) {
                     return this.$toast.error('Заполните все поля!');
                 }
+
+                user.stores = this.user_stores;
 
                 await this.$store.dispatch(ACTIONS.CREATE_USER, user);
                 this.$toast.success('пользователь создан');
@@ -131,6 +156,10 @@
                     user.password = this.user.password;
                 }
 
+                if (this.isGeneralManager) {
+                    user.store_id = this.user_stores[0];
+                }
+                user.stores = this.user_stores;
 
                 if (!Object.keys(user).every(key => !!user[key])) {
                     return this.$toast.error('Заполните все поля!');

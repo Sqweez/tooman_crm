@@ -40,7 +40,7 @@
                                 v-model="storeFilter"
                                 item-value="id"
                                 label="Склад"
-                                :disabled="!(is_admin || IS_BOSS)"
+                                :disabled="!(IS_SUPERUSER)"
                             />
                         </v-col>
                         <v-col cols="12" xl="2" v-if="IS_SUPERUSER">
@@ -280,14 +280,14 @@
                                     Удалить
                                     <v-icon>mdi-delete</v-icon>
                                 </v-btn>
-                                <div class="mb-2 d-flex justify-space-between" v-if="storeFilter !== -1">
+<!--                                <div class="mb-2 d-flex justify-space-between" v-if="storeFilter !== -1">
                                     <v-btn color="error" class="mr-2" @click="changeCount(item.id, -1)">
                                         <v-icon>mdi-minus</v-icon>
                                     </v-btn>
                                     <v-btn color="success" class="ml-2" @click="changeCount(item.id, 1)">
                                         <v-icon>mdi-plus</v-icon>
                                     </v-btn>
-                                </div>
+                                </div>-->
                             </div>
                         </template>
                         <template slot="footer.page-text" slot-scope="{pageStart, pageStop, itemsLength}">
@@ -490,7 +490,13 @@
                 ];
             },
             stores () {
-                return this.$store.getters.stores;
+                let stores = this.$store.getters.stores;
+                if (this.$user.stores.length > 0) {
+                    stores = stores.filter(s => {
+                        return this.$user.stores.findIndex(st => st.id === s.id) !== -1;
+                    })
+                }
+                return stores;
             },
             categories() {
                 return [{
@@ -551,7 +557,14 @@
                     },
                 ];
 
-                if (this.is_admin || this.IS_BOSS || this.IS_SENIOR_SELLER || this.IS_MODERATOR || this.IS_FRANCHISE) {
+                if (this.is_admin
+                    || this.IS_BOSS
+                    || this.IS_SENIOR_SELLER
+                    || this.IS_MODERATOR
+                    || this.IS_FRANCHISE
+                    || this.IS_MANAGER
+                    || this.IS_GENERAL_MANAGER
+                ) {
                     headers.unshift({
                         value: 'actions',
                         text: 'Действие',
@@ -565,7 +578,7 @@
                     })*/
                 }
 
-                if (this.IS_SUPERUSER || this.IS_FRANCHISE) {
+                if (this.IS_SUPERUSER || this.IS_FRANCHISE || this.IS_MANAGER || this.IS_GENERAL_MANAGER) {
                     headers.splice(3, 0,  {
                         value: 'quantity',
                         text: 'Остаток'

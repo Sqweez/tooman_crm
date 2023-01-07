@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-card>
+        <v-card style="overflow-x: scroll;">
             <v-card-title>
                 {{ title }}
             </v-card-title>

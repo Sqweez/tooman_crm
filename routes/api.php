@@ -3,6 +3,7 @@
 use App\Http\Controllers\api\ArrivalController;
 use App\Http\Controllers\api\TransferController;
 use App\Http\Controllers\api\v2\AccountingController;
+use App\Http\Controllers\api\v2\CheckoutController;
 use App\Http\Controllers\api\v2\PartnerController;
 use App\Http\Controllers\api\v2\PostingController;
 use App\Http\Controllers\api\v2\ProductController;
@@ -443,6 +444,7 @@ Route::middleware(AuthorizationMiddleware::class)->group(function () {
 
         Route::get('with-drawal/types', [WithDrawalController::class, 'getTypes']);
         Route::apiResource('with-drawal', 'api\v2\WithDrawalController');
+        Route::apiResource('checkout', 'api\v2\CheckoutController');
         Route::prefix('partners')->group(function () {
             Route::get('/', [PartnerController::class, 'index']);
             Route::get('/{user}', [PartnerController::class, 'show']);

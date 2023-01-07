@@ -83,7 +83,7 @@
                 },
                 {
                     value: 'author.name',
-                    text: 'Автор'
+                    text: 'Кто добавил'
                 },
                 {
                     value: 'date',

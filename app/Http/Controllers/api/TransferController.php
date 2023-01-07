@@ -15,6 +15,7 @@ use App\Product;
 use App\ProductBatch;
 use App\Transfer;
 use App\TransferBatch;
+use App\User;
 use App\v2\Models\ProductSku;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -27,6 +28,9 @@ class TransferController extends Controller {
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Request $request) {
+        /* @var User $user */
+        $user = auth()->user();
+        $user->load('stores');
         $mode = $request->get('mode');
         $transfersQuery = Transfer::query();
         if ($mode === 'current') {
@@ -43,6 +47,11 @@ class TransferController extends Controller {
             $transfersQuery = $transfersQuery->where('is_accepted', false);
         }
         $transfersQuery = $transfersQuery
+            ->when($user->isGeneralManager(), function ($q) use ($user) {
+                return $q
+                    ->whereIn('parent_store_id', $user->stores->pluck('id'))
+                    ->orWhereIn('child_store_id', $user->stores->pluck('id'));
+            })
             ->whereHas('batches.product')
             ->whereHas('batches.product.product')
             ->with(['parent_store', 'child_store', 'companionSale'])
@@ -55,7 +64,6 @@ class TransferController extends Controller {
                     'batches.product.product.attributes', 'batches.product.attributes',
                     'batches.product.product.attributes.attribute_name'
                 ])
-            ->select('id', 'parent_store_id', 'child_store_id', 'user_id', 'photos', 'created_at', 'updated_at')
             ->orderByDesc('created_at');
 
         if ($request->has('partners')) {

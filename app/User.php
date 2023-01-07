@@ -5,6 +5,7 @@ namespace App;
 use App\v2\Models\SortByNameScope;
 use App\v2\Models\WorkingDay;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -75,6 +76,10 @@ class User extends Authenticatable
         return $this->belongsTo('App\Store', 'store_id')->withTrashed();
     }
 
+    public function stores(): BelongsToMany {
+        return $this->belongsToMany(Store::class)->select(['id', 'name']);
+    }
+
     public function role(): BelongsTo {
         return $this->belongsTo('App\UserRole', 'role_id');
     }
@@ -107,7 +112,18 @@ class User extends Authenticatable
     }
 
     public function getIsSuperUserAttribute(): bool {
-        return in_array($this->role_id, [UserRole::ADMIN_ROLE_ID, UserRole::BOSS_ROLE_ID]);
+        return in_array($this->role_id,
+            [
+                UserRole::ADMIN_ROLE_ID,
+                UserRole::BOSS_ROLE_ID,
+                UserRole::MANAGER_ROLE_ID,
+                UserRole::GENERAL_MANAGER_ROLE_ID
+            ]
+        );
+    }
+
+    public function isGeneralManager(): bool {
+        return in_array($this->role_id, [UserRole::GENERAL_MANAGER_ROLE_ID]);
     }
 
     public function getIsNonRevisionPagesBlockedAttribute(): bool {

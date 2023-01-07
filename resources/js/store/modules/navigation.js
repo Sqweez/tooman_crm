@@ -64,10 +64,10 @@ const navigationModule = {
                         title: 'Корзина',
                         url: '/cart'
                     },
-                    {
+                    /*{
                         title: 'Бронирование товара',
                         url: '/booking'
-                    },
+                    },*/
                     {
                         title: 'Перемещения',
                         url: '/transfer',
@@ -169,6 +169,11 @@ const navigationModule = {
             {
                 title: 'Изъятия',
                 url: '/with-drawal',
+                icon: 'report'
+            },
+            {
+                title: 'Внесения',
+                url: '/checkout',
                 icon: 'report'
             },
             {
@@ -721,6 +726,23 @@ const navigationModule = {
                 icon: 'person'
             },
             {
+                title: 'Корзина',
+                url: '/cart',
+                icon: 'store'
+            },
+            {
+                title: 'Изъятия',
+                url: '/with-drawal',
+                icon: 'report'
+            },
+            {
+                title: 'Внесения',
+                url: '/checkout',
+                icon: 'report'
+            },
+        ],
+        managerMenu: [
+            {
                 title: 'Склад',
                 url: '#',
                 icon: 'home',
@@ -731,21 +753,9 @@ const navigationModule = {
                         url: '/products'
                     },
                     {
-                        title: 'Корзина',
-                        url: '/cart'
-                    },
-                    /*{
-                        title: 'Бронирование товара',
-                        url: '/booking'
-                    },*/
-                    {
                         title: 'Перемещения',
                         url: '/transfer',
                     },
-                   /* {
-                        title: 'Предзаказы',
-                        url: '/preorders/index'
-                    },*/
                     {
                         title: 'Приемка',
                         url: '/arrivals',
@@ -761,25 +771,100 @@ const navigationModule = {
                 url: '/reports',
                 icon: 'report',
             },
+        ],
+        general_managerMenu: [
             {
-                title: 'Интернет-магазин',
-                url: '/shop/orders',
-                icon: 'store'
+                title: 'Склад',
+                url: '#',
+                icon: 'home',
+                hasDropdown: true,
+                children: [
+                    {
+                        title: 'Товары',
+                        url: '/products'
+                    },
+                    {
+                        title: 'Перемещения',
+                        url: '/transfer',
+                    },
+                    {
+                        title: 'Приемка',
+                        url: '/arrivals',
+                    },
+                    {
+                        title: 'Ревизия',
+                        url: '/revision'
+                    },
+                    {
+                        title: 'Остатки',
+                        url: '/product/remains'
+                    },
+                ],
             },
             {
-                title: 'Обучение',
-                url: '/education/index',
-                icon: 'grading'
+                title: 'Экономика',
+                url: '#',
+                hasDropdown: true,
+                icon: 'account_balance_wallet',
+                children: [
+                    {
+                        title: 'Список смен',
+                        url: '/shifts/index'
+                    },
+                    {
+                        title: 'Настройки смен',
+                        url: '/shifts/settings'
+                    },
+                    {
+                        title: 'Штрафы/Вознаграждения',
+                        url: '/shifts/penalty'
+                    },
+                    {
+                        title: 'План продаж',
+                        url: '/plan',
+                    },
+                    {
+                        title: 'Проценты от продаж',
+                        url: '/economy/seller/earnings'
+                    },
+                    {
+                        title: 'Типы маржинальности',
+                        url: '/economy/margin/types'
+                    }
+                ]
             },
             {
-                title: 'Промокоды',
-                url: '/promocode',
-                icon: 'receipt'
+                title: 'Статистика',
+                icon: 'analytics',
+                url: '#',
+                hasDropdown: true,
+                children: [
+                    {
+                        title: 'Аналитика продаж',
+                        url: '/analytics/sales'
+                    },
+                    {
+                        title: 'Аналитика поступлений',
+                        url: '/analytics/arrivals'
+                    },
+                    {
+                        title: 'Аналитика продаж бренды',
+                        url: '/analytics/sales/brands'
+                    },
+                    {
+                        url: '/analytics/sales/brands/sellers',
+                        title: 'Аналитика продаж продавцы'
+                    },
+                    {
+                        url: '/analytics/sales/schedule',
+                        title: 'График продаж'
+                    }
+                ]
             },
             {
-                title: 'Изъятия',
-                url: '/with-drawal',
-                icon: 'report'
+                title: 'Отчеты по продажам',
+                url: '/reports',
+                icon: 'report',
             },
         ],
         observerMenu: [
@@ -1016,6 +1101,56 @@ const navigationModule = {
                 url: '/promocode',
                 icon: 'report'
             }
+        ],
+        accountingMenu: [
+            {
+                title: 'Экономика',
+                url: '#',
+                hasDropdown: true,
+                icon: 'account_balance_wallet',
+                children: [
+                    {
+                        title: 'Список смен',
+                        url: '/shifts/index'
+                    },
+                    {
+                        title: 'Настройки смен',
+                        url: '/shifts/settings'
+                    },
+                    {
+                        title: 'Штрафы/Вознаграждения',
+                        url: '/shifts/penalty'
+                    },
+                    {
+                        title: 'План продаж',
+                        url: '/plan',
+                    },
+                    {
+                        title: 'Проценты от продаж',
+                        url: '/economy/seller/earnings'
+                    },
+                    {
+                        title: 'Типы маржинальности',
+                        url: '/economy/margin/types'
+                    }
+                ]
+            },
+            {
+                title: 'Бухгалтерия',
+                url: '#',
+                hasDropdown: true,
+                icon: 'account_balance_wallet',
+                children: [
+                    {
+                        title: 'Кассовые смены',
+                        url: '/accounting/shifts'
+                    },
+                    {
+                        title: 'ЗП ведомость',
+                        url: '/accounting/salary'
+                    },
+                ]
+            },
         ],
     },
     getters: {

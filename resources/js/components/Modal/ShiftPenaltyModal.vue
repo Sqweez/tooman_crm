@@ -6,7 +6,7 @@
     >
         <v-card>
             <v-card-title class="headline d-flex justify-space-between">
-                <span class="white--text">Добавление количества товара</span>
+                <span class="white--text">Добавление штрафа/вознаграждения</span>
                 <v-btn icon text class="float-right">
                     <v-icon color="white" @click="onCancel">
                         mdi-close

@@ -5,21 +5,21 @@
                 <IDatePicker />
             </v-col>
             <v-col cols="12" xl="4">
-                <v-select
+                <v-autocomplete
                     label="Склад"
                     v-model="storeId"
                     :items="$storeFilters"
                     item-value="id"
                     item-text="name"
                 />
-                <v-select
+                <v-autocomplete
                     label="Пользователь"
                     v-model="userId"
                     :items="$userFilters"
                     item-value="id"
                     item-text="name"
                 />
-                <v-select
+                <v-autocomplete
                     label="Тип"
                     v-model="typeId"
                     :items="typeFilter"
@@ -136,9 +136,9 @@ export default {
         },
         filteredItems () {
             return this.items.filter(i => {
-                return this.storeId === -1 ? true : i.store.id === this.storeId;
+                return this.storeId === -1 ? true : (i.store && i.store.id === this.storeId);
             }).filter(i => {
-                return this.userId === - 1 ? true : i.user.id === this.userId;
+                return this.userId === - 1 ? true : (i.user && i.user.id === this.userId);
             }).filter(i => {
                 return this.typeId === - 1 ? true : i.type_id === this.typeId;
             }).filter(i => {

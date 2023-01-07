@@ -1,6 +1,7 @@
 export default {
     state: {
         withdrawals: [],
+        checkouts: [],
         withdrawal_types: [],
     },
     getters: {
@@ -13,6 +14,7 @@ export default {
             },
             ...s.withdrawal_types
         ],
+        checkouts: s => s.checkouts,
     },
     mutations: {
         SET_WITHDRAWALS (state, payload) {
@@ -26,6 +28,15 @@ export default {
         },
         DELETE_WITHDRAWAL (state, id) {
             state.withdrawals = state.withdrawals.filter(s => s.id !== id);
+        },
+        SET_CHECKOUT (state, payload) {
+            state.checkouts = payload;
+        },
+        CREATE_CHECKOUT (state, payload) {
+            state.checkouts.push(payload);
+        },
+        DELETE_CHECKOUT (state, id) {
+            state.checkouts = state.checkouts.filter(s => s.id !== id);
         }
     },
 }

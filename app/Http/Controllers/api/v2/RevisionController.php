@@ -53,10 +53,14 @@ class RevisionController extends Controller
     public function index(Request $request): AnonymousResourceCollection {
         /* @var User $user */
         $user = auth()->user();
+        $user->load('stores');
         $isSuperUser = $user && $user->is_super_user;
         $revisions = Revision::query()
             ->when(!$isSuperUser, function ($query) use ($user) {
                 return $query->where('user_id', $user->id);
+            })
+            ->when($user->isGeneralManager(), function ($q) use ($user) {
+                return $q->whereIn('store_id', $user->stores->pluck('id'));
             })
             ->with('writeOff')
             ->with('posting')

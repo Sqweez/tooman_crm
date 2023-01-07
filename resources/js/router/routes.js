@@ -82,6 +82,7 @@ import ProductMovementShow from '@/views/ProductMovements/Show';
 import PartnersIndex from '@/views/Partners/PartnersIndex';
 import PartnersEdit from '@/views/Partners/PartnersEdit';
 import PartnersInfo from '@/views/Partners/PartnersInfo';
+import CheckoutIndex from '@/views/Checkout/CheckoutIndex';
 
 const routes = [
     {
@@ -164,6 +165,8 @@ const routes = [
         meta: {
             CAN_ENTER: {
                 IS_BOSS: true,
+                IS_GENERAL_MANAGER: true,
+                IS_ACCOUNTING: true
             },
         }
     },
@@ -251,10 +254,12 @@ const routes = [
         component: Revision,
         meta: {
             CAN_ENTER: {
-                IS_SELLER: true,
+                //IS_SELLER: true,
                 IS_ADMIN: true,
                 IS_BOSS: true,
                 IS_SENIORSELLER: true,
+                IS_MANAGER: true,
+                IS_GENERAL_MANAGER: true
             }
         }
     },
@@ -263,7 +268,7 @@ const routes = [
         component: RevisionShow,
         meta: {
             CAN_ENTER: {
-                IS_SELLER: true,
+               // IS_SELLER: true,
                 IS_ADMIN: true,
                 IS_BOSS: true,
                 IS_SENIORSELLER: true,
@@ -276,7 +281,8 @@ const routes = [
         meta: {
             CAN_ENTER: {
                 IS_ADMIN: true,
-                IS_BOSS: true
+                IS_BOSS: true,
+                IS_GENERAL_MANAGER: true
             }
         }
     },
@@ -291,6 +297,8 @@ const routes = [
                 IS_BOSS: true,
                 IS_SENIORSELLER: true,
                 IS_MARKETOLOG: true,
+                IS_MANAGER: true,
+                IS_GENERAL_MANAGER: true,
             },
         }
     },
@@ -349,9 +357,11 @@ const routes = [
                 IS_STOREKEEPER: true,
                 IS_BOSS: true,
                 IS_SENIORSELLER: true,
-                IS_SELLER: true,
+                //IS_SELLER: true,
                 IS_MODERATOR: true,
                 IS_FRANCHISE: true,
+                IS_MANAGER: true,
+                IS_GENERAL_MANAGER: true,
             },
         },
         component: ProductsV3
@@ -548,7 +558,8 @@ const routes = [
         meta: {
             CAN_ENTER: {
                 IS_ADMIN: true,
-                IS_BOSS: true
+                IS_BOSS: true,
+                IS_GENERAL_MANAGER: true
             }
         }
     },
@@ -559,7 +570,9 @@ const routes = [
             CAN_ENTER: {
                 IS_ADMIN: true,
                 IS_BOSS: true,
-                IS_MARKETOLOG: true
+                IS_MARKETOLOG: true,
+                IS_GENERAL_MANAGER: true,
+                IS_ACCOUNTING: true
             }
         }
     },
@@ -570,7 +583,9 @@ const routes = [
             CAN_ENTER: {
                 IS_ADMIN: true,
                 IS_BOSS: true,
-                IS_MARKETOLOG: true
+                IS_MARKETOLOG: true,
+                IS_GENERAL_MANAGER: true,
+                IS_ACCOUNTING: true
             }
         }
     },
@@ -581,7 +596,9 @@ const routes = [
             CAN_ENTER: {
                 IS_ADMIN: true,
                 IS_BOSS: true,
-                IS_MARKETOLOG: true
+                IS_MARKETOLOG: true,
+                IS_GENERAL_MANAGER: true,
+                IS_ACCOUNTING: true
             }
         }
     },
@@ -649,7 +666,9 @@ const routes = [
         component: ProductEarning,
         meta: {
             CAN_ENTER: {
-                IS_BOSS: true
+                IS_BOSS: true,
+                IS_GENERAL_MANAGER: true,
+                IS_ACCOUNTING: true
             }
         }
     },
@@ -660,6 +679,8 @@ const routes = [
             CAN_ENTER: {
                 IS_BOSS: true,
                 IS_MARKETOLOG: true,
+                IS_GENERAL_MANAGER: true,
+                IS_ACCOUNTING: true
             }
         }
     },
@@ -794,15 +815,11 @@ const routes = [
                 IS_ADMIN: true,
             }
         }
-    }
- /*   {
-        path: '/products/movement',
-        component: ProductMovementIndex
     },
     {
-        path: '/products/movement/:product/:store',
-        component: ProductMovementShow
-    }*/
+        path: '/checkout',
+        component: CheckoutIndex,
+    }
 ];
 
 export default routes;

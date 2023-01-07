@@ -27,4 +27,7 @@ class UserRole extends Model
     const SELLER_ROLE_ID = 2;
     const SENIOR_SELLER_ROLE_ID = 9;
     const ROLE_PARTNER = 12;
+    const MANAGER_ROLE_ID = 13;
+    const GENERAL_MANAGER_ROLE_ID = 14;
+    const ACCOUNTING_ROLE_ID = 15;
 }

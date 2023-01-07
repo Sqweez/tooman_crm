@@ -43,7 +43,7 @@
                 </v-btn>
             </v-card-text>
         </v-card>
-        <v-card>
+        <v-card v-if="false">
             <v-card-title>
                 Мотивация по брендам
             </v-card-title>

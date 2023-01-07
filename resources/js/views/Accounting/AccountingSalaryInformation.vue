@@ -9,7 +9,7 @@
 <script>
 export default {
     beforeMount() {
-        if (!this.IS_SUPERUSER) {
+        if (!this.IS_SUPERUSER && !this.IS_ACCOUNTING) {
             this.$toast.error('Доступ запрещен!');
             return this.$router.push('/');
         }

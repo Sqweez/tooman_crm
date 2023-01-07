@@ -3,6 +3,7 @@
 namespace App\Actions\Accounting;
 
 use App\Sale;
+use App\v2\Models\WithDrawal;
 use App\v2\Models\WorkingDay;
 use Carbon\Carbon;
 
@@ -64,10 +65,14 @@ class CollectAccountingShiftsReportAction {
         ];
     }
 
-    private function getWithDrawals($item) {
+    private function getWithDrawals($item): array {
+        $types = WithDrawal::WITHDRAWAL_TYPES;
         if ($item['empty']) {
             return [
-                'total' => 0
+                'total' => 0,
+                'incassation' => 0,
+                'by_types' => [],
+                'total_without_inc' => 0
             ];
         }
         return [
@@ -75,7 +80,28 @@ class CollectAccountingShiftsReportAction {
                 return $a + collect($c['withdrawal'])->reduce(function ($_a, $_c) {
                     return $_a + $_c['amount'];
                     }, 0);
-            }, 0)
+            }, 0),
+            'incassation' => collect($item['days'])->reduce(function ($a, $c) {
+                return $a + collect($c['withdrawal'])->where('type_id', 6)->reduce(function ($_a, $_c) {
+                        return $_a + $_c['amount'];
+                    }, 0);
+            }, 0),
+            'by_types' => collect($types)->map(function ($type, $index) use ($item) {
+                return [
+                    'name' => $type,
+                    'amount' => collect($item['days'])->reduce(function ($a, $c) use ($index) {
+                        return $a + collect($c['withdrawal'])->where('type_id', $index)->reduce(function ($_a, $_c) {
+                                return $_a + $_c['amount'];
+                            }, 0);
+                    }),
+                    'id' => $index
+                ];
+            }),
+            'total_without_inc' =>  collect($item['days'])->reduce(function ($a, $c) {
+                return $a + collect($c['withdrawal'])->where('type_id', '!=', 6)->reduce(function ($_a, $_c) {
+                        return $_a + $_c['amount'];
+                    }, 0);
+            }, 0),
         ];
     }
 

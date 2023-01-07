@@ -54,7 +54,7 @@ export default {
                     return this.$store.getters.IS_BOSS;
                 },
                 IS_SUPERUSER() {
-                    return this.IS_BOSS || this.isAdmin || this.IS_MARKETOLOG;
+                    return this.IS_BOSS || this.isAdmin || this.IS_MARKETOLOG || this.IS_MANAGER || this.IS_GENERAL_MANAGER;
                 },
                 IS_MARKETOLOG () {
                     return this.$store.getters.IS_MARKETOLOG;
@@ -73,7 +73,16 @@ export default {
                 },
                 IS_FRANCHISE () {
                     return this.$store.getters.IS_FRANCHISE;
-                }
+                },
+                IS_MANAGER () {
+                    return this.$store.getters.IS_MANAGER;
+                },
+                IS_GENERAL_MANAGER () {
+                    return this.$store.getters.IS_GENERAL_MANAGER;
+                },
+                IS_ACCOUNTING () {
+                    return this.$store.getters.IS_ACCOUNTING;
+                },
             }
         })
     }

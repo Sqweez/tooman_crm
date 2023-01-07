@@ -22,7 +22,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        return UserResource::collection(User::with(['store.city_name', 'role'])->get());
+        return UserResource::collection(
+            User::query()
+                ->with(['store.city_name', 'role', 'stores'])
+                ->get()
+        );
     }
 
     public function indexRoles() {
@@ -49,9 +53,10 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $user = $request->all();
-        $user['token'] = Str::random(60);
-        $_user = User::create($user);
+        $validatedData = $request->all();
+        $validatedData['token'] = Str::random(60);
+        $_user = User::create(\Arr::except($validatedData, ['stores']));
+        $_user->stores()->sync($validatedData['stores']);
         return new UserResource($_user);
     }
 
@@ -65,7 +70,8 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $user->update($request->all());
+        $user->update(\Arr::except($request->all(), ['stores']));
+        $user->stores()->sync($request->get('stores', []));
         return new UserResource($user);
     }
 

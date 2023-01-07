@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\StoreResource;
 use App\Store;
 use App\StoreType;
+use App\User;
+use App\UserRole;
 use App\v2\Models\City;
 use Illuminate\Http\Request;
 
@@ -18,11 +20,20 @@ class StoreController extends Controller
      */
     public function index(Request $request)
     {
-        $storeQuery = Store::query()->with('type')->with('city_name');
-        if ($request->has('store_id')) {
-            $storeQuery->where('id', $request->get('store_id'));
-        }
-        return StoreResource::collection($storeQuery->get());
+        /* @var User $user */
+        $user = auth()->user();
+        $user->load('stores');
+        $storeQuery = Store::query()
+            ->with('type')
+            ->with('city_name')
+            ->when($request->has('store_id'), function ($q) use ($request) {
+                $q->where('id', $request->get('store_id'));
+            })
+            ->when($user->stores->count() > 0, function ($q) use ($user) {
+                $q->whereIn('id', $user->stores->pluck('id'));
+            })
+            ->get();
+        return StoreResource::collection($storeQuery);
     }
 
     /**

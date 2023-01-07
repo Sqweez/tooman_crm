@@ -47,6 +47,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|WorkingDay whereHardCash($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WorkingDay whereIsEnabled($value)
  * @property-read int $total_by_shift
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\v2\Models\WithDrawal[] $withdrawal
+ * @property-read int|null $withdrawal_count
  */
 class WorkingDay extends Model
 {

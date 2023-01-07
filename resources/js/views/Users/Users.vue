@@ -1,9 +1,9 @@
 <template>
     <v-card>
-        <v-card-title>Список продавцов</v-card-title>
+        <v-card-title>Список пользователей</v-card-title>
         <v-card-text>
             <v-container>
-                <v-btn color="error" @click="userModal = true">Добавить продавца <v-icon>mdi-plus</v-icon></v-btn>
+                <v-btn color="error" @click="userModal = true">Добавить пользователя <v-icon>mdi-plus</v-icon></v-btn>
                 <v-row>
                     <v-col>
                         <v-text-field
@@ -75,10 +75,10 @@
                     value: 'role',
                     text: 'Роль'
                 },
-                {
+               /* {
                     value: 'city',
                     text: 'Город'
-                },
+                },*/
                 {
                     value: 'store.name',
                     text: 'Склад'
