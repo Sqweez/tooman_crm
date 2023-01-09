@@ -18,7 +18,7 @@ const Router = new VueRouter({
 });
 
 Router.beforeEach(async (to, from, next) => {
-    if (!store.getters.LOGIN_CHECKED || store.getters.USER && ['seller', 'seniorSeller'].includes(store.getters.CURRENT_ROLE)) {
+    if (!store.getters.LOGIN_CHECKED) {
         await store.dispatch('AUTH');
     }
 

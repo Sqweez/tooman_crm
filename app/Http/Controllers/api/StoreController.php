@@ -22,14 +22,16 @@ class StoreController extends Controller
     {
         /* @var User $user */
         $user = auth()->user();
-        $user->load('stores');
+        if ($user) {
+            $user->load('stores');
+        }
         $storeQuery = Store::query()
             ->with('type')
             ->with('city_name')
             ->when($request->has('store_id'), function ($q) use ($request) {
                 $q->where('id', $request->get('store_id'));
             })
-            ->when($user->stores->count() > 0, function ($q) use ($user) {
+            ->when($user && $user->stores->count() > 0, function ($q) use ($user) {
                 $q->whereIn('id', $user->stores->pluck('id'));
             })
             ->get();

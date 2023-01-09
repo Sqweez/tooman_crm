@@ -740,6 +740,10 @@ const navigationModule = {
                 url: '/checkout',
                 icon: 'report'
             },
+            {
+                title: 'Приемка',
+                url: '/arrivals',
+            },
         ],
         managerMenu: [
             {
