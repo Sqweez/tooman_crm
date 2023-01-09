@@ -228,9 +228,13 @@
                 });
             },
             payroll() {
-                return this.$store.getters.PAYROLL.filter(p => {
-                    return this.storeFilterId === -1 ? true : p.store_id === this.storeFilterId;
-                });
+                let items = this.$store.getters.PAYROLL;
+                if (this.storeFilterId !== -1) {
+                    items = items.filter(p => {
+                        return p.store_id === this.storeFilterId;
+                    });
+                }
+                return items;
             },
             daysInMonth() {
                 return new moment(this.currentDate).daysInMonth() ?? 0;

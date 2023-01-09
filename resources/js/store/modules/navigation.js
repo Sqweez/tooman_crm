@@ -102,7 +102,11 @@ const navigationModule = {
                     {
                         title: 'Типы маржинальности',
                         url: '/economy/margin/types'
-                    }
+                    },
+                    {
+                        title: 'Настройки ЗП правил',
+                        url: '/shifts/settings'
+                    },
                 ]
             },
             {
