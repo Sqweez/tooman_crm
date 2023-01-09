@@ -119,7 +119,7 @@ const authModule = {
                     console.groupEnd();
                     return response
                 })
-                dispatch(ACTIONS.OPEN_SHIFT, user);
+                // dispatch(ACTIONS.OPEN_SHIFT, user);
             }
         },
         async LOGOUT({commit}) {

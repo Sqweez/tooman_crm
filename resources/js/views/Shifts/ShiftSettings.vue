@@ -10,11 +10,11 @@
                     <tr>
                         <th>Магазин</th>
                         <th>Оплата за смену</th>
-                        <th>Процент от продаж</th>
+                        <th>Процент от продаж (день)</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="(tax) of shiftTaxes">
+                    <tr v-for="(tax, key) of shiftTaxes">
                         <td>{{ tax.store.name }}</td>
                         <td>
                             <v-text-field
@@ -23,10 +23,29 @@
                                 type="number"></v-text-field>
                         </td>
                         <td>
-                            <v-text-field
-                                v-model.number="tax.sale_percent"
-                                label="% от продаж"
-                                type="number"></v-text-field>
+                            <div class="d-flex align-center justify-space-between">
+                                <ul v-if="tax.shift_rules && tax.shift_rules.length > 0">
+                                    <li v-for="(rule, salaryKey) of tax.shift_rules" :key="`salary-rule-${salaryKey}`" class="d-flex align-center">
+                                        <v-text-field
+                                            label="Порог"
+                                            v-model="rule.threshold"
+                                        />
+                                        <v-text-field
+                                            label="%, зарплаты"
+                                            v-model="rule.value"
+                                        />
+                                        <v-btn icon color="error" @click="deleteSalaryRule(key, salaryKey)">
+                                            <v-icon>mdi-close</v-icon>
+                                        </v-btn>
+                                    </li>
+                                </ul>
+                                <p v-else>Правила не установлены</p>
+                                <v-btn icon color="success" @click="addSalaryRule(key)">
+                                    <v-icon>
+                                        mdi-plus
+                                    </v-icon>
+                                </v-btn>
+                            </div>
                         </td>
                     </tr>
                     </tbody>
@@ -41,17 +60,21 @@
 
 <script>
     import { mapState, mapActions } from 'vuex';
+    import { getShiftTaxes } from '@/api/v2/shifts';
 
     export default {
-        data: () => ({}),
+        data: () => ({
+            shiftTaxes: [],
+        }),
         async mounted() {
-            await this.$store.dispatch('GET_SHIFT_TAXES');
+            const { data } = await getShiftTaxes();
+            this.shiftTaxes = data;
         },
         methods: {
             async save() {
                 const taxes = this.shiftTaxes.map(s => ({
                     shift_tax: s.shift_tax,
-                    sale_percent: s.sale_percent,
+                    shift_rules: s.shift_rules,
                     store_id: s.store.id,
                 }))
 
@@ -63,13 +86,19 @@
                 }
 
             },
+            addSalaryRule(key) {
+                console.log(key);
+                const needle = this.shiftTaxes[key];
+                needle.shift_rules = needle.shift_rules ? [...needle.shift_rules, {threshold: 0, value: 0}] : [{threshold: 0, value: 0}];
+                this.$set(this.shiftTaxes, key, needle)
+            },
+            deleteSalaryRule(typeKey, ruleKey) {
+                const needle = this.shiftTaxes[typeKey];
+                needle.shift_rules.splice(ruleKey, 1);
+                this.$set(this.shiftTaxes, typeKey, needle)
+            },
             ...mapActions(['SAVE_SHIFT_TAXES'])
         },
-        computed: {
-            ...mapState({
-                shiftTaxes: s => s.shiftModule.shiftTaxes
-            }),
-        }
     }
 </script>
 

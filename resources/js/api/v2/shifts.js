@@ -27,7 +27,7 @@ export async function deleteShiftPenalty(id) {
 }
 
 export async function getPayrolls(period) {
-    return await axiosClient.get(`v2/shift/payroll?date=${period}`);
+    return await axiosClient.get(`v2/accounting/salary?date=${period}`);
 }
 
 export async function getShifts(date) {

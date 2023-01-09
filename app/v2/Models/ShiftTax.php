@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|ShiftTax whereStoreId($value)
  * @mixin \Eloquent
  * @property-read mixed $calculated_sale_percent
+ * @property array|null $shift_rules
+ * @method static \Illuminate\Database\Eloquent\Builder|ShiftTax whereShiftRules($value)
  */
 class ShiftTax extends Model
 {
@@ -32,7 +34,8 @@ class ShiftTax extends Model
     protected $casts = [
         'shift_tax' => 'integer',
         'sale_percent' => 'integer',
-        'store_id' => 'integer'
+        'store_id' => 'integer',
+        'shift_rules' => 'array',
     ];
 
     public function store() {

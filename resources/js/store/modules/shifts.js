@@ -54,7 +54,7 @@ const shiftModule = {
         },
         async [ACTIONS.GET_SHIFT_TAXES]({commit}) {
             this.$loading.enable()
-            const {data} = await getShiftTaxes();
+            const { data } = await getShiftTaxes();
             commit('SET_SHIFT_TAXES', data);
             this.$loading.disable()
         },
@@ -101,7 +101,7 @@ const shiftModule = {
             try {
                 this.$loading.enable();
                 const { data } = await getPayrolls(period);
-                commit('SET_PAYROLL', data);
+                commit('SET_PAYROLL', data.report);
             } catch {
                 throw e;
             } finally {

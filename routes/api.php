@@ -440,6 +440,7 @@ Route::middleware(AuthorizationMiddleware::class)->group(function () {
 
         Route::prefix('accounting')->group(function () {
             Route::get('shifts', [AccountingController::class, 'getShiftReport']);
+            Route::get('salary', [AccountingController::class, 'getSalaryReport']);
         });
 
         Route::get('with-drawal/types', [WithDrawalController::class, 'getTypes']);

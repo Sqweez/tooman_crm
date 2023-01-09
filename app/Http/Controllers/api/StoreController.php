@@ -9,6 +9,7 @@ use App\StoreType;
 use App\User;
 use App\UserRole;
 use App\v2\Models\City;
+use App\v2\Models\ShiftTax;
 use Illuminate\Http\Request;
 
 class StoreController extends Controller
@@ -46,7 +47,15 @@ class StoreController extends Controller
      */
     public function store(Request $request)
     {
-        return new StoreResource(Store::create($request->all()));
+        $store = Store::create($request->all())->refresh();
+        ShiftTax::query()
+            ->create([
+                'store_id' => $store->id,
+                'shift_tax' => 0,
+                'sale_percent' => 0,
+                'shift_rules'  => null
+            ]);
+        return new StoreResource($store);
     }
 
     public function indexStores() {

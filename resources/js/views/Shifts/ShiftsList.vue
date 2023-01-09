@@ -2,7 +2,7 @@
     <div>
         <v-card>
             <v-card-title>
-                Список смен
+                ЗП ведомость
             </v-card-title>
             <v-card-text>
                 <v-select
@@ -11,6 +11,13 @@
                     :items="monthsList"
                     item-text="name"
                     item-value="value"
+                />
+                <v-select
+                    label="Магазин"
+                    :items="$storeFilters"
+                    item-text="name"
+                    item-value="id"
+                    v-model="storeFilterId"
                 />
                 <v-simple-table
                     :dense="false"
@@ -21,7 +28,7 @@
                         <th>Продавец</th>
                         <th>Количество смен / Заработок</th>
                         <th>Сумма продаж / Заработок</th>
-                        <th>Подробно</th>
+<!--                        <th>Подробно</th>-->
                         <th>Штрафы / Премии</th>
                         <th>Итого</th>
                     </tr>
@@ -29,7 +36,7 @@
                     <tbody>
                     <tr v-for="item of payroll" :key="item.id">
                         <td>
-                            {{ item.name}}
+                            {{ item.user.name }}
                         </td>
                         <td>
                             {{ item.shift_count }} / <b>{{ item.shift_salary | priceFilters }}</b>
@@ -37,14 +44,14 @@
                         <td>
                             {{ item.sale_amount | priceFilters }} / {{ item.sale_amount_salary | priceFilters }}
                         </td>
-                        <td>
+<!--                        <td>
                             <v-list v-if="item.calculations && item.calculations.length > 0">
                                 <v-list-item v-for="(i, key) of item.calculations" :key="`calc-${key}`">
                                     <v-list-item-content>
                                         <v-list-item-title>
-                                            Общая сумма: <span class="color-text--green font-weight-bold">{{ i.amount | priceFilters }}</span> <br>
-                                            Зарплата: <span class="color-text--green font-weight-bold">{{ i.salary | priceFilters }}</span> <br>
-                                            Текущий процент: <span class="color-text--green font-weight-bold">{{ i.percent }}%</span>
+                                            Общая сумма: <span class="color-text&#45;&#45;green font-weight-bold">{{ i.amount | priceFilters }}</span> <br>
+                                            Зарплата: <span class="color-text&#45;&#45;green font-weight-bold">{{ i.salary | priceFilters }}</span> <br>
+                                            Текущий процент: <span class="color-text&#45;&#45;green font-weight-bold">{{ i.percent }}%</span>
                                         </v-list-item-title>
                                         <v-list-item-subtitle>
                                             Тип маржинальности: {{ i.margin_type }}
@@ -53,7 +60,7 @@
                                 </v-list-item>
                             </v-list>
                             <p v-else>Нет данных</p>
-                        </td>
+                        </td>-->
                         <td>
                             {{ item.shift_penalties_amount | priceFilters }}
                         </td>
@@ -63,6 +70,10 @@
                     </tr>
                     </tbody>
                 </v-simple-table>
+            </v-card-text>
+        </v-card>
+        <t-card-page title="Смены по числам">
+            <div v-if="true" class="mt-4">
                 <v-simple-table v-slot:default v-if="daysInMonth && shifts.length" class="shift__table">
                     <thead>
                     <tr>
@@ -103,8 +114,8 @@
                     </tr>
                     </tbody>
                 </v-simple-table>
-            </v-card-text>
-        </v-card>
+            </div>
+        </t-card-page>
         <CreateShiftModal
             :state="createShiftModal"
             @cancel="createShiftModal = false"
@@ -135,6 +146,7 @@
             date: null,
             shift: {},
             editShiftModal: false,
+            storeFilterId: -1,
         }),
         methods: {
             getButtonColor(user) {
@@ -150,11 +162,13 @@
 
             },
             showShiftCreateModal(store, date) {
+                return false;
                 this.storeId = store.id;
                 this.date = `${this.currentDate}-${date > 9 ? date : `0${date}`}`
                 this.createShiftModal = true;
             },
             async showEditShiftModal(shift) {
+                return false;
                 this.shift = {...shift};
                 this.editShiftModal = true;
             },
@@ -214,7 +228,9 @@
                 });
             },
             payroll() {
-                return this.$store.getters.PAYROLL;
+                return this.$store.getters.PAYROLL.filter(p => {
+                    return this.storeFilterId === -1 ? true : p.store_id === this.storeFilterId;
+                });
             },
             daysInMonth() {
                 return new moment(this.currentDate).daysInMonth() ?? 0;

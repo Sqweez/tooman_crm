@@ -5,6 +5,7 @@ namespace App\v2\Models;
 use App\Store;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\v2\Models\Shift
@@ -25,6 +26,14 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Shift whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Shift whereUserId($value)
  * @mixin \Eloquent
+ * @property int|null $working_day_id
+ * @property int $base_tax
+ * @property int $sale_tax
+ * @method static \Illuminate\Database\Eloquent\Builder|Shift whereBaseTax($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Shift whereSaleTax($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Shift whereWorkingDayId($value)
+ * @property int $total_sales
+ * @method static \Illuminate\Database\Eloquent\Builder|Shift whereTotalSales($value)
  */
 class Shift extends Model
 {
@@ -42,11 +51,11 @@ class Shift extends Model
         'store_id' => 'integer'
     ];
 
-    public function user() {
-        return $this->belongsTo(User::class);
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class)->select(['id', 'name']);
     }
 
-    public function store() {
-        return $this->belongsTo(Store::class);
+    public function store(): BelongsTo {
+        return $this->belongsTo(Store::class)->select(['id', 'name']);
     }
 }

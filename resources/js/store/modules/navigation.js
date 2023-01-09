@@ -21,27 +21,6 @@ const navigationModule = {
                 url: '/users/partners',
                 icon: 'person',
             },
-
-           /* {
-                title: 'Документооборот',
-                url: '#',
-                icon: 'article',
-                hasDropdown: true,
-                children: [
-                    {
-                        title: 'Создать документ',
-                        url: '/documents',
-                    },
-                    {
-                        title: 'Список документов',
-                        url: '/documents/list',
-                    },
-                    {
-                        title: 'Прайс-лист',
-                        url: '/documents/price/list'
-                    }
-                ]
-            },*/
             {
                 title: 'Склад',
                 url: '#',
@@ -109,14 +88,6 @@ const navigationModule = {
                 icon: 'account_balance_wallet',
                 children: [
                     {
-                        title: 'Список смен',
-                        url: '/shifts/index'
-                    },
-                    {
-                        title: 'Настройки смен',
-                        url: '/shifts/settings'
-                    },
-                    {
                         title: 'Штрафы/Вознаграждения',
                         url: '/shifts/penalty'
                     },
@@ -146,7 +117,7 @@ const navigationModule = {
                     },
                     {
                         title: 'ЗП ведомость',
-                        url: '/accounting/salary'
+                        url: '/shifts/index'
                     },
                 ]
             },
@@ -812,12 +783,12 @@ const navigationModule = {
                 icon: 'account_balance_wallet',
                 children: [
                     {
-                        title: 'Список смен',
-                        url: '/shifts/index'
+                        title: 'Настройки ЗП правил',
+                        url: '/shifts/settings'
                     },
                     {
-                        title: 'Настройки смен',
-                        url: '/shifts/settings'
+                        title: 'ЗП ведомость',
+                        url: '/shifts/index'
                     },
                     {
                         title: 'Штрафы/Вознаграждения',
@@ -1114,11 +1085,7 @@ const navigationModule = {
                 icon: 'account_balance_wallet',
                 children: [
                     {
-                        title: 'Список смен',
-                        url: '/shifts/index'
-                    },
-                    {
-                        title: 'Настройки смен',
+                        title: 'Настройки ЗП правил',
                         url: '/shifts/settings'
                     },
                     {
@@ -1151,7 +1118,7 @@ const navigationModule = {
                     },
                     {
                         title: 'ЗП ведомость',
-                        url: '/accounting/salary'
+                        url: '/shifts/index'
                     },
                 ]
             },

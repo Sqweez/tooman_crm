@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api\v2;
 
+use App\Actions\Accounting\CollectAccountingSalaryReportAction;
 use App\Actions\Accounting\CollectAccountingShiftsReportAction;
 use App\Http\Controllers\Controller;
 use App\v2\Models\WithDrawal;
@@ -23,6 +24,14 @@ class AccountingController extends Controller
                     'name' => $item
                 ];
             })
+        ]);
+    }
+
+    public function getSalaryReport(Request $request, CollectAccountingSalaryReportAction $action): JsonResponse {
+        $date = $request->get('date');
+        $report = $action->handle($date);
+        return response()->json([
+            'report' => $report,
         ]);
     }
 }
