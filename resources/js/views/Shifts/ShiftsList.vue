@@ -159,7 +159,6 @@
                     console.log(user);
                     return 'tomato';
                 }
-
             },
             showShiftCreateModal(store, date) {
                 return false;

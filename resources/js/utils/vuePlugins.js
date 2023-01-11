@@ -54,7 +54,7 @@ export default {
                     return this.$store.getters.IS_BOSS;
                 },
                 IS_SUPERUSER() {
-                    return this.IS_BOSS || this.isAdmin || this.IS_MARKETOLOG || this.IS_MANAGER || this.IS_GENERAL_MANAGER;
+                    return this.IS_BOSS || this.isAdmin || this.IS_MARKETOLOG || this.IS_MANAGER || this.IS_GENERAL_MANAGER || this.IS_ACCOUNTING;
                 },
                 IS_MARKETOLOG () {
                     return this.$store.getters.IS_MARKETOLOG;

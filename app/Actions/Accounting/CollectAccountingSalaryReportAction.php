@@ -22,6 +22,7 @@ class CollectAccountingSalaryReportAction {
 
         return Shift::query()
             ->with(['store', 'user'])
+            ->has('user')
             ->whereDate('created_at', '>=', $this->start)
             ->whereDate('created_at', '<=', $this->finish)
             ->get()

@@ -19,7 +19,7 @@
                         </v-col>
                         <v-col cols="12" xl="4" v-show="IS_SUPERUSER">
                             <v-select
-                                :items="stores"
+                                :items="storeFilters"
                                 item-text="name"
                                 v-model="storeFilter"
                                 item-value="id"
@@ -372,11 +372,23 @@ export default {
 
             return products;
         },
-        stores() {
-            return [{
-                name: 'Все',
-                id: -1
-            }, ...this.$store.getters.stores];
+        storeFilters() {
+            return [
+                {
+                    name: 'Все',
+                    id: -1
+                },
+                ...this.stores
+            ];
+        },
+        stores () {
+            let stores = this.$store.getters.stores;
+            if (this.$user.stores.length > 0) {
+                stores = stores.filter(s => {
+                    return this.$user.stores.findIndex(st => st.id === s.id) !== -1;
+                })
+            }
+            return stores;
         },
         categories() {
             return [{

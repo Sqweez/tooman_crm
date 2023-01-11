@@ -117,7 +117,8 @@ class User extends Authenticatable
                 UserRole::ADMIN_ROLE_ID,
                 UserRole::BOSS_ROLE_ID,
                 UserRole::MANAGER_ROLE_ID,
-                UserRole::GENERAL_MANAGER_ROLE_ID
+                UserRole::GENERAL_MANAGER_ROLE_ID,
+                UserRole::ACCOUNTING_ROLE_ID
             ]
         );
     }

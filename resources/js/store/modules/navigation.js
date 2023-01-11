@@ -1126,6 +1126,11 @@ const navigationModule = {
                     },
                 ]
             },
+            {
+                title: 'Отчеты по продажам',
+                url: '/reports',
+                icon: 'report',
+            },
         ],
     },
     getters: {
