@@ -14,7 +14,7 @@
         </v-card-text>
         <v-card-text v-else>
             <div class="mb-5">
-                <v-btn color="error" @click="showProductModal()" v-if="is_admin || IS_BOSS">Добавить товар
+                <v-btn color="error" @click="showProductModal()" v-if="is_admin || IS_BOSS || IS_SUPERUSER || IS_MANAGER">Добавить товар
                     <v-icon>mdi-plus</v-icon>
                 </v-btn>
             </div>
