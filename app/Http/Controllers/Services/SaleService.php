@@ -46,37 +46,6 @@ class SaleService {
             return false;
         }
 
-        $amountWithOutDiscount = $this->getTotalCost($cart, 0);
-        $newDiscount = 0;
-        if ($amountWithOutDiscount >= 15000) {
-            $newDiscount = 5;
-        }
-        if ($amountWithOutDiscount >= 30000) {
-            $newDiscount = 10;
-        }
-
-        if ($newDiscount > $client->client_discount) {
-            // @TODO сделать в зависимости от системы дисконтов Тумана
-            //$client->update(['client_discount' => $newDiscount]);
-        }
-
-        $amount = $this->getTotalCost($cart, $discount);
-
-        $client->sales()->create([
-            'sale_id' => $sale_id,
-            'amount' => $amount
-        ]);
-
-        // @TODO не начисляем кэшбек пока
-
-        /*$cashbackPercent = $payment_type === 3 ? 5 : $client->loyalty->cashback;
-
-        $client->transactions()->create([
-            'sale_id' => $sale_id,
-            'user_id' => $user_id,
-            'amount' => $amount * ($cashbackPercent / 100)
-        ]); */
-
         if ($balance > 0) {
             $client->transactions()->create([
                 'sale_id' => $sale_id,
@@ -85,24 +54,26 @@ class SaleService {
             ]);
         }
 
-        $partner = Client::find($partner_id);
-
-        if ($partner) {
-            $partner->update([
-                'partner_expired_at' => now()->addDays(60),
-            ]);
-
-            $partnerSalesAmount = $this->getPartnerSalesAmount($partner, $sale_id);
-            $partnerCashback = $this->calculatePartnerCashback($cart, $partnerSalesAmount, $discount);
-
-            $partner->transactions()->create([
-                'amount' => $partnerCashback,
-                'sale_id' => $sale_id,
-                'user_id' => $user_id
-            ]);
-        }
-
         $client->fresh();
+
+        $amount = $this->getTotalCost($cart, $discount);
+
+        $client->sales()->create([
+            'sale_id' => $sale_id,
+            'amount' => $amount
+        ]);
+
+
+        $cashbackPercent = 5;
+
+        if ($discount !== 0) {
+            $client->transactions()->create([
+                'sale_id' => $sale_id,
+                'user_id' => $user_id,
+                'amount' => $amount * ($cashbackPercent / 100)
+            ]);
+
+        }
 
         return true;
     }
