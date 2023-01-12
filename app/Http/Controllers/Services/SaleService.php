@@ -64,16 +64,13 @@ class SaleService {
         ]);
 
 
-        $cashbackPercent = 5;
+        $cashbackPercent = $discount === 0 ? 5 : 0;
 
-        if ($discount !== 0) {
-            $client->transactions()->create([
-                'sale_id' => $sale_id,
-                'user_id' => $user_id,
-                'amount' => $amount * ($cashbackPercent / 100)
-            ]);
-
-        }
+        $client->transactions()->create([
+            'sale_id' => $sale_id,
+            'user_id' => $user_id,
+            'amount' => $amount * ($cashbackPercent / 100)
+        ]);
 
         return true;
     }
