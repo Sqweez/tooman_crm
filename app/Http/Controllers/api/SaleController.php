@@ -307,6 +307,9 @@ class SaleController extends Controller {
         return new ReportsResource(Sale::find($sale->id));
     }
 
+    /**
+     * @throws \Exception
+     */
     public function cancelSale(Request $request, Sale $sale) {
         $amount = 0;
         $discount = $sale->discount;
@@ -333,8 +336,15 @@ class SaleController extends Controller {
 
         if ($remainingProducts === 0) {
             if (intval($sale['client_id']) !== -1) {
-                ClientSale::where('sale_id', $sale['id'])->first()->delete();
-                ClientTransaction::where('sale_id', $sale['id'])->first()->delete();
+                $clientSale = ClientSale::where('sale_id', $sale['id'])->first();
+                if ($clientSale) {
+                    $clientSale->delete();
+                }
+                $clientTransaction = ClientTransaction::where('sale_id', $sale['id'])->first();
+
+                if ($clientTransaction) {
+                    $clientTransaction->delete();
+                }
             }
             $sale->delete();
             return null;
