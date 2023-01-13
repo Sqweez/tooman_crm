@@ -110,8 +110,7 @@ class WorkingDayController extends Controller
         if (!$shiftRule) {
             return false;
         }
-        $percent = $shiftRule['value'];
-        $percent = is_numeric($percent) ? $percent : 0;
+        $percent =  floatval(str_replace(",", ".", $shiftRule['value']));
         $saleTax = $salesAmount * $percent / 100;
         $shift->update([
             'sale_tax' => $saleTax
