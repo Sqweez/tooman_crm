@@ -140,7 +140,7 @@ class User extends Authenticatable
     }
 
     public function anotherSellerAtWork(): bool {
-        return $this->store->activeWorkingDay && $this->store->activeWorkingDay->user_id !== auth()->id();
+        return optional($this->store)->activeWorkingDay && optional($this->store)->activeWorkingDay->user_id !== auth()->id();
     }
 
     protected static function boot() {

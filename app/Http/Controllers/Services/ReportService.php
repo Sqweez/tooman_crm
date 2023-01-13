@@ -19,7 +19,7 @@ class ReportService {
         $authUser = auth()->user();
         if (!$is_supplier) {
             $saleQuery = $saleQuery->report()->reportDate([$start, $finish]);
-            if ($user_id) {
+            if ($user_id && !$authUser->is_super_user) {
                 $user = User::find($user_id);
                 $saleQuery->whereStoreId($user->store_id);
             }

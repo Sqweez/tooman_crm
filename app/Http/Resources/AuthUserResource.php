@@ -29,7 +29,7 @@ class AuthUserResource extends JsonResource
             'login' => $this->login,
             'role_id' => $this->role_id,
             'role' => $this->role->role_name,
-            'store_slug' => Str::slug($this->store->city_name->name),
+            'store_slug' => $this->is_super_user ? 'Все города' : Str::slug($this->store->city_name->name),
             'is_super_user' => $this->is_super_user,
             'store' => $this->is_super_user ? ['id' => -1, 'name' => 'Все склады'] : $this->store,
             'is_non_revision_pages_blocked' => $this->is_non_revision_pages_blocked,

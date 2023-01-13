@@ -728,6 +728,10 @@ const navigationModule = {
                 hasDropdown: true,
                 children: [
                     {
+                        title: 'Категории',
+                        url: '/categories',
+                    },
+                    {
                         title: 'Товары',
                         url: '/products'
                     },
@@ -758,6 +762,10 @@ const navigationModule = {
                 icon: 'home',
                 hasDropdown: true,
                 children: [
+                    {
+                        title: 'Категории',
+                        url: '/categories',
+                    },
                     {
                         title: 'Товары',
                         url: '/products'
