@@ -68,7 +68,7 @@ class ClientController extends Controller {
                 ['is_wholesale_buyer', 'client_name', 'client_card', 'client_phone', 'client_discount', 'is_partner', 'client_city', 'loyalty_id', 'job', 'instagram', 'photo', 'birth_date', 'gender']
             );
             $_client = collect($_client)->filter(function ($i) {
-                return strlen($i) > 0;
+                return strlen($i) > 0 || is_bool($i);
             });
             $client->update($_client->toArray());
             return new ClientResource($client);
