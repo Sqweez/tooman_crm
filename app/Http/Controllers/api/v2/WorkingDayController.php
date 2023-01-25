@@ -89,6 +89,8 @@ class WorkingDayController extends Controller
         $salesAmount = Sale::query()
             ->with('products')
             ->where('working_day_id', $day->id)
+            ->where('is_opt', false)
+            ->where('is_confirmed', true)
             ->get()
             ->reduce(function ($a, $c) {
                 return $a + collect($c->products)->reduce(function ($_a, $_c) {

@@ -18,6 +18,7 @@ class SaleService {
         if (isset($sale['is_opt']) && $sale['is_opt']) {
             $sale['is_confirmed'] = false;
         }
+        $sale['is_opt'] = isset($sale['is_opt']) && !!$sale['is_opt'];
         return Sale::create($sale);
     }
 
