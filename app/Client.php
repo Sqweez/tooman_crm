@@ -201,7 +201,7 @@ class Client extends Model
         $discountByAmount = collect(self::TOTAL_DISCOUNT)->filter(function ($item) use ($total) {
             return $total >= $item['amount'];
         })->first()['discount'] ?? 0;
-        return min(max($this->client_discount, $discountByAmount), 100);
+        return min(max($this->client_discount, 0), 100);
     }
 
     public function scopePlatinumClients($query) {

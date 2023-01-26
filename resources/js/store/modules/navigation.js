@@ -722,11 +722,20 @@ const navigationModule = {
         ],
         managerMenu: [
             {
+                title: 'Пользователи',
+                url: '/users',
+                icon: 'person',
+            },
+            {
                 title: 'Склад',
                 url: '#',
                 icon: 'home',
                 hasDropdown: true,
                 children: [
+                    {
+                        title: 'Все склады',
+                        url: '/stores',
+                    },
                     {
                         title: 'Категории',
                         url: '/categories',
@@ -746,7 +755,11 @@ const navigationModule = {
                     {
                         title: 'Ревизия',
                         url: '/revision'
-                    }
+                    },
+                    {
+                        title: 'Списания',
+                        url: '/write-offs'
+                    },
                 ],
             },
             {

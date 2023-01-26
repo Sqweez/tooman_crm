@@ -49,6 +49,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int $total_by_shift
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\v2\Models\WithDrawal[] $withdrawal
  * @property-read int|null $withdrawal_count
+ * @property int $cashless_payment
+ * @method static \Illuminate\Database\Eloquent\Builder|WorkingDay whereCashlessPayment($value)
  */
 class WorkingDay extends Model
 {

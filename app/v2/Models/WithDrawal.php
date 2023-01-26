@@ -38,6 +38,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read string $type
  * @method static \Illuminate\Database\Eloquent\Builder|WithDrawal whereTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WithDrawal whereWorkingDayId($value)
+ * @property int $account
+ * @method static \Illuminate\Database\Eloquent\Builder|WithDrawal whereAccount($value)
  */
 class WithDrawal extends Model
 {

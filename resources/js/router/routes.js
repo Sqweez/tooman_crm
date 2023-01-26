@@ -96,6 +96,8 @@ const routes = [
             CAN_ENTER: {
                 IS_ADMIN: true,
                 IS_BOSS: true,
+                IS_MANAGER: true,
+                IS_GENERAL_MANAGER: true,
             },
         }
     },
@@ -106,6 +108,8 @@ const routes = [
             CAN_ENTER: {
                 IS_ADMIN: true,
                 IS_BOSS: true,
+                IS_GENERAL_MANAGER: true,
+                IS_MANAGER: true
             },
         }
 
@@ -531,6 +535,8 @@ const routes = [
             CAN_ENTER: {
                 IS_ADMIN: true,
                 IS_BOSS: true,
+                IS_GENERAL_MANAGER: true,
+                IS_MANAGER: true
             }
         }
     },

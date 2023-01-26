@@ -30,6 +30,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|Checkout whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Checkout whereUserId($value)
  * @mixin \Eloquent
+ * @property int $account
+ * @method static \Illuminate\Database\Eloquent\Builder|Checkout whereAccount($value)
  */
 class Checkout extends Model
 {

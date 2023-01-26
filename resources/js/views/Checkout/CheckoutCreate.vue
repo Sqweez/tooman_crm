@@ -21,6 +21,13 @@
                         item-value="id"
                     />
                     <v-select
+                        label="Счет изъятия"
+                        v-model="account"
+                        :items="accounts"
+                        item-text="name"
+                        item-value="id"
+                    />
+                    <v-select
                         v-if="IS_SUPERUSER"
                         label="Пользователь"
                         v-model="user_id"
@@ -41,7 +48,7 @@
 
 <script>
 import axios from "axios";
-
+import accounts from '@/common/enums/accounts';
 export default {
     data: () => ({
         imagePreview: null,
@@ -51,6 +58,8 @@ export default {
         store_id: null,
         user_id: null,
         type_id: 0,
+        account: 0,
+        accounts: accounts,
     }),
     name: 'CheckoutCreate',
     mounted() {
@@ -76,6 +85,7 @@ export default {
                 description: this.description,
                 user_id: this.user_id,
                 store_id: this.store_id,
+                account: this.account,
             };
 
             const formData = new FormData;

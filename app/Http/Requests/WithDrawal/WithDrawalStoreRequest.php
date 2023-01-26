@@ -31,7 +31,8 @@ class WithDrawalStoreRequest extends FormRequest
             'amount' => 'required|min:1',
             'image' => 'required|file',
             'type_id' => 'required',
-            'working_day_id' => 'sometimes'
+            'working_day_id' => 'sometimes',
+            'account' => 'required'
         ];
     }
 

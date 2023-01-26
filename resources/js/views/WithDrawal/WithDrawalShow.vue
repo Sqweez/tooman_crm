@@ -2,7 +2,7 @@
     <div>
         <v-row>
             <v-col cols="12" xl="4">
-                <IDatePicker />
+                <IDatePicker v-model="dates"/>
             </v-col>
             <v-col cols="12" xl="4">
                 <v-autocomplete
@@ -42,6 +42,9 @@
                 </v-list>
             </v-col>
         </v-row>
+        <v-btn color="success" @click="getWithDrawals">
+            Получить данные
+        </v-btn>
         <v-data-table
             loading-text="Идет загрузка товаров..."
             class="background-iron-grey fz-18"
@@ -141,14 +144,6 @@ export default {
                 return this.userId === - 1 ? true : (i.user && i.user.id === this.userId);
             }).filter(i => {
                 return this.typeId === - 1 ? true : i.type_id === this.typeId;
-            }).filter(i => {
-                if (!(this.start && this.finish)) {
-                    return true;
-                }
-                const startDate = moment(this.start);
-                const endDate = moment(this.finish);
-                const currentDate = moment(i.created_at);
-                return currentDate.isSameOrAfter(startDate, 'day') && currentDate.isSameOrBefore(endDate, 'day');
             });
         },
         totalAmount () {
@@ -159,7 +154,12 @@ export default {
         async getWithDrawals() {
             try {
                 this.$loading.enable();
-                const { data: { data } } = await axios.get('/api/v2/with-drawal');
+                const payload = {
+                    start: this.dates[0],
+                    finish: this.dates[1],
+                };
+                const urlSearch = new URLSearchParams(payload);
+                const { data: { data } } = await axios.get(`/api/v2/with-drawal?${urlSearch}`);
                 this.$store.commit('SET_WITHDRAWALS', data);
             } catch (e) {
             } finally {
@@ -175,7 +175,7 @@ export default {
         }
     },
     async mounted() {
-        await this.getWithDrawals();
+        //await this.getWithDrawals();
     }
 }
 </script>

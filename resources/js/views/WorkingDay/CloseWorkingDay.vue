@@ -11,21 +11,26 @@
                 v-model.number="kaspiTransferCash"
                 type="number"
             />
-            <v-text-field
+<!--            <v-text-field
                 label="Сумма продаж наличные"
                 v-model.number="hardCash"
                 type="number"
-            />
+            />-->
             <v-text-field
+                label="Сумма продаж безналичным расчетом"
+                v-model.number="cashlessPayments"
+                type="number"
+            />
+<!--            <v-text-field
                 label="Сумма продаж каспи-терминал"
                 v-model.number="kaspiTerminalCash"
                 type="number"
-            />
-            <v-text-field
+            />-->
+<!--            <v-text-field
                 label="Сумма продаж jysan"
                 v-model.number="jysanCash"
                 type="number"
-            />
+            />-->
             <v-btn color="error" @click="closeWorkingDay">
                 Закрыть смену <v-icon>mdi-check</v-icon>
             </v-btn>
@@ -49,6 +54,7 @@ export default {
         kaspiTransferCash: 0,
         kaspiTerminalCash: 0,
         hardCash: 0,
+        cashlessPayments: 0,
     }),
     computed: {},
     methods: {
@@ -62,6 +68,7 @@ export default {
                 kaspi_terminal_cash: this.kaspiTerminalCash,
                 jysan_transfers_cash: this.jysanCash,
                 hard_cash: this.hardCash,
+                cashless_payment: this.cashlessPayments,
                 working_day_id: this.$user.working_day_id,
             };
 

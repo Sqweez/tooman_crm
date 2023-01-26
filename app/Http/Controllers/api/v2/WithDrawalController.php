@@ -20,11 +20,18 @@ class WithDrawalController extends Controller
         return WithDrawalListResource::make($withdrawal);
     }
 
-    public function index() {
+    public function index(Request $request) {
+        $start = $request->get('start');
+        $finish = $request->get('finish');
         $user = auth()->user();
         $withDrawals = WithDrawal::query()
             ->when(!$user->is_super_user, function ($q) use ($user) {
                 return $q->where('user_id', $user->id);
+            })
+            ->when(($start && $finish), function ($q) use ($start, $finish) {
+                return $q
+                    ->whereDate('created_at', '>=', $start)
+                    ->whereDate('created_at', '<=', $finish);
             })
             ->with(['user:id,name', 'store:id,name'])
             ->latest()

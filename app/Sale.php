@@ -2,6 +2,9 @@
 
 namespace App;
 
+use App\v2\Models\Booking;
+use App\v2\Models\Certificate;
+use App\v2\Models\Preorder;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -22,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int|null $partner_id
  * @property int $payment_type
  * @property boolean $is_delivery
- * @property-read \App\Client $client
+ * @property-read Client $client
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\SaleProduct[] $products
  * @property-read int|null $products_count
  * @property-read \App\Store $store
@@ -52,20 +55,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read mixed $margin
  * @method static \Illuminate\Database\Eloquent\Builder|Sale reportDate($dates)
  * @property array|null $split_payment
- * @property-read \App\v2\Models\Certificate $certificate
+ * @property-read Certificate $certificate
  * @property-read mixed $certificate_margin
- * @property-read \App\v2\Models\Certificate|null $used_certificate
+ * @property-read Certificate|null $used_certificate
  * @method static \Illuminate\Database\Eloquent\Builder|Sale whereSplitPayment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Sale reportSupplier($supplierProducts)
  * @property string $comment
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\v2\Models\Image[] $image
  * @property-read int|null $image_count
- * @property-read \App\v2\Models\Preorder $preorder
+ * @property-read Preorder $preorder
  * @method static \Illuminate\Database\Eloquent\Builder|Sale physicalSales()
  * @method static \Illuminate\Database\Eloquent\Builder|Sale whereComment($value)
  * @property int|null $order_id
  * @property int|null $booking_id
- * @property-read \App\v2\Models\Booking|null $booking
+ * @property-read Booking|null $booking
  * @method static \Illuminate\Database\Eloquent\Builder|Sale whereBookingId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Sale whereIsDelivery($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Sale whereKaspiTransactionId($value)

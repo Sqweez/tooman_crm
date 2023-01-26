@@ -30,8 +30,9 @@ class CloseWorkingDayRequest extends FormRequest
             'kaspi_transfers_cash' => 'required|integer|min:0',
             'kaspi_terminal_cash' => 'required|integer|min:0',
             'jysan_transfers_cash' => 'required|integer|min:0',
+            'cashless_payment' => 'required|integer|min:0',
             'hard_cash' => 'required|integer|min:0',
-            'closed_at' => 'required'
+            'closed_at' => 'required',
         ];
     }
 

@@ -19,6 +19,12 @@
                                 <v-list-item-title>{{ totalMargin | priceFilters }}</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
+                        <v-list-item v-if="IS_BOSS || IS_FRANCHISE || IS_ACCOUNTING">
+                            <v-list-item-content>
+                                <v-list-item-title class="font-weight-black">Общая себестоимость реализаций:</v-list-item-title>
+                                <v-list-item-title>{{ totalSelfPrice | priceFilters }}</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
                         <v-list-item>
                             <v-list-item-content>
                                 <v-list-item-title class="font-weight-black">Общая сумма бронирований:</v-list-item-title>
@@ -823,6 +829,11 @@ const DATE_FILTERS = {
                     .reduce((a, c) => {
                         return a + c.margin
                     }, 0);
+            },
+            totalSelfPrice () {
+                return this.confirmedSalesReport.reduce((a, c) => {
+                    return a + c.final_price - c.margin;
+                }, 0);
             },
             totalSaleCount() {
                 return this.confirmedSalesReport.length;

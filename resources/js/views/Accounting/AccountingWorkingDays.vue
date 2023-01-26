@@ -34,8 +34,8 @@
                         <th rowspan="3" class="orange-cell">
                             <span class="rotated">Продажи</span>
                         </th>
-                        <th rowspan="1" colspan="12" scope="colgroup" class="green-cell">Поступление</th>
-                        <th colspan="3" rowspan="1" class="red-cell">Изъятие</th>
+                        <th rowspan="1" colspan="14" scope="colgroup" class="green-cell">Поступление</th>
+                        <th colspan="4" rowspan="1" class="red-cell">Изъятие</th>
                         <th colspan="1" rowspan="3" class="orange-cell">Переход на след. день</th>
                     </tr>
                     <tr>
@@ -43,10 +43,13 @@
                             Наличные
                         </th>
                         <th rowspan="1" colspan="3" class="green-cell">
-                            Каспи
+                            Переводы
                         </th>
                         <th rowspan="1" colspan="3" class="green-cell">
-                            Jysan
+                            Безналичный
+                        </th>
+                        <th rowspan="1" colspan="2" class="green-cell">
+                            Прочие поступления
                         </th>
                         <th rowspan="1" colspan="3" class="green-cell">
                             Итого
@@ -54,7 +57,7 @@
                         <th rowspan="2" colspan="1" class="red-cell">
                             Инкассация
                         </th>
-                        <th rowspan="2" colspan="1" class="red-cell">
+                        <th rowspan="1" colspan="2" class="red-cell">
                             Расходы
                         </th>
                         <th rowspan="2" colspan="1" class="red-cell">
@@ -99,6 +102,12 @@
                             (+ -)
                         </th>
                         <th rowspan="1" colspan="1" class="green-cell">
+                            Наличный
+                        </th>
+                        <th rowspan="1" colspan="1" class="green-cell">
+                            Безналичный
+                        </th>
+                        <th rowspan="1" colspan="1" class="green-cell">
                             По отчету
                         </th>
                         <th rowspan="1" colspan="1" class="green-cell">
@@ -106,6 +115,12 @@
                         </th>
                         <th rowspan="1" colspan="1" class="green-cell">
                             (+ -)
+                        </th>
+                        <th rowspan="1" colspan="1" class="red-cell">
+                            Наличный
+                        </th>
+                        <th rowspan="1" colspan="1" class="red-cell">
+                            Безналичный
                         </th>
                     </tr>
                     <tr v-for="(item, key) of report" :key="key">
@@ -153,15 +168,21 @@
                         </span>
                         </td>
                         <td class="green-cell">
-                            {{ item.report.jysan_sales.by_crm | priceFilters }}
+                            {{ item.report.cashless_sales.by_crm | priceFilters }}
                         </td>
                         <td class="green-cell">
-                            {{ item.report.jysan_sales.by_shift | priceFilters }}
+                            {{ item.report.cashless_sales.by_shift | priceFilters }}
                         </td>
                         <td class="green-cell red-text">
                         <span>
-                            {{ item.report.jysan_sales.diff | priceFilters }}
+                            {{ item.report.cashless_sales.diff | priceFilters }}
                         </span>
+                        </td>
+                        <td class="green-cell">
+                            {{ item.report.other_checkins.cash | priceFilters }}
+                        </td>
+                        <td class="green-cell">
+                            {{ item.report.other_checkins.cashless | priceFilters }}
                         </td>
                         <td class="green-cell">
                             {{ item.report.total_sales.by_crm | priceFilters }}
@@ -178,7 +199,7 @@
                             {{ item.report.with_drawals.incassation | priceFilters }}
                         </td>
                         <td class="red-cell">
-                            <v-tooltip right v-if="item.report.with_drawals.by_types.length > 0">
+                            <v-tooltip right v-if="item.report.with_drawals.cash.by_types.length > 0">
                                 <template v-slot:activator="{ on, attrs }">
                                     <div
                                         class="d-flex align-center justify-center"
@@ -186,7 +207,7 @@
                                         v-on="on"
                                     >
                                         <span>
-                                            {{ item.report.with_drawals.total_without_inc | priceFilters }}
+                                            {{ item.report.with_drawals.cash.total_without_inc | priceFilters }}
                                         </span>
                                         <v-icon>
                                             mdi-information-outline
@@ -194,13 +215,39 @@
                                     </div>
                                 </template>
                                 <ul>
-                                    <li v-for="(item) of item.report.with_drawals.by_types">
+                                    <li v-for="(item) of item.report.with_drawals.cash.by_types">
                                         {{ item.name }}: {{ item.amount | priceFilters }}
                                     </li>
                                 </ul>
                             </v-tooltip>
                             <span v-else>
-                                {{ item.report.with_drawals.total_without_inc | priceFilters }}
+                                {{ item.report.with_drawals.cash.total_without_inc | priceFilters }}
+                            </span>
+                        </td>
+                        <td class="red-cell">
+                            <v-tooltip right v-if="item.report.with_drawals.cashless.by_types.length > 0">
+                                <template v-slot:activator="{ on, attrs }">
+                                    <div
+                                        class="d-flex align-center justify-center"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                        <span>
+                                            {{ item.report.with_drawals.cashless.total_without_inc | priceFilters }}
+                                        </span>
+                                        <v-icon>
+                                            mdi-information-outline
+                                        </v-icon>
+                                    </div>
+                                </template>
+                                <ul>
+                                    <li v-for="(item) of item.report.with_drawals.cashless.by_types">
+                                        {{ item.name }}: {{ item.amount | priceFilters }}
+                                    </li>
+                                </ul>
+                            </v-tooltip>
+                            <span v-else>
+                                {{ item.report.with_drawals.cashless.total_without_inc | priceFilters }}
                             </span>
                         </td>
                         <td class="red-cell">
@@ -246,13 +293,19 @@
                             {{ totalKaspiSales.diff | priceFilters }}
                         </td>
                         <td class="green-cell">
-                            {{ totalJysanSales.by_crm | priceFilters }}
+                            {{ totalCashlessSales.by_crm | priceFilters }}
                         </td>
                         <td class="green-cell">
-                            {{ totalJysanSales.by_shift | priceFilters }}
+                            {{ totalCashlessSales.by_shift | priceFilters }}
                         </td>
                         <td class="green-cell">
-                            {{ totalJysanSales.diff | priceFilters }}
+                            {{ totalCashlessSales.diff | priceFilters }}
+                        </td>
+                        <td class="green-cell">
+                            {{ totalCashIns | priceFilters }}
+                        </td>
+                        <td class="green-cell">
+                            {{ totalCashlessIns | priceFilters }}
                         </td>
                         <td class="green-cell">
                             {{ totalSalesObject.by_crm | priceFilters }}
@@ -274,19 +327,39 @@
                                         v-bind="attrs"
                                         v-on="on"
                                     >
-                                        {{ totalOtherWithdrawals | priceFilters }}
+                                        {{ totalOtherWithdrawalsByCash | priceFilters }}
                                         <v-icon>
                                             mdi-information-outline
                                         </v-icon>
                                     </div>
                                 </template>
                                 <ul>
-                                <li v-for="(item) of totalWithDrawalByTypes">
+                                <li v-for="(item) of totalWithDrawalByTypesByCash">
                                         {{ item.name }}: {{ item.amount | priceFilters }}
                                     </li>
                                 </ul>
                             </v-tooltip>
-
+                        </td>
+                        <td class="red-cell">
+                            <v-tooltip right>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <div
+                                        class="d-flex align-center justify-center"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                        {{ totalOtherWithdrawalsByCashless | priceFilters }}
+                                        <v-icon>
+                                            mdi-information-outline
+                                        </v-icon>
+                                    </div>
+                                </template>
+                                <ul>
+                                    <li v-for="(item) of totalWithDrawalByTypesByCashless">
+                                        {{ item.name }}: {{ item.amount | priceFilters }}
+                                    </li>
+                                </ul>
+                            </v-tooltip>
                         </td>
                         <td class="red-cell">
                             {{ totalWithdrawals | priceFilters }}
@@ -319,6 +392,16 @@ export default {
         withdrawal_types: [],
     }),
     computed: {
+        totalCashIns () {
+            return this.report.reduce((a, c) => {
+                return a + c.report.other_checkins.cash;
+            }, 0)
+        },
+        totalCashlessIns () {
+            return this.report.reduce((a, c) => {
+                return a + c.report.other_checkins.cashless;
+            }, 0)
+        },
         monthsList() {
             const dateStart = moment().add(1, 'month');
             return new Array(12)
@@ -330,12 +413,31 @@ export default {
                     };
                 });
         },
-        totalWithDrawalByTypes() {
+        totalWithDrawalByTypesByCash() {
             let output = [];
             this.withdrawal_types.forEach((type) => {
                 const amount = this.report.reduce((a, c) => {
                     let amount = 0;
-                    const needleWithdrawal = c.report.with_drawals.by_types.find(w => w.id === type.id);
+                    const needleWithdrawal = c.report.with_drawals.cash.by_types.find(w => w.id === type.id);
+                    if (needleWithdrawal) {
+                        amount = needleWithdrawal.amount;
+                    }
+                    return a + amount;
+                }, 0);
+                output.push({
+                    name: type.name,
+                    id: type.id,
+                    amount,
+                })
+            });
+            return output;
+        },
+        totalWithDrawalByTypesByCashless() {
+            let output = [];
+            this.withdrawal_types.forEach((type) => {
+                const amount = this.report.reduce((a, c) => {
+                    let amount = 0;
+                    const needleWithdrawal = c.report.with_drawals.cashless.by_types.find(w => w.id === type.id);
                     if (needleWithdrawal) {
                         amount = needleWithdrawal.amount;
                     }
@@ -359,9 +461,14 @@ export default {
                 return a + c.report.with_drawals.incassation;
             }, 0)
         },
-        totalOtherWithdrawals() {
+        totalOtherWithdrawalsByCash() {
             return this.report.reduce((a, c) => {
-                return a + c.report.with_drawals.total_without_inc;
+                return a + c.report.with_drawals.cash.total_without_inc;
+            }, 0)
+        },
+        totalOtherWithdrawalsByCashless() {
+            return this.report.reduce((a, c) => {
+                return a + c.report.with_drawals.cashless.total_without_inc;
             }, 0)
         },
         totalCashInHandDiff() {
@@ -400,16 +507,16 @@ export default {
                 }, 0),
             };
         },
-        totalJysanSales() {
+        totalCashlessSales() {
             return {
                 by_crm: this.report.reduce((a, c) => {
-                    return a + c.report.jysan_sales.by_crm
+                    return a + c.report.cashless_sales.by_crm
                 }, 0),
                 by_shift: this.report.reduce((a, c) => {
-                    return a + c.report.jysan_sales.by_shift;
+                    return a + c.report.cashless_sales.by_shift;
                 }, 0),
                 diff: this.report.reduce((a, c) => {
-                    return a + c.report.jysan_sales.diff;
+                    return a + c.report.cashless_sales.diff;
                 }, 0),
             };
         },
@@ -428,6 +535,14 @@ export default {
         },
     },
     methods: {
+        getCashSalesByShift (report) {
+            return report.closing_day_cash_in_hand
+            - report.prev_day_cash_in_hand.fact
+            - report.other_checkins.cash
+            + report.with_drawals.incassation
+            + report.with_drawals.cash.total_without_inc
+            ;
+        },
         async onSubmit() {
             try {
                 this.$loading.enable();
