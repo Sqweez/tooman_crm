@@ -242,7 +242,7 @@ class CollectAccountingShiftsReportAction {
             + $this->getWithDrawals($item)['cash']['total_without_inc']
         ;
         $byCRM = $this->getTotalSaleAmount($item, __hardcoded(0));
-        $diff = $byCRM - $byShift;
+        $diff = $byShift - $byCRM;
 
         return [
             'by_shift' => $byShift,
@@ -260,7 +260,7 @@ class CollectAccountingShiftsReportAction {
             return $a + $c['kaspi_transfers_cash'];
         }, 0);
         $byCRM = $this->getTotalSaleAmount($item, __hardcoded([3]));
-        $diff = $byCRM - $byShift;
+        $diff = $byShift - $byCRM;
 
         return [
             'by_shift' => $byShift,
@@ -278,7 +278,7 @@ class CollectAccountingShiftsReportAction {
             return $a + $c['jysan_transfers_cash'];
         }, 0);
         $byCRM = $this->getTotalSaleAmount($item, __hardcoded(8));
-        $diff = $byCRM - $byShift;
+        $diff = $byShift - $byCRM;
 
         return [
             'by_shift' => $byShift,
@@ -296,7 +296,7 @@ class CollectAccountingShiftsReportAction {
             return $a + $c['jysan_transfers_cash'] + $c['kaspi_terminal_cash'] + $c['cashless_payment'];
         }, 0);
         $byCRM = $this->getTotalSaleAmount($item, __hardcoded([1, 8, 2]));
-        $diff = $byCRM - $byShift;
+        $diff = $byShift - $byCRM;
 
         return [
             'by_shift' => $byShift,
@@ -313,7 +313,7 @@ class CollectAccountingShiftsReportAction {
             return $a + $c['total_by_shift'];
         }, 0);
         $byCRM = $this->getTotalSaleAmount($item);
-        $diff = $byCRM - $byShift;
+        $diff = $byShift - $byCRM;
 
         return [
             'by_shift' => $byShift,
