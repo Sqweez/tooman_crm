@@ -67,6 +67,11 @@ class SaleService {
 
         $cashbackPercent = $discount === 0 ? 5 : 0;
 
+        $sale = Sale::find($sale_id);
+        if ($sale->is_opt) {
+            return false;
+        }
+
         $client->transactions()->create([
             'sale_id' => $sale_id,
             'user_id' => $user_id,

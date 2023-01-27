@@ -112,7 +112,7 @@
                                 @click:append-outer="used_certificate = null"
                             />
                         </div>
-                        <div v-if="clientChosen && !isFree && false">
+                        <div v-if="clientChosen && !isFree">
                             <v-text-field
                                 class="w-150px"
                                 type="number"
