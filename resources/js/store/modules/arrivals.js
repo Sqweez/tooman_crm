@@ -6,9 +6,11 @@ const arrivalModule = {
         currentArrival: {},
         currentMoneyRate: 0,
         currentChildStore: -1,
+        arrivalTemplates: [],
     },
     getters: {
         ARRIVALS: s => s.arrivals,
+        ARRIVAL_TEMPLATES: s => s.arrivalTemplates,
         CURRENT_ARRIVAL: s => ({
             cart: s.currentArrival,
             moneyRate: s.currentMoneyRate,
@@ -42,6 +44,12 @@ const arrivalModule = {
         SUBMIT_ARRIVAL (state, id) {
             // @TODO 2022-09-14T02:45:08 может будет другая логика
             state.arrivals = state.arrivals.filter(a => a.id !== id);
+        },
+        SET_ARRIVAL_TEMPLATES (state, templates) {
+            state.arrivalTemplates = templates;
+        },
+        CREATE_ARRIVAL_TEMPLATE (state, template) {
+            state.arrivalTemplates.push(template);
         }
     },
     actions: {
@@ -66,7 +74,15 @@ const arrivalModule = {
         async submitArrival ({ commit }, payload) {
             await axiosClient.post(`/arrivals/${payload.id}/submit`, payload);
             commit('SUBMIT_ARRIVAL', payload.id);
-        }
+        },
+        async createArrivalTemplate ({ commit }, payload) {
+            const { data } = await axiosClient.post('arrivals/template', payload);
+            commit('CREATE_ARRIVAL_TEMPLATE', data);
+        },
+        async getArrivalTemplates ({ commit }) {
+            const { data } = await axiosClient.get('arrivals/template');
+            commit('SET_ARRIVAL_TEMPLATES', data);
+        },
     }
 };
 

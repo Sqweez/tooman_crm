@@ -9,6 +9,7 @@ use App\Http\Controllers\api\v2\PostingController;
 use App\Http\Controllers\api\v2\ProductController;
 use App\Http\Controllers\api\v2\CertificateController;
 use App\Http\Controllers\api\v2\CompanionController;
+use App\Http\Controllers\api\v2\ReportController;
 use App\Http\Controllers\api\v2\RevisionController;
 use App\Http\Controllers\api\v2\SeoController;
 use App\Http\Controllers\api\v2\WithDrawalController;
@@ -205,6 +206,8 @@ Route::middleware(AuthorizationMiddleware::class)->group(function () {
     Route::get('arrivals/transfers', [ArrivalController::class, 'getArrivalsForTransfer']);
     Route::get('arrivals/cancel/{arrival}', 'api\ArrivalController@cancel');
     Route::post('arrivals/{arrival}/submit', 'api\ArrivalController@submit');
+    Route::get('arrivals/template', 'api\ArrivalController@getTemplates');
+    Route::post('arrivals/template', 'api\ArrivalController@createTemplate');
     Route::apiResource('arrivals', 'api\ArrivalController');
 
     // AnalyticsController
@@ -451,6 +454,9 @@ Route::middleware(AuthorizationMiddleware::class)->group(function () {
             Route::get('/{user}', [PartnerController::class, 'show']);
             Route::get('/product-ids/{user}', [PartnerController::class, 'getPartnerProductIds']);
             Route::post('/sync/{user}', [PartnerController::class, 'syncPartnerProducts']);
+        });
+        Route::prefix('reports')->group(function () {
+            Route::get('products', [ReportController::class, 'getReportByProducts']);
         });
     });
 });

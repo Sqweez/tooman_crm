@@ -14,6 +14,7 @@ use App\Http\Resources\ArrivalForTransferResource;
 use App\Http\Resources\ArrivalResource;
 use App\ProductBatch;
 use App\User;
+use App\v2\Models\ArrivalTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -94,5 +95,22 @@ class ArrivalController extends Controller
         $arrival->fresh();
         $arrival->loadRelations();
         return ArrivalResource::make($arrival);
+    }
+
+    public function getTemplates() {
+        return ArrivalTemplate::query()
+            ->get();
+    }
+
+    public function createTemplate(Request $request) {
+        $products = $request->get('products', []);
+        $user_id = auth()->id();
+        $name = $request->get('name', 'Шаблон приемки');
+        $arrival = ArrivalTemplate::create([
+            'name' => $name,
+            'user_id' => $user_id,
+            'products' => $products,
+        ]);
+        return $arrival->refresh();
     }
 }

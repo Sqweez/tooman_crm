@@ -22,13 +22,13 @@
                 </v-btn>
             </div>
         </div>
-        <v-card class="background-tooman-darkgrey mb-5 mt-5" v-if="!emptyCart">
+        <v-card class="mb-5 mt-5" v-if="!emptyCart">
             <v-card-title class="justify-end">
             </v-card-title>
             <v-card-text style="padding: 0;">
                 <v-simple-table v-slot:default class="mt-5">
                     <template>
-                        <thead class="background-tooman-darkgrey fz-18">
+                        <thead class=" fz-18">
                         <tr>
                             <th>#</th>
                             <th>Наименование</th>
@@ -39,11 +39,11 @@
                             <th>Удалить</th>
                         </tr>
                         </thead>
-                        <tbody class="background-tooman-grey">
+                        <tbody class="">
                         <tr v-for="(item, index) of cart" :key="item.id * 85">
                             <td>{{ index + 1 }}</td>
                             <td>
-                                <v-list class="product__list" flat>
+                                <v-list class="" flat>
                                     <v-list-item>
                                         <v-list-item-content>
                                             <v-list-item-title>
@@ -84,7 +84,9 @@
                                     @change="updatePurchasePrice($event, index)"
                                     @input="updatePurchasePrice($event, index)"
                                     v-model="item.purchase_price_initial"
-                                ></v-text-field>
+                                    :append-outer-icon="hasSimilarProducts(item) ? 'mdi-sync' : ''"
+                                    @click:append-outer="syncSimilarProductPrices(item)"
+                                />
                             </td>
                             <td>
                                 <v-list flat>
@@ -210,6 +212,9 @@
 
                 </div>
                 <div class="background-tooman-grey pa-10">
+                    <v-btn color="primary" block style="font-size: 16px; margin-bottom: 16px;" @click="saveAsTemplate">
+                        Сохранить как шаблон
+                    </v-btn>
                     <v-btn color="error" block style="font-size: 16px" @click="onSubmit">
                         Создать поставку
                     </v-btn>
@@ -217,6 +222,15 @@
             </v-card-text>
         </v-card>
         <v-card class="background-tooman-darkgrey">
+            <v-select
+                label="Шаблоны"
+                :items="templates"
+                item-value="id"
+                item-text="name"
+                append-outer-icon="mdi-close"
+                v-model="templateId"
+                @click:append-outer="clearCache(); templateId = null;"
+            />
             <v-card-title>
                 Товары
             </v-card-title>
@@ -344,6 +358,7 @@ import SkuModal from "@/components/v2/Modal/SkuModal";
 import { db } from '@/db';
 import product from '@/mixins/product';
 import {mapActions} from 'vuex';
+import axiosClient from '@/utils/axiosClient';
 
 export default {
     components: {
@@ -355,6 +370,7 @@ export default {
     mixins: [product_search, cart, product],
     data: () => ({
         comment: '',
+        templateId: null,
         arrivedAt: null,
         moneyRate: 1,
         paymentCost: 0,
@@ -403,6 +419,7 @@ export default {
         await this.$store.dispatch(ACTIONS.GET_CATEGORIES);
         await this.$store.dispatch(ACTIONS.GET_MANUFACTURERS);
         await this.$store.dispatch(ACTIONS.GET_ATTRIBUTES);
+        await this.$getArrivalTemplates();
         this.child_store = this.IS_SUPERUSER ? this.stores[0].id : this.$user.store_id;
         const response = await db.arrivals.toArray();
         if (response && response.length > 0) {
@@ -430,9 +447,15 @@ export default {
     methods: {
         ...mapActions({
             '$createArrival': 'createArrival',
+            '$createArrivalTemplate': 'createArrivalTemplate',
+            '$getArrivalTemplates': 'getArrivalTemplates',
         }),
+        hasSimilarProducts (item) {
+            return this.cart.filter(p => p.product_id === item.product_id).length > 1;
+        },
         clearCache() {
-            db.arrivals.clear()
+            db.arrivals.clear();
+            this.cart = [];
         },
         changeCount(e, item, index) {
             this.$nextTick(() => {
@@ -463,6 +486,16 @@ export default {
                 this.$set(this.cart[index], 'purchase_price', +e * this.moneyRate);
             })
         },
+        syncSimilarProductPrices (item) {
+            const price = item.purchase_price;
+            const similarProducts = this.cart
+                .filter(c => c.product_id === item.product_id)
+                .filter(c => c.id !== item.id);
+            similarProducts.forEach(product => {
+                const index = this.cart.findIndex(c => c.id === product.id);
+                this.updatePurchasePrice(price, index);
+            })
+        },
         calculatePrices() {
             this.cart = this.cart.map(item => {
                 item.purchase_price = Math.ceil(item.purchase_price_initial * this.moneyRate);
@@ -470,9 +503,9 @@ export default {
             })
         },
         addToCart(item, merge = false) {
-            const index = this.cart.map(c => c.id).indexOf(item.id);
+            let index = this.cart.map(c => c.id).indexOf(item.id);
             if (index === -1 || merge) {
-                this.cart.push({
+                index = this.cart.push({
                     ...item,
                     count: 1,
                     product_price: this.getPrice(item, this.child_store),
@@ -480,8 +513,10 @@ export default {
                     purchase_price: 0,
                     uuid: Math.random()
                 });
+                return index - 1;
             } else {
                 this.increaseCartCount(index);
+                return index;
             }
         },
         increaseCartCount(index) {
@@ -500,6 +535,33 @@ export default {
             const link = document.createElement('a');
             link.href = data.path;
             link.click();
+        },
+        saveAsTemplate () {
+            this.$prompt('Название шаблона', 'Введите название шаблона')
+                .then(async value => {
+                    const payload = {
+                        name: value,
+                        products: this.cart.map(c => ({
+                            product_id: c.id,
+                            purchase_price: c.purchase_price,
+                            count: c.count
+                        })),
+                        user_id: this.$user.id,
+                    };
+
+                    this.$loading.enable();
+                    try {
+                        await this.$createArrivalTemplate(payload);
+                        this.$toast.success('Шаблон приемки успешно создан')
+                    } catch (e) {
+                        this.$toast.error('Произошла ошибка при создании шаблона!')
+                    } finally {
+                        this.$loading.disable();
+                    }
+                })
+                .catch(e => {
+                    console.log(e);
+                })
         },
         async onSubmit() {
             if (!this.paymentCost) {
@@ -547,6 +609,9 @@ export default {
         }
     },
     computed: {
+        templates () {
+            return this.$store.getters.ARRIVAL_TEMPLATES;
+        },
         totalCost() {
             return this.cart.reduce((a, c) => {
                 return a + (+c.count * +c.purchase_price);
@@ -582,6 +647,19 @@ export default {
                 this.paymentCost = value;
             })
         },
+        templateId (value) {
+            if (!value) {
+                return false;
+            }
+            const template = this.templates.find(t => t.id === value);
+            this.$loading.enable();
+            template.products.forEach((product, index) => {
+                const needle = this.products.find(p => p.id === product.product_id);
+                const key = this.addToCart(needle);
+                this.updatePurchasePrice(product.purchase_price, key);
+            });
+            this.$loading.disable();
+        }
     }
 }
 </script>

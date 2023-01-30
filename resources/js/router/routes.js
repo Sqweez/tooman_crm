@@ -83,6 +83,7 @@ import PartnersIndex from '@/views/Partners/PartnersIndex';
 import PartnersEdit from '@/views/Partners/PartnersEdit';
 import PartnersInfo from '@/views/Partners/PartnersInfo';
 import CheckoutIndex from '@/views/Checkout/CheckoutIndex';
+import ReportsByProducts from '@/views/v3/Reports/ReportsByProducts';
 
 const routes = [
     {
@@ -411,6 +412,10 @@ const routes = [
     {
         path: '/reports',
         component: ReportsV3
+    },
+    {
+        path: '/reports-by-products',
+        component: ReportsByProducts,
     },
     {
         path: '/kaspi/products',

@@ -197,6 +197,11 @@ const navigationModule = {
                 icon: 'report',
             },
             {
+                title: 'Продажи товаров',
+                url: '/reports-by-products',
+                icon: 'report',
+            },
+            {
                 title: 'Отчеты по товарам',
                 url: '/reports/products',
                 icon: 'report',
@@ -767,6 +772,11 @@ const navigationModule = {
                 url: '/reports',
                 icon: 'report',
             },
+            {
+                title: 'Продажи товаров',
+                url: '/reports-by-products',
+                icon: 'report',
+            },
         ],
         general_managerMenu: [
             {
@@ -864,6 +874,11 @@ const navigationModule = {
             {
                 title: 'Отчеты по продажам',
                 url: '/reports',
+                icon: 'report',
+            },
+            {
+                title: 'Продажи товаров',
+                url: '/reports-by-products',
                 icon: 'report',
             },
         ],
@@ -1150,6 +1165,11 @@ const navigationModule = {
             {
                 title: 'Отчеты по продажам',
                 url: '/reports',
+                icon: 'report',
+            },
+            {
+                title: 'Продажи товаров',
+                url: '/reports-by-products',
                 icon: 'report',
             },
         ],

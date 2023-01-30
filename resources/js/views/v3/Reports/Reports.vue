@@ -705,7 +705,6 @@ const DATE_FILTERS = {
                 if (this.start && this.finish) {
                     await this.loadReport();
                 }
-
             },
             async createWaybill(report) {
                 this.$loading.enable();

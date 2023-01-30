@@ -34,29 +34,35 @@
 </template>
 
 <script>
-
     export default {
         data: () => ({
             weather: {},
             loading: true,
         }),
+        computed: {
+            slug () {
+                return this.$user.store_slug !== 'Все города' ? this.$user.store_slug : 'pavlodar';
+            },
+            url () {
+                return `https://api.openweathermap.org/data/2.5/weather?q=${this.slug}&appid=31395ab117614ed1542befb54b91d748&lang=ru&units=metric`;
+            },
+        },
         async created() {
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=${this.user.store_slug}&appid=31395ab117614ed1542befb54b91d748&lang=ru&units=metric`;
-            try {
-                const response = await fetch(url, {
-                    method: 'GET'
-                });
-                this.weather = await response.json();
-            } catch (e) {
-                console.log(e);
-            }
+            this.loading = true;
+            await this._getWeather();
             this.loading = false;
         },
-        computed: {
-            user() {
-                return this.$store.getters.USER;
-            }
-        }
+        methods: {
+            async _getWeather () {
+                try {
+                    const response = await fetch(this.url);
+                    this.weather = await response.json();
+                } catch (e) {
+                    console.log(e);
+                }
+            },
+        },
+
     }
 </script>
 
