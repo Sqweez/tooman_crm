@@ -52,6 +52,7 @@ class CollectAccountingSalaryReportAction {
                     'store_id' => $items[0]['store_id']
                 ];
             })
+            ->sortBy('user.name')
             ->values();
     }
 }

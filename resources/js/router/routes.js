@@ -279,6 +279,8 @@ const routes = [
                 IS_ADMIN: true,
                 IS_BOSS: true,
                 IS_SENIORSELLER: true,
+                IS_GENERAL_MANAGER: true,
+                IS_MANAGER: true
             }
         }
     },
