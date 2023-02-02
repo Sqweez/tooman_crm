@@ -2,6 +2,28 @@
     <v-card>
         <v-card-title>Все товары</v-card-title>
         <v-card-text v-if="!loading">
+            <v-list>
+                <v-list-item>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{ totalProductPrice | priceFilters }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle>
+                            Общая продажная стоимость
+                        </v-list-item-subtitle>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{ totalProductPurchasePrice | priceFilters }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle>
+                            Общая закупочная стоимость
+                        </v-list-item-subtitle>
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list>
             <v-row>
                 <v-col>
                     <v-row>
@@ -316,6 +338,50 @@ export default {
         showMainProducts: false,
     }),
     computed: {
+        totalProductPrice () {
+            if (this.storeFilter !== -1) {
+                return this.products.reduce((a, c) => {
+                    return a + c.quantity * this.getPrice(c, this.storeFilter);
+                }, 0);
+            } else {
+                return this.products.reduce((a, c) => {
+                    if (!this.quantities[c.id]) {
+                        return a + 0;
+                    } else {
+                        let totalQnts = this.getQuantities(c).reduce((a, qnt) => {
+                            if (qnt.store_id === -1) {
+                                return a + 0;
+                            } else {
+                                return a + qnt.quantity * this.getPrice(c, qnt.store_id);
+                            }
+                        }, 0);
+                        return a + totalQnts;
+                    }
+                }, 0);
+            }
+        },
+        totalProductPurchasePrice () {
+            if (this.storeFilter !== -1) {
+                return this.products.reduce((a, c) => {
+                    return a + c.purchase_price;
+                }, 0);
+            } else {
+                return this.products.reduce((a, product) => {
+                    if (!this.quantities[product.id]) {
+                        return a + 0;
+                    } else {
+                        let totalQnts = this.getQuantities(product).reduce((a, qnt) => {
+                            if (qnt.store_id === -1) {
+                                return a + qnt.purchase_price;
+                            } else {
+                                return a + 0;
+                            }
+                        }, 0);
+                        return a + totalQnts;
+                    }
+                }, 0);
+            }
+        },
         marginTypes () {
             return [{id: -1, title: 'Все'}, ...this.$store.getters.MARGIN_TYPES];
         },
