@@ -765,6 +765,10 @@ const navigationModule = {
                         title: 'Списания',
                         url: '/write-offs'
                     },
+                    {
+                        title: 'Оприходования',
+                        url: '/posting'
+                    },
                 ],
             },
             {
@@ -808,6 +812,14 @@ const navigationModule = {
                     {
                         title: 'Остатки',
                         url: '/product/remains'
+                    },
+                    {
+                        title: 'Списания',
+                        url: '/write-offs'
+                    },
+                    {
+                        title: 'Оприходования',
+                        url: '/posting'
                     },
                 ],
             },
