@@ -769,6 +769,10 @@ const navigationModule = {
                         title: 'Оприходования',
                         url: '/posting'
                     },
+                    {
+                        title: 'Остатки',
+                        url: '/product/remains'
+                    },
                 ],
             },
             {

@@ -135,6 +135,7 @@ Route::middleware(AuthorizationMiddleware::class)->group(function () {
     Route::resource('manufacturers', 'api\ManufacturerController');
 
     Route::prefix('stores')->group(function () {
+        Route::delete('/{store}', 'api\StoreController@destroy');
         Route::get('types', 'api\StoreController@types');
         Route::patch('/{store}', 'api\StoreController@update');
         Route::resource('/', 'api\StoreController');
