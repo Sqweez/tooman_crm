@@ -145,7 +145,7 @@ class RevisionController extends Controller
                 })
                 ->map(function ($product) {
                     return [
-                        'id' => $product->id,
+                        'id' => $product->product_id,
                         'quantity' => $product['stock_quantity'] - $product['fact_quantity'],
                         'product_price' => $product['price']
                     ];
@@ -170,7 +170,7 @@ class RevisionController extends Controller
                 })
                 ->map(function ($product) {
                     return [
-                        'id' => $product->id,
+                        'id' => $product->product_id,
                         'quantity' => $product['fact_quantity'] - $product['stock_quantity'],
                         'purchase_price' => $product['purchase_price']
                     ];
