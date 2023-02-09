@@ -14,6 +14,8 @@ class EditRevisionJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $tries = 1;
+
     private Revision $revision;
     private string $filePath;
     private EditRevisionAction $action;

@@ -13,6 +13,7 @@ class EditRevisionAction {
         $file = IOFactory::load(storage_path('app/public/' . $filePath));
         $results = $this->parseEditFile($file);
         $results->each(function ($result) use ($revision) {
+            \Log::info('product #' . $result['id']);
             RevisionProducts::where('revision_id', $revision->id)
                 ->where('product_id', $result['id'])
                 ->update(
