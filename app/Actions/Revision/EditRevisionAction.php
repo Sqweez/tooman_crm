@@ -38,13 +38,17 @@ class EditRevisionAction {
         foreach ($rows as $key => $row) {
             if ($key > 2) {
                 $countText = trim($sheet->getCell('H' . $key)->getValue());
+                $id = intval($sheet->getCell('A' . $key)->getValue());
+                if ($id === 2938) {
+                    \Log::info('count text: ' . $countText);
+                }
                 if (strlen($countText) === 0) {
                     $count = null;
                 } else {
                     $count = intval($countText);
                 }
                 $output->push([
-                    'id' => $sheet->getCell('A' . $key)->getValue(),
+                    'id' => $id,
                     'count' => $count,
                 ]);
             }
