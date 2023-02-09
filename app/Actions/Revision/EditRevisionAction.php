@@ -42,7 +42,7 @@ class EditRevisionAction {
                 if ($id === 2938) {
                     \Log::info('count text: ' . $countText);
                 }
-                if (strlen($countText) === 0) {
+                if ($countText === '-') {
                     $count = null;
                 } else {
                     $count = intval($countText);

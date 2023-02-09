@@ -60,7 +60,7 @@ class GenerateRevisionPivotTableAction {
                 'stock_quantity' => $product['stock_quantity'],
                 'fact_quantity' => $product['fact_quantity'],
                 'delta' => $product['delta'],
-                'edit' => '',
+                'edit' => '-',
             ];
         })->toArray();
 
