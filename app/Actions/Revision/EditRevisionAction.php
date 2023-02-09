@@ -13,18 +13,22 @@ class EditRevisionAction {
         $file = IOFactory::load(storage_path('app/public/' . $filePath));
         $results = $this->parseEditFile($file);
         $results->each(function ($result) use ($revision) {
-            \Log::info('product #' . $result['id']);
+            if (intval($result['id']) === 2938) {
+                \Log::info('Product #' . $result['id']);
+                \Log::info('Count' . $result['count']);
+            }
+           /* \Log::info('product #' . $result['id']);
             RevisionProducts::where('revision_id', $revision->id)
                 ->where('product_id', $result['id'])
                 ->update(
                     ['fact_quantity' => $result['count']]
-                );
+                );*/
         });
-        $revision->update([
+      /*  $revision->update([
             'edited_pivot_file' => 'storage/' . $filePath,
             'edited_pivot_at' => now(),
             'status' => 2
-        ]);
+        ]);*/
     }
 
     private function parseEditFile(Spreadsheet $file): \Illuminate\Support\Collection {
