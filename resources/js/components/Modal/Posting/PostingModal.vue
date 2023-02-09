@@ -1,5 +1,5 @@
 <template>
-    <base-modal :state="state" title="Информация об оприходовании" @cancel="$emit('cancel')">
+    <base-modal :state="state" title="Информация об оприходовании" @cancel="$emit('cancel')" max-width="1500">
         <template #default>
             <v-simple-table v-slot:default class="mt-5">
                 <template>
