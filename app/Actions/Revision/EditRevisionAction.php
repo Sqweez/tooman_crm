@@ -47,6 +47,9 @@ class EditRevisionAction {
                 } else {
                     $count = intval($countText);
                 }
+                if (0 === intval($count)) {
+                    $count = null;
+                }
                 $output->push([
                     'id' => $id,
                     'count' => $count,
