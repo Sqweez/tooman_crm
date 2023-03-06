@@ -99,7 +99,10 @@ class ShiftController extends Controller
     }
 
     public function getShiftTaxes() {
-        $shiftTaxes = ShiftTax::with('store:id,name,city')->get();
+        $shiftTaxes = ShiftTax::query()
+            ->has('store')
+            ->with('store:id,name,city')
+            ->get();
         $stores = Store::shops()->select(['id', 'name', 'city'])->get();
         $storesWithoutTaxes = collect($stores)->filter(function ($i) use ($shiftTaxes) {
             return !collect($shiftTaxes)->contains(function ($value) use ($i) {

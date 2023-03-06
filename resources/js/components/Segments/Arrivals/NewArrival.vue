@@ -369,6 +369,7 @@ export default {
     },
     mixins: [product_search, cart, product],
     data: () => ({
+        oldArrival: null,
         comment: '',
         templateId: null,
         arrivedAt: null,
@@ -431,6 +432,24 @@ export default {
             this.paymentCost = arrival.paymentCost;
             this.moneyRate = arrival.moneyRate;
         }
+
+        if (this.arrivalId) {
+            const { data: { data }}  = await axiosClient.get(`/arrivals/${this.arrivalId}`);
+            this.oldArrival = data;
+            this.comment = this.oldArrival.comment;
+            this.arrivedAt = this.oldArrival.arrived_at;
+            this.paymentCost = this.oldArrival.payment_cost;
+            this.child_store = this.oldArrival.store_id;
+            this.oldArrival.products.forEach((product, index) => {
+                const needle = this.products.find(p => p.id === product.id);
+                const key = this.addToCart({
+                    ...needle,
+                    count: product.count,
+                });
+                this.updatePurchasePrice(product.purchase_price, key);
+            });
+        }
+
         this.loading = false;
         setInterval(async () => {
             await db.arrivals.clear();
@@ -507,7 +526,7 @@ export default {
             if (index === -1 || merge) {
                 index = this.cart.push({
                     ...item,
-                    count: 1,
+                    count: item.count || 1,
                     product_price: this.getPrice(item, this.child_store),
                     purchase_price_initial: 0,
                     purchase_price: 0,
@@ -581,6 +600,10 @@ export default {
                 payment_cost: this.paymentCost,
             };
 
+            if (this.arrivalId) {
+                arrival.arrival_id = this.arrivalId;
+            }
+
             try {
                 this.$loading.enable('Поступление создается...');
                 await this.$createArrival(arrival);
@@ -591,6 +614,9 @@ export default {
                 this.comment = '';
                 this.arrivedAt = null;
                 this.paymentCost = 0;
+                if (this.arrivalId) {
+                    window.location = '/arrivals';
+                }
             } catch (e) {
                 this.$toast.error('При создании поступления произошла ошибка!');
             } finally {
@@ -622,7 +648,10 @@ export default {
                 return a + c.count;
             }, 0);
             return Math.ceil(this.paymentCost / totalCount);
-        }
+        },
+        arrivalId () {
+            return this.$route.query?.id;
+        },
     },
     watch: {
         child_store (val) {

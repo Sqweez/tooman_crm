@@ -245,7 +245,7 @@
                                 <v-list-item-subtitle>{{ product.attributes.join(", ") }}<span v-if="product.manufacturer.manufacturer_name">,</span> {{ product.manufacturer.manufacturer_name }}</v-list-item-subtitle>
                             </v-list-item-content>
                             <v-list-item-action>
-                                <span>{{ product.count }} шт</span>
+                                <span>{{ product.product_price | priceFilters }} X {{ product.count }} шт</span>
                                 <span v-if="product.discount > 0">Скидка: {{ product.discount }}%</span>
                             </v-list-item-action>
                         </v-list-item>
@@ -445,6 +445,11 @@
                                     Счет-фактура <v-icon class="ml-2">mdi-printer</v-icon>
                                 </v-btn>
                             </v-list-item>
+                            <v-list-item>
+                                <v-btn small depressed color="primary" text @click="$router.push(`/reports/${item.id}`)">
+                                    Подробнее <v-icon class="ml-2">mdi-information-outline</v-icon>
+                                </v-btn>
+                            </v-list-item>
                             <v-list-item v-if="false">
                                 <v-btn small depressed color="success" text @click="sendTelegram(item.id)">
                                     Отправить в телегу <v-icon class="ml-2">mdi-email</v-icon>
@@ -604,6 +609,15 @@ const DATE_FILTERS = {
             searchComment: '',
         }),
         async mounted() {
+            if (this.IS_BOSS || this.IS_ACCOUNTING) {
+                this.currentCity = -1;
+            } else {
+                if (this.$user.stores) {
+                    this.currentCity = this.$user.stores[0].id;
+                } else {
+                    this.currentCity = this.$user.store_id;
+                }
+            }
             await this.init();
         },
         watch: {
@@ -776,7 +790,10 @@ const DATE_FILTERS = {
                 return this.$store.getters.payment_types;
             },
             shops() {
-                return [{id: -1, name: 'Все'}, ...this.$store.getters.shops];
+                if (this.IS_BOSS || this.IS_ACCOUNTING) {
+                    return [{id: -1, name: 'Все'}, ...this.$store.getters.shops];
+                }
+                return this.$store.getters.shops;
             },
             store_types() {
                 return [{id: -1, type: 'Все'}, ...this.$store.getters.store_types];

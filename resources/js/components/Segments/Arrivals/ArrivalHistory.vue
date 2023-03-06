@@ -25,6 +25,13 @@
                     item-text="name"
                     v-model="userId"
                 />
+                <i-date-picker
+                    label="Период"
+                    v-model="dates"
+                />
+                <v-btn small depressed color="success" @click="getArrivals">
+                    Получить данные
+                </v-btn>
                 <v-data-table
                     :search="search"
                     class="background-tooman-grey fz-18 mt-2"
@@ -193,18 +200,21 @@
 </template>
 
 <script>
-import {cancelArrival, getArrivals} from "@/api/arrivals";
+import {cancelArrival} from "@/api/arrivals";
 import ArrivalInfoModal from "@/components/Modal/ArrivalInfoModal";
 import axios from "axios";
 import ConfirmationModal from "@/components/Modal/ConfirmationModal";
+import IDatePicker from '@/components/DatePicker/DatePicker';
+import axiosClient from '@/utils/axiosClient';
 
 export default {
-    components: {ConfirmationModal, ArrivalInfoModal},
+    components: {IDatePicker, ConfirmationModal, ArrivalInfoModal},
     data: () => ({
+        dates: [],
         storeId: -1,
         userId: -1,
         search: '',
-        overlay: true,
+        overlay: false,
         loading: false,
         confirmationModal: false,
         arrivals: [],
@@ -253,7 +263,23 @@ export default {
             this.current_arrival = {};
             this.loading = false;
             this.$toast.success('Поставка отменена!');
-        }
+        },
+        async getArrivals () {
+            this.$loading.enable();
+            const payload = new URLSearchParams({
+                start: this.dates[0],
+                finish: this.dates[1],
+                is_completed: true
+            })
+            const { data: { data } } = await axiosClient.get(`/arrivals?${payload}`);
+            this.arrivals = data.map(arrival => {
+                arrival.search = arrival.products.map(product => {
+                    return `${product.product_name} ${product.manufacturer.manufacturer_name} ${product.attributes.map(a => a.attribute_value).join(' ')}`
+                }).join(' ')
+                return arrival
+            });
+            this.$loading.disable();
+        },
     },
     computed: {
         filteredArrivals () {
@@ -265,14 +291,7 @@ export default {
         }
     },
     async mounted() {
-        const { data } = await getArrivals(true);
-        this.arrivals = data.map(arrival => {
-            arrival.search = arrival.products.map(product => {
-                return `${product.product_name} ${product.manufacturer.manufacturer_name} ${product.attributes.map(a => a.attribute_value).join(' ')}`
-            }).join(' ')
-            return arrival
-        });
-        this.overlay = false;
+        await this.getArrivals();
     }
 }
 </script>

@@ -184,6 +184,9 @@
                 :items="filteredReports"
                 :search="search"
             >
+                <template v-slot:item.total_count="{ item }">
+                    {{ item.total_count }} ед
+                </template>
                 <template v-slot:item.total_purchase_price="{ item }">
                     {{ item.total_purchase_price | priceFilters }}
                 </template>
@@ -264,7 +267,7 @@ export default {
         start: null,
         finishMenu: null,
         finish: null,
-        currentCity: -1,
+        currentCity: null,
         currentSeller: -1,
         manufacturerId: -1,
         categoryId: -1,
@@ -273,27 +276,38 @@ export default {
         reportBySku: [],
         reportByProduct: [],
         showMainProducts: false,
-        headers: [
-            {
-                value: 'product_name_full',
-                text: 'Наименование',
-                sortable: true,
-            },
-            {
-                value: 'total_purchase_price',
-                text: 'Общая закупочная стоимость'
-            },
-            {
-                value: 'total_product_price',
-                text: 'Общая продажная стоимость'
-            },
-            {
-                value: 'total_margin',
-                text: 'Общая маржа'
-            },
-        ]
     }),
     computed: {
+        headers () {
+            let headers = [
+                {
+                    value: 'product_name_full',
+                    text: 'Наименование',
+                    sortable: true,
+                },
+                {
+                    value: 'total_product_price',
+                    text: 'Общая продажная стоимость'
+                },
+                {
+                    value: 'total_count',
+                    text: 'Общее количество'
+                }
+            ];
+
+            if (this.IS_BOSS || this.IS_ACCOUNTING) {
+                headers.splice(1, 0,{
+                    value: 'total_purchase_price',
+                    text: 'Общая закупочная стоимость'
+                });
+                headers.splice(3, 0,{
+                    value: 'total_margin',
+                    text: 'Общая маржа'
+                });
+            }
+
+            return headers;
+        },
         totalSales () {
             return this.filteredReports.reduce((a, c) => {
                 return a + c.total_product_price;
@@ -310,7 +324,12 @@ export default {
             }, 0);
         },
         shops() {
-            return [{id: -1, name: 'Все'}, ...this.$store.getters.shops];
+            if (this.IS_BOSS) {
+                return [{id: -1, name: 'Все'}, ...this.$store.getters.shops]
+            }
+             else {
+                 return this.$store.getters.shops;
+            }
         },
         sellers() {
             return [{id: -1, name: 'Все'}, ...this.$store.getters.users];
@@ -353,12 +372,18 @@ export default {
     },
     async created () {
         this.$loading.enable();
-        await this.loadReport();
-        await this.$store.dispatch(ACTIONS.GET_CATEGORIES);
-        await this.$store.dispatch(ACTIONS.GET_MANUFACTURERS);
-        await this.$store.dispatch(ACTIONS.GET_ATTRIBUTES);
-        await this.$store.dispatch(ACTIONS.GET_SUPPLIERS);
-        this.$loading.disable();
+        try {
+            this.currentCity = (this.IS_BOSS || this.IS_ACCOUNTING) ? -1 : this.$user.stores[0].id;
+            await this.loadReport();
+            await this.$store.dispatch(ACTIONS.GET_CATEGORIES);
+            await this.$store.dispatch(ACTIONS.GET_MANUFACTURERS);
+            await this.$store.dispatch(ACTIONS.GET_ATTRIBUTES);
+            await this.$store.dispatch(ACTIONS.GET_SUPPLIERS);
+            this.$loading.disable();
+        } catch (e) {
+            this.$toast.error('Доступ запрещен');
+            return this.$router.push('/')
+        }
     },
     watch: {
         currentCity () {

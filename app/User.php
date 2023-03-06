@@ -123,6 +123,10 @@ class User extends Authenticatable
         );
     }
 
+    public function getIsBossAttribute(): bool {
+        return $this->role_id == UserRole::BOSS_ROLE_ID;
+    }
+
     public function isGeneralManager(): bool {
         return in_array($this->role_id, [UserRole::GENERAL_MANAGER_ROLE_ID]);
     }

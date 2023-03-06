@@ -123,6 +123,16 @@ const navigationModule = {
                         title: 'ЗП ведомость',
                         url: '/shifts/index'
                     },
+                    {
+                        title: 'Изъятия',
+                        url: '/with-drawal',
+                        icon: 'report'
+                    },
+                    {
+                        title: 'Внесения',
+                        url: '/checkout',
+                        icon: 'report'
+                    },
                 ]
             },
             {
@@ -140,16 +150,6 @@ const navigationModule = {
                         url: '/education/index'
                     }
                 ],
-            },
-            {
-                title: 'Изъятия',
-                url: '/with-drawal',
-                icon: 'report'
-            },
-            {
-                title: 'Внесения',
-                url: '/checkout',
-                icon: 'report'
             },
             {
                 title: 'Статистика',
@@ -475,9 +475,17 @@ const navigationModule = {
                 ],
             },
             {
-                title: 'Изъятия',
-                url: '/with-drawal',
-                icon: 'report'
+                title: 'Бухгалтерия',
+                url: '#',
+                hasDropdown: true,
+                icon: 'account_balance_wallet',
+                children: [
+                    {
+                        title: 'Изъятия',
+                        url: '/with-drawal',
+                        icon: 'report'
+                    },
+                ]
             },
             {
                 title: 'Продавцы',
@@ -669,6 +677,19 @@ const navigationModule = {
                 ],
             },
             {
+                title: 'Бухгалтерия',
+                url: '#',
+                hasDropdown: true,
+                icon: 'account_balance_wallet',
+                children: [
+                    {
+                        title: 'Изъятия',
+                        url: '/with-drawal',
+                        icon: 'report'
+                    },
+                ]
+            },
+            {
                 title: 'Отчеты по продажам',
                 url: '/reports',
                 icon: 'report',
@@ -688,11 +709,6 @@ const navigationModule = {
                 url: '/promocode',
                 icon: 'receipt'
             },
-            {
-                title: 'Изъятия',
-                url: '/with-drawal',
-                icon: 'report'
-            },
         ],
         sellerMenu: [
             {
@@ -711,14 +727,22 @@ const navigationModule = {
                 icon: 'store'
             },
             {
-                title: 'Изъятия',
-                url: '/with-drawal',
-                icon: 'report'
-            },
-            {
-                title: 'Внесения',
-                url: '/checkout',
-                icon: 'report'
+                title: 'Бухгалтерия',
+                url: '#',
+                hasDropdown: true,
+                icon: 'account_balance_wallet',
+                children: [
+                    {
+                        title: 'Изъятия',
+                        url: '/with-drawal',
+                        icon: 'report'
+                    },
+                    {
+                        title: 'Внесения',
+                        url: '/checkout',
+                        icon: 'report'
+                    },
+                ]
             },
             {
                 title: 'Приемка',
@@ -793,7 +817,7 @@ const navigationModule = {
                 icon: 'home',
                 hasDropdown: true,
                 children: [
-                    {
+                   /* {
                         title: 'Категории',
                         url: '/categories',
                     },
@@ -804,16 +828,16 @@ const navigationModule = {
                     {
                         title: 'Перемещения',
                         url: '/transfer',
-                    },
-                    {
+                    },*/
+                    /*{
                         title: 'Приемка',
                         url: '/arrivals',
-                    },
+                    },*/
                     {
                         title: 'Ревизия',
                         url: '/revision'
                     },
-                    {
+                    /*{
                         title: 'Остатки',
                         url: '/product/remains'
                     },
@@ -824,8 +848,26 @@ const navigationModule = {
                     {
                         title: 'Оприходования',
                         url: '/posting'
-                    },
+                    },*/
                 ],
+            },
+            {
+                title: 'Бухгалтерия',
+                url: '#',
+                hasDropdown: true,
+                icon: 'account_balance_wallet',
+                children: [
+                    {
+                        title: 'Изъятия',
+                        url: '/with-drawal',
+                        icon: 'report'
+                    },
+                    {
+                        title: 'Внесения',
+                        url: '/checkout',
+                        icon: 'report'
+                    },
+                ]
             },
             {
                 title: 'Экономика',
@@ -865,14 +907,14 @@ const navigationModule = {
                 url: '#',
                 hasDropdown: true,
                 children: [
-                    {
+                   /* {
                         title: 'Аналитика продаж',
                         url: '/analytics/sales'
                     },
                     {
                         title: 'Аналитика поступлений',
                         url: '/analytics/arrivals'
-                    },
+                    },*/
                     {
                         title: 'Аналитика продаж бренды',
                         url: '/analytics/sales/brands'
@@ -1175,6 +1217,16 @@ const navigationModule = {
                     {
                         title: 'ЗП ведомость',
                         url: '/shifts/index'
+                    },
+                    {
+                        title: 'Изъятия',
+                        url: '/with-drawal',
+                        icon: 'report'
+                    },
+                    {
+                        title: 'Внесения',
+                        url: '/checkout',
+                        icon: 'report'
                     },
                 ]
             },

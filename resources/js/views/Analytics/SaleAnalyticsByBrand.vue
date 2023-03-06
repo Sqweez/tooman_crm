@@ -320,6 +320,9 @@ export default {
         this.$loading.disable();
     },
     methods: {
+        deleteFromCart (index) {
+            this.cart.splice(index, 1);
+        },
         async changeCustomDate() {
             this.$refs.startMenu.save(this.start);
             this.$refs.finishMenu.save(this.finish);

@@ -62,12 +62,15 @@ class Store extends Model
 
     use SoftDeletes;
 
+    const DEFAULT_LEGAL_NAME = 'ИП "Нускабаев И.Н"';
+
     protected $guarded = [];
 
     protected $casts = [
         'id' => 'integer',
         'type_id' => 'integer',
-        'etc' => 'array'
+        'etc' => 'array',
+        'meta' => 'array'
     ];
 
     public function type() {
@@ -101,6 +104,16 @@ class Store extends Model
     public function activeWorkingDay(): HasOne {
         return $this->hasOne(WorkingDay::class)
             ->whereNull('closed_at');
+    }
+
+    public function getTransformedMeta() {
+        if (!$this->meta) {
+          return [
+              'legal_name' => Store::DEFAULT_LEGAL_NAME
+          ];
+        }
+
+        return $this->meta;
     }
 
     protected static function boot() {

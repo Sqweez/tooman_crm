@@ -13,13 +13,18 @@ class CheckController extends Controller
         if ($report['payment_type'] === 2) {
             $report['final_price'] += $report['final_price'] * Sale::KASPI_RED_PERCENT;
         }
+
         return view('check', [
             'report' => (object) $report,
         ]);
     }
 
     private function getReport($sale, $request) {
-        $reportResource = new ReportsResource(Sale::report()->whereKey($sale)->first());
+        $reportResource = new ReportsResource(Sale::report()
+            ->with('store')
+            ->whereKey($sale)
+            ->first()
+        );
         return response()->json($reportResource->toArray($request));
     }
 }

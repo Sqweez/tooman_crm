@@ -84,6 +84,7 @@ import PartnersEdit from '@/views/Partners/PartnersEdit';
 import PartnersInfo from '@/views/Partners/PartnersInfo';
 import CheckoutIndex from '@/views/Checkout/CheckoutIndex';
 import ReportsByProducts from '@/views/v3/Reports/ReportsByProducts';
+import SingleProductReport from '@/views/v3/Reports/SingleProductReport';
 
 const routes = [
     {
@@ -123,7 +124,7 @@ const routes = [
                 IS_ADMIN: true,
                 IS_BOSS: true,
                 IS_MANAGER: true,
-                IS_GENERAL_MANAGER: true
+                //IS_GENERAL_MANAGER: true
             },
         }
     },
@@ -179,7 +180,16 @@ const routes = [
     },
     {
         path: '/transfer',
-        component: Transfers
+        component: Transfers,
+        meta: {
+            CAN_ENTER: {
+                IS_BOSS: true,
+                IS_ACCOUNTING: true,
+                IS_MANAGER: true,
+                IS_SELLER: true,
+                IS_SENIORSELLER: true
+            }
+        }
     },
     {
         path: '/transfers/update/:id',
@@ -291,7 +301,7 @@ const routes = [
             CAN_ENTER: {
                 IS_ADMIN: true,
                 IS_BOSS: true,
-                IS_GENERAL_MANAGER: true,
+               // IS_GENERAL_MANAGER: true,
                 IS_MANAGER: true
             }
         }
@@ -308,7 +318,7 @@ const routes = [
                 IS_SENIORSELLER: true,
                 IS_MARKETOLOG: true,
                 IS_MANAGER: true,
-                IS_GENERAL_MANAGER: true,
+                //IS_GENERAL_MANAGER: true,
             },
         }
     },
@@ -371,7 +381,7 @@ const routes = [
                 IS_MODERATOR: true,
                 IS_FRANCHISE: true,
                 IS_MANAGER: true,
-                IS_GENERAL_MANAGER: true,
+                //IS_GENERAL_MANAGER: true,
             },
         },
         component: ProductsV3
@@ -415,6 +425,10 @@ const routes = [
     {
         path: '/reports',
         component: ReportsV3
+    },
+    {
+        path: '/reports/:id',
+        component: SingleProductReport
     },
     {
         path: '/reports-by-products',
@@ -543,7 +557,7 @@ const routes = [
             CAN_ENTER: {
                 IS_ADMIN: true,
                 IS_BOSS: true,
-                IS_GENERAL_MANAGER: true,
+                //IS_GENERAL_MANAGER: true,
                 IS_MANAGER: true
             }
         }
@@ -556,7 +570,7 @@ const routes = [
                 IS_ADMIN: true,
                 IS_BOSS: true,
                 IS_MANAGER: true,
-                IS_GENERAL_MANAGER: true
+                //IS_GENERAL_MANAGER: true
             }
         }
     },
@@ -673,11 +687,23 @@ const routes = [
     },
     {
         path: '/analytics/sales',
-        component: SaleAnalytics
+        component: SaleAnalytics,
+        meta: {
+            CAN_ENTER: {
+                IS_BOSS: true,
+                IS_ACCOUNTING: true
+            }
+        }
     },
     {
         path: '/analytics/arrivals',
-        component: ArrivalAnalytics
+        component: ArrivalAnalytics,
+        meta: {
+            CAN_ENTER: {
+                IS_BOSS: true,
+                IS_ACCOUNTING: true
+            }
+        }
     },
     {
         path: '/economy/seller/earnings',

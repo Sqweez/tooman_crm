@@ -142,6 +142,18 @@
                                                 </v-btn>
                                             </v-list-item-content>
                                         </v-list-item>
+                                        <v-list-item v-if="IS_SUPERUSER || IS_SENIOR_SELLER">
+                                            <v-list-item-content>
+                                                <v-btn
+                                                    color="primary"
+                                                    :href="`/arrivals?action=create&id=${item.id}`"
+                                                    target="_blank"
+
+                                                >
+                                                    Редактировать состав<v-icon>mdi-pencil</v-icon>
+                                                </v-btn>
+                                            </v-list-item-content>
+                                        </v-list-item>
                                         <v-list-item>
                                             <v-list-item-content>
                                                 <v-btn

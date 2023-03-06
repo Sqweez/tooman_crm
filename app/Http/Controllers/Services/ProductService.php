@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Services;
 use App\Http\Resources\v2\Product\ProductsResource;
 use App\Price;
 use App\ProductBatch;
+use App\User;
+use App\v2\Models\PartnerProduct;
 use App\v2\Models\Product;
 use App\Tag;
 use App\v2\Models\AttributeValue;
@@ -18,9 +20,19 @@ use Illuminate\Support\Facades\DB;
 class ProductService {
 
     public function all() {
+        /* @var User $user */
+        $user = auth()->user();
         return (ProductSku::with(ProductSku::PRODUCT_SKU_WITH_ADMIN_LIST)
             ->orderBy('product_id')
             ->orderBy('id')
+            ->when($user->role_id === __hardcoded(12), function ($query) use ($user) {
+                $partnerProductIds = PartnerProduct::query()
+                    ->where('user_id', $user->id)
+                    ->select(['user_id', 'product_sku_id'])
+                    ->get()
+                    ->pluck('product_sku_id');
+                return $query->whereIn('id', $partnerProductIds);
+            })
             ->get()
             ->map(function ($sku) {
                 $additionalAttributes = collect($sku->attributes)->pluck('attribute_value')->join('|');

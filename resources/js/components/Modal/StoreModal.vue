@@ -34,6 +34,11 @@
                         :items="cities"
                     />
                     <v-divider />
+                    <v-text-field
+                        label="Юр. лицо"
+                        v-model="store.meta.legal_name"
+                    />
+<!--
                     <div v-if="store.type_id === 1">
                         <v-textarea
                             label="Описание"
@@ -90,6 +95,7 @@
                             Добавить продавца +
                         </v-btn>
                     </div>
+-->
                 </v-form>
             </v-card-text>
             <v-card-actions class="p-2" v-if="!loading">
@@ -123,7 +129,11 @@
     export default {
         watch: {
             state() {
-                this.store = {};
+                this.store =  {
+                    meta: {
+                        legal_name: '',
+                    }
+                };
                 if (this.id !== null) {
                     this.store = {...this.$store.getters.store(this.id)};
                     if (this.store.etc) {
@@ -152,7 +162,11 @@
         },
         data: () => ({
             loading: false,
-            store: {},
+            store: {
+                meta: {
+                    legal_name: '',
+                }
+            },
             description: '',
             mapUrl: '',
             sellers: [],

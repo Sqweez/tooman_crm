@@ -10,6 +10,7 @@ use App\Http\Controllers\Services\SaleService;
 use App\Http\Resources\shop\PartnerResource;
 use App\Product;
 use App\Sale;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -387,10 +388,15 @@ class AnalyticsController extends Controller
     }
 
     public function getSaleSellersAnalytics(Request $request, SaleService $saleService) {
+        /* @var User $user */
+        $user = auth()->user();
         $startDate = Carbon::parse($request->get('start'))->startOfMonth()->locale('ru');
         $finishDate = Carbon::parse($request->get('finish'))->endOfMonth()->locale('ru');
         $products = $request->get('products', null);
         $sales = Sale::query()
+            ->when(!$user->is_boss, function ($q) use ($user) {
+                return $q->whereIn('store_id', $user->stores->pluck('id'));
+            })
             ->with('products')
             ->with('products.product.attributes')
             ->with('products.product.product')
@@ -453,8 +459,13 @@ class AnalyticsController extends Controller
         $startDate = Carbon::parse($request->get('start'))->startOfMonth()->locale('ru');
         $finishDate = Carbon::parse($request->get('finish'))->endOfMonth()->locale('ru');
         $products = $request->get('products', null);
+        /* @var User $user */
+        $user = auth()->user();
         $sales = Sale::query()
             ->with('products')
+            ->when(!$user->is_boss, function ($q) use ($user) {
+                return $q->whereIn('store_id', $user->stores->pluck('id'));
+            })
             ->whereDate('created_at', '>=', $startDate)
             ->whereDate('created_at', '<=', $finishDate)
             ->select(['id', 'kaspi_red', 'created_at', 'balance'])

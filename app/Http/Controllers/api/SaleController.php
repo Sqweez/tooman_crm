@@ -106,6 +106,10 @@ class SaleController extends Controller {
         return new ReportResource($sale);
     }
 
+    public function getSaleById(Sale $sale): ReportsResource {
+        return ReportsResource::make($sale);
+    }
+
     public function getTotal(Request $request) {
         $dateFilter = $request->get('date_filter');
         $role = $request->get('role');
@@ -127,7 +131,7 @@ class SaleController extends Controller {
         $bookingSales = collect([
             9999 => [
                 'store_id' => 9999,
-                'amount' => intval(Booking::whereDate('created_at', '>=', $dateFilter)->sum('paid_sum'))
+                'amount' => 0//intval(Booking::whereDate('created_at', '>=', $dateFilter)->sum('paid_sum'))
             ]
         ]);
 

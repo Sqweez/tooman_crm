@@ -169,11 +169,12 @@ Route::middleware(AuthorizationMiddleware::class)->group(function () {
     });
 
     //ReportController
+    Route::get('reports/total', 'api\SaleController@getTotal');
     Route::patch('reports/{report}', 'api\SaleController@update');
     Route::get('reports', 'api\SaleController@reports');
     Route::get('reports/plan', 'api\SaleController@getPlanReports');
-    Route::get('reports/total', 'api\SaleController@getTotal');
     Route::post('reports/products', 'api\SaleController@getReportProducts');
+    Route::get('reports/{sale}', 'api\SaleController@getSaleById');
 
 
     Route::get('cart/group', 'api\CartController@groupCart');

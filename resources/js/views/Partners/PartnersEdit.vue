@@ -38,9 +38,18 @@
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                     </v-expansion-panels>
-                    <v-btn block color="success" @click="onSubmit">
-                        Синхронизировать товары <v-icon>mdi-check</v-icon>
-                    </v-btn>
+                    <v-row>
+                        <v-col>
+                            <v-btn block color="success" @click="onSubmit">
+                                Синхронизировать товары <v-icon>mdi-check</v-icon>
+                            </v-btn>
+                        </v-col>
+                        <v-col>
+                            <v-btn block color="error" @click="clearProducts">
+                                Очистить товары <v-icon>mdi-close</v-icon>
+                            </v-btn>
+                        </v-col>
+                    </v-row>
                 </v-card-text>
             </v-card>
             <v-card class="background-tooman-darkgrey">
@@ -258,6 +267,14 @@ export default {
             ACTIONS.GET_PRODUCTS_v2,
             ACTIONS.GET_STORES,
         ]),
+        async clearProducts () {
+            this.$confirm('Вы действительно хотите удалить все партнерские товары?')
+                .then(async _ => {
+                    this.cart = [];
+                    await this.onSubmit();
+                })
+                .catch(() => {})
+        },
         async onSubmit () {
             this.$loading.enable();
            const products = this.cart.map(c => ({

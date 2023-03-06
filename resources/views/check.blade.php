@@ -23,7 +23,7 @@
                     text-transform: inherit;
                     font-size: 15px;
                     margin: 0;">
-            ИП "Нускабаев И.Н"
+            {{ $report->store_meta['legal_name'] }}
         </p>
         <p STYLE="text-align: CENTER; font-size: 12px; margin: 0;">ДОБРО ПОЖАЛОВАТЬ!</p>
         <p STYLE="text-align: CENTER; font-size: 12px; margin: 0;">КАССОВЫЙ ЧЕК</p>
@@ -33,7 +33,7 @@
     </p>
     <div style="display: flex; justify-content: space-between; align-items: center">
         <p style="margin: 0; font-size: 12px;">
-            ЧЕК №1
+            ЧЕК №{{ $report->id }}
         </p>
         <p style="margin: 0; font-size: 12px;">
             {{ $report->date }}

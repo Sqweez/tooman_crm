@@ -30,7 +30,8 @@ class CreateArrivalRequest extends FormRequest
             'user_id' => 'required',
             'payment_cost' => 'sometimes',
             'arrived_at' => 'sometimes',
-            'products' => 'required|array'
+            'products' => 'required|array',
+            'arrival_id' => 'sometimes'
         ];
     }
 

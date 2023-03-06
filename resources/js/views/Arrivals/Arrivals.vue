@@ -51,7 +51,18 @@
                 this.currentSegment = segment.component;
             }
         },
+        mounted() {
+            if (this.currentAction === 'create') {
+                this.chooseSegment({
+                    name: 'Создать',
+                    component: 'NewArrival'
+                });
+            }
+        },
         computed: {
+            currentAction () {
+                return this.$route.query?.action;
+            },
             segments() {
                 return [
                     {

@@ -323,23 +323,26 @@
                                     suffix="%"
                                     @change="updateDiscount(item)"
                                     :disabled="isDiscountDisabled"
-
                                 />
                             </td>
-                            <td v-if="isFullWholesalePurchase">
+<!--                            <td v-if="isFullWholesalePurchase">
                                 {{ item.initial_price | priceFilters }}
-                            </td>
+                            </td>-->
                             <td>
-                                <span v-if="!isFullWholesalePurchase">
+<!--                                <span v-if="!isFullWholesalePurchase">
                                     {{ item.product_price | priceFilters}}
-                                </span>
-                                <div v-else class="d-flex align-center">
+                                </span>-->
+                                <div class="d-flex align-center">
                                     <v-btn icon @click.prevent="item.product_price = item.initial_price" title="Восстановить исходную">
                                         <v-icon>mdi-undo</v-icon>
                                     </v-btn>
                                     <v-text-field
+                                        type="number"
                                         style="min-width: 150px;"
                                         v-model="item.product_price"
+                                        suffix="₸"
+                                        @input="updatePrice(item)"
+                                        @change="updatePrice(item)"
                                     />
                                 </div>
                             </td>

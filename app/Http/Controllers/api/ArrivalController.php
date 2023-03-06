@@ -23,12 +23,18 @@ class ArrivalController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection {
         $is_completed = !!$request->get('is_completed', 0);
+        $start = $request->get('start');
+        $finish = $request->get('finish');
         /* @var User $user */
         $user = auth()->user();
         return ArrivalResource::collection(
             Arrival::where('is_completed', $is_completed)
                 ->when(!$user->is_super_user, function ($query) use ($user) {
                     return $query->where('store_id', $user->store_id);
+                })
+                ->when($start && $finish, function ($q) use ($start, $finish) {
+                    return $q->whereDate('created_at', '>=', $start)
+                        ->whereDate('created_at', '<=', $finish);
                 })
                 ->with([
                     'products', 'products.product',
@@ -43,16 +49,10 @@ class ArrivalController extends Controller
                     'user', 'store', 'bookings', 'bookings.products',
                     'products.bookingProducts'
                 ])
+                ->has('products.product')
                 ->orderByDesc('created_at')
                 ->get()
-                ->map(function ($arrival) {
-                    $products = collect($arrival->products)->filter(function ($batch) {
-                        return $batch['product'] !== null && $batch['product']['product'] !== null;
-                    });
-                    unset($arrival['products']);
-                    $arrival['products'] = $products;
-                    return $arrival;
-                }));
+        );
     }
 
     public function getArrivalsForTransfer(): AnonymousResourceCollection {
@@ -65,6 +65,7 @@ class ArrivalController extends Controller
     }
 
     public function show(Arrival $arrival): ArrivalResource {
+        $arrival->loadRelations();
         return new ArrivalResource($arrival);
     }
 

@@ -79,6 +79,12 @@ export default {
                 this.$set(this.cart[index], 'discount', Math.max(0, Math.min(100, item.discount)));
             });
         },
+        updatePrice (item) {
+            this.$nextTick(() => {
+                const index = this.cart.findIndex(c => c.uuid === item.uuid);
+                this.$set(this.cart[index], 'product_price', Math.max(0, Math.min(item.initial_price, item.product_price)));
+            });
+        },
     },
     computed: {
         productsWithoutFilters() {
