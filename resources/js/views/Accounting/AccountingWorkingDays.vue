@@ -188,11 +188,11 @@
                             {{ item.report.total_sales.by_crm | priceFilters }}
                         </td>
                         <td class="green-cell">
-                            {{ item.report.total_sales.by_shift | priceFilters }}
+                            {{ getTotalByShift(item.report)/*item.report.total_sales.by_shift */| priceFilters }}
                         </td>
                         <td class="green-cell red-text">
                         <span>
-                            {{ item.report.total_sales.diff | priceFilters }}
+                            {{ getTotalByShift(item.report) - item.report.total_sales.by_crm/*item.report.total_sales.diff*/ | priceFilters }}
                         </span>
                         </td>
                         <td class="red-cell">
@@ -526,7 +526,7 @@ export default {
                     return a + c.report.total_sales.by_crm
                 }, 0),
                 by_shift: this.report.reduce((a, c) => {
-                    return a + c.report.total_sales.by_shift;
+                    return a + this.getTotalByShift(c.report)/*c.report.total_sales.by_shift*/;
                 }, 0),
                 diff: this.report.reduce((a, c) => {
                     return a + c.report.total_sales.diff;
@@ -535,6 +535,9 @@ export default {
         },
     },
     methods: {
+        getTotalByShift (report) {
+            return report.cash_sales.by_shift + report.kaspi_sales.by_shift + report.cashless_sales.by_shift;
+        },
         getCashSalesByShift (report) {
             return report.closing_day_cash_in_hand
             - report.prev_day_cash_in_hand.fact

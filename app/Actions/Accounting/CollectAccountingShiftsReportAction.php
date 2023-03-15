@@ -239,8 +239,8 @@ class CollectAccountingShiftsReportAction {
             - $this->getPrevDayCashInHand($allDays, $key)['fact']
             - $this->getCheckins($item)['cash']
             + $this->getWithDrawals($item)['incassation']
-            + $this->getWithDrawals($item)['cash']['total_without_inc']
-        ;
+            + $this->getWithDrawals($item)['cash']['total_without_inc'];
+
         $byCRM = $this->getTotalSaleAmount($item, __hardcoded(0));
         $diff = $byShift - $byCRM;
 
@@ -312,6 +312,8 @@ class CollectAccountingShiftsReportAction {
         $byShift = collect($item['days'])->reduce(function ($a, $c) {
             return $a + $c['total_by_shift'];
         }, 0);
+
+
         $byCRM = $this->getTotalSaleAmount($item);
         $diff = $byShift - $byCRM;
 
