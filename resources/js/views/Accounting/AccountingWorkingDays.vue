@@ -188,11 +188,11 @@
                             {{ item.report.total_sales.by_crm | priceFilters }}
                         </td>
                         <td class="green-cell">
-                            {{ getTotalByShift(item.report)/*item.report.total_sales.by_shift */| priceFilters }}
+                            {{ getTotalByShift(item.report) | priceFilters }}
                         </td>
                         <td class="green-cell red-text">
                         <span>
-                            {{ getTotalByShift(item.report) - item.report.total_sales.by_crm/*item.report.total_sales.diff*/ | priceFilters }}
+                            {{ (getTotalByShift(item.report) - item.report.total_sales.by_crm) | priceFilters }}
                         </span>
                         </td>
                         <td class="red-cell">
