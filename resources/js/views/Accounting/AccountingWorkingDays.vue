@@ -521,16 +521,16 @@ export default {
             };
         },
         totalSalesObject() {
+            let byCrm = this.report.reduce((a, c) => {
+                return a + c.report.total_sales.by_crm
+            }, 0);
+            let byShift = this.report.reduce((a, c) => {
+                return a + this.getTotalByShift(c.report)/*c.report.total_sales.by_shift*/;
+            }, 0);
             return {
-                by_crm: this.report.reduce((a, c) => {
-                    return a + c.report.total_sales.by_crm
-                }, 0),
-                by_shift: this.report.reduce((a, c) => {
-                    return a + this.getTotalByShift(c.report)/*c.report.total_sales.by_shift*/;
-                }, 0),
-                diff: this.report.reduce((a, c) => {
-                    return a + c.report.total_sales.diff;
-                }, 0),
+                by_crm: byCrm,
+                by_shift: byShift,
+                diff: byShift - byCrm
             };
         },
     },

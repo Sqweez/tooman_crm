@@ -84,7 +84,7 @@ class CollectAccountingShiftsReportAction {
         }
         $needleCheckouts =  $this->checkouts->filter(function ($checkout) use ($item) {
             return Carbon::parse($item['days'][0]['created_at'])
-                ->isSameDay(Carbon::parse($checkout['created_at'])) && $checkout->store_id === $item['days'][0]['store_id'];
+                    ->isSameDay(Carbon::parse($checkout['created_at'])) && $checkout->store_id === $item['days'][0]['store_id'];
         });
 
         return [
@@ -116,7 +116,7 @@ class CollectAccountingShiftsReportAction {
         return [
             'total' => collect($item['days'])->reduce(function ($a, $c) {
                 return $a + collect($c['withdrawal'])->reduce(function ($_a, $_c) {
-                    return $_a + $_c['amount'];
+                        return $_a + $_c['amount'];
                     }, 0);
             }, 0),
             'incassation' => collect($item['days'])->reduce(function ($a, $c) {
@@ -175,7 +175,8 @@ class CollectAccountingShiftsReportAction {
     private function getPrevDayCashInHand($items, $index) {
         if ($index === 0) {
             $prevDay = WorkingDay::query()
-                ->whereDate('created_at', '<', $this->start)
+                ->where('store_id', $this->store_id)
+                ->whereDate('created_at',  Carbon::parse($this->start)->subMonth()->endOfMonth())
                 ->latest()
                 ->first();
 
@@ -208,24 +209,24 @@ class CollectAccountingShiftsReportAction {
                 ? collect($c['sales'])
                 : collect($c['sales'])->filter(function ($sale) use ($paymentType) {
                     return (is_array($paymentType)
-                        ? in_array($sale['payment_type'], $paymentType)
-                        : $paymentType === $sale['payment_type']) || $sale['payment_type'] === __hardcoded(5);
+                            ? in_array($sale['payment_type'], $paymentType)
+                            : $paymentType === $sale['payment_type']) || $sale['payment_type'] === __hardcoded(5);
                 })
                     ->values();
             return $a + $sales->reduce(function ($_a, $_c) use ($paymentType) {
-                if ($_c['payment_type'] !== __hardcoded(5) || is_null($paymentType)) {
-                    $price = $_c['final_price'];
-                } else {
-                    $splitPayment = collect($_c['split_payment']);
-                    $price = $splitPayment->filter(function ($s) use ($paymentType) {
-                        return is_array($paymentType) ?
-                            in_array($s['payment_type'], $paymentType)
-                            : $s['payment_type'] === $paymentType;
-                    })->reduce(function ($a, $c) {
-                        return $a + $c['amount'];
-                    }, 0);
-                }
-                return $_a + $price;
+                    if ($_c['payment_type'] !== __hardcoded(5) || is_null($paymentType)) {
+                        $price = $_c['final_price'];
+                    } else {
+                        $splitPayment = collect($_c['split_payment']);
+                        $price = $splitPayment->filter(function ($s) use ($paymentType) {
+                            return is_array($paymentType) ?
+                                in_array($s['payment_type'], $paymentType)
+                                : $s['payment_type'] === $paymentType;
+                        })->reduce(function ($a, $c) {
+                            return $a + $c['amount'];
+                        }, 0);
+                    }
+                    return $_a + $price;
                 }, 0);
         }, 0);
     }
