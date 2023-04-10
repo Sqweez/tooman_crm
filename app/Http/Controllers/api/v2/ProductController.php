@@ -16,6 +16,7 @@ use App\Http\Resources\v2\Product\ProductResource;
 use App\MarginType;
 use App\Posting;
 use App\Sale;
+use App\SaleProduct;
 use App\Store;
 use App\Transfer;
 use App\v2\Models\Product;
@@ -409,7 +410,7 @@ class ProductController extends Controller
         Request $request,
         ProductResourceResolver $resolver,
         CollectProductMovementAction $action
-    ) {
+    ): array {
         $store_id = $request->get('store');
         $product_id = $request->get('product');
 
@@ -418,6 +419,15 @@ class ProductController extends Controller
             ->where('product_id', $product_id)
             ->sum('quantity');
 
+        $batches = ProductBatch::query()
+            ->whereStoreId($store_id)
+            ->withCount('sale_product')
+            ->get()
+            ->map(function ($batch) {
+                $batch['date'] = Carbon::parse($batch->created_at)->format('d.m.y H:i:s');
+                return $batch;
+            });
+
         return [
             'output' => $action->handle($product_id, $store_id),
             'current' => $quantity,
@@ -425,7 +435,14 @@ class ProductController extends Controller
                 $resolver->resolve(
                     $product_id
                 )
-            )
+            ),
+            'batches' => $batches
         ];
+    }
+
+    public function updateProductBatch($id, Request $request) {
+        $purchase_price = $request->get('price');
+        ProductBatch::whereKey($id)->update(['purchase_price' => $purchase_price]);
+        SaleProduct::whereProductBatchId($id)->update(['purchase_price' => $purchase_price]);
     }
 }

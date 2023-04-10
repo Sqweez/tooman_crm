@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -61,6 +62,10 @@ class ProductBatch extends Model
 
     public function store() {
         return $this->belongsTo('App\Store', 'store_id');
+    }
+
+    public function sale_product(): HasMany {
+        return $this->hasMany(SaleProduct::class, 'product_batch_id');
     }
 
     public function scopeOfStore($query, $store) {

@@ -247,6 +247,7 @@ Route::middleware(AuthorizationMiddleware::class)->group(function () {
 
         Route::prefix('products')->group(function () {
             Route::get('movements', [ProductController::class, 'getProductMovements']);
+            Route::post('batches/{id}/update', [ProductController::class, 'updateProductBatch']);
             Route::post('search', [ProductController::class, 'search']);
             Route::get('iherb', [ProductController::class, 'getIherbProducts']);
             Route::delete('tags', [ProductController::class, 'deleteProductTag']);
