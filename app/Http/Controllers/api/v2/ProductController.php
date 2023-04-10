@@ -423,10 +423,20 @@ class ProductController extends Controller
             ->whereStoreId($store_id)
             ->withCount('sale_product')
             ->get()
-            ->map(function ($batch) {
-                $batch['date'] = Carbon::parse($batch->created_at)->format('d.m.y H:i:s');
-                return $batch;
-            });
+            ->groupBy('purchase_price')
+            ->map(function ($batches, $key) {
+                return [
+                    'purchase_price' => $key,
+                    'sale_product_count' => collect($batches)->reduce(function ($a, $c) {
+                        return $a + $c['sale_product_count'];
+                    }, 0),
+                    'ids' => collect($batches)->pluck('id'),
+                    'quantity' => collect($batches)->reduce(function ($a, $c) {
+                        return $a + $c['quantity'];
+                    }, 0),
+                ];
+            })
+            ->values();
 
         return [
             'output' => $action->handle($product_id, $store_id),
@@ -442,7 +452,8 @@ class ProductController extends Controller
 
     public function updateProductBatch($id, Request $request) {
         $purchase_price = $request->get('price');
-        ProductBatch::whereKey($id)->update(['purchase_price' => $purchase_price]);
-        SaleProduct::whereProductBatchId($id)->update(['purchase_price' => $purchase_price]);
+        $ids = $request->get('ids');
+        ProductBatch::whereIn('id', $ids)->update(['purchase_price' => $purchase_price]);
+        SaleProduct::whereIn('product_batch_id', $ids)->update(['purchase_price' => $purchase_price]);
     }
 }

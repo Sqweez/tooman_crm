@@ -63,9 +63,9 @@
                     <th>
                         Текущая закупочная стоимость
                     </th>
-                    <th>
+<!--                    <th>
                         Дата создания
-                    </th>
+                    </th>-->
                     <th>
                         Количество проданных единиц
                     </th>
@@ -74,25 +74,31 @@
                     </th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr v-for="(item, idx) of batches" :key="item.id">
-                    <td class="text-center">{{ item.quantity }} шт.</td>
-                    <td class="text-center">
-                        <v-text-field
-                            type="number"
-                            v-model="batches[idx].purchase_price"
-                        />
-                    </td>
-                    <td>{{ item.date }}</td>
-                    <td>{{ item.sale_product_count }}</td>
-                    <td>
-                        <v-btn color="success" small depressed @click="updatePurchasePrice(item)">
-                            Обновить <v-icon>mdi-sync</v-icon>
-                        </v-btn>
-                    </td>
-                </tr>
-                </tbody>
             </v-simple-table>
+            <v-virtual-scroll
+                :items="batches"
+                height="300"
+                item-height="48"
+            >
+                <template v-slot:default="{ item, index }">
+                    <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                        <div class="text-center" style="width: 25%;">{{ item.quantity }} шт.</div>
+                        <div class="text-center" style="width: 25%;">
+                            <v-text-field
+                                type="number"
+                                v-model="batches[index].purchase_price"
+                            />
+                        </div>
+                        <div style="width: 25%;" class="text-center">{{ item.sale_product_count }} шт.</div>
+                        <div style="width: 25%;">
+                            <v-btn color="success" small depressed @click="updatePurchasePrice(item)">
+                                Обновить <v-icon>mdi-sync</v-icon>
+                            </v-btn>
+                        </div>
+                    </div>
+
+                </template>
+            </v-virtual-scroll>
         </t-card-page>
     </div>
 </template>
@@ -130,8 +136,8 @@ export default {
         async updatePurchasePrice (item) {
             this.$loading.enable();
             await axiosClient.post(
-                `v2/products/batches/${item.id}/update`,
-                { price: item.purchase_price }
+                `v2/products/batches/${item.ids[0]}/update`,
+                { price: item.purchase_price, ids: item.ids }
             );
             await this.onSubmit();
         }
