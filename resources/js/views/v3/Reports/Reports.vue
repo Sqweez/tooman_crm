@@ -790,7 +790,7 @@ const DATE_FILTERS = {
                 return this.$store.getters.payment_types;
             },
             shops() {
-                if (this.IS_BOSS || this.IS_ACCOUNTING) {
+                if (this.IS_BOSS || this.IS_ACCOUNTING || this.IS_MANAGER) {
                     return [{id: -1, name: 'Все'}, ...this.$store.getters.shops];
                 }
                 return this.$store.getters.shops;
